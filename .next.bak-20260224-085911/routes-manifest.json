@@ -1,0 +1,226 @@
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/api/books/[slug]",
+      "regex": "^/api/books/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/api/books/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/comments/[id]/reply",
+      "regex": "^/api/comments/([^/]+?)/reply(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/comments/(?<nxtPid>[^/]+?)/reply(?:/)?$"
+    },
+    {
+      "page": "/api/orders/[id]/invoice",
+      "regex": "^/api/orders/([^/]+?)/invoice(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/orders/(?<nxtPid>[^/]+?)/invoice(?:/)?$"
+    },
+    {
+      "page": "/api/wishlist/share/[token]",
+      "regex": "^/api/wishlist/share/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPtoken": "nxtPtoken"
+      },
+      "namedRegex": "^/api/wishlist/share/(?<nxtPtoken>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/ouvrages/[slug]",
+      "regex": "^/ouvrages/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/ouvrages/(?<nxtPslug>[^/]+?)(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/admin",
+      "regex": "^/admin(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin(?:/)?$"
+    },
+    {
+      "page": "/admin/comments",
+      "regex": "^/admin/comments(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/comments(?:/)?$"
+    },
+    {
+      "page": "/admin/contributions",
+      "regex": "^/admin/contributions(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/contributions(?:/)?$"
+    },
+    {
+      "page": "/admin/marketing",
+      "regex": "^/admin/marketing(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/marketing(?:/)?$"
+    },
+    {
+      "page": "/admin/orders",
+      "regex": "^/admin/orders(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/orders(?:/)?$"
+    },
+    {
+      "page": "/admin/ouvrages",
+      "regex": "^/admin/ouvrages(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/ouvrages(?:/)?$"
+    },
+    {
+      "page": "/admin/statistics",
+      "regex": "^/admin/statistics(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/statistics(?:/)?$"
+    },
+    {
+      "page": "/admin/users",
+      "regex": "^/admin/users(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/users(?:/)?$"
+    },
+    {
+      "page": "/commande/annulee",
+      "regex": "^/commande/annulee(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/commande/annulee(?:/)?$"
+    },
+    {
+      "page": "/commande/echec",
+      "regex": "^/commande/echec(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/commande/echec(?:/)?$"
+    },
+    {
+      "page": "/commande/paiement/stripe",
+      "regex": "^/commande/paiement/stripe(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/commande/paiement/stripe(?:/)?$"
+    },
+    {
+      "page": "/commande/paypal/succes",
+      "regex": "^/commande/paypal/succes(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/commande/paypal/succes(?:/)?$"
+    },
+    {
+      "page": "/commande/succes",
+      "regex": "^/commande/succes(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/commande/succes(?:/)?$"
+    },
+    {
+      "page": "/connexion",
+      "regex": "^/connexion(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/connexion(?:/)?$"
+    },
+    {
+      "page": "/inscription",
+      "regex": "^/inscription(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/inscription(?:/)?$"
+    },
+    {
+      "page": "/ma-wishlist",
+      "regex": "^/ma\\-wishlist(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/ma\\-wishlist(?:/)?$"
+    },
+    {
+      "page": "/mes-achats",
+      "regex": "^/mes\\-achats(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/mes\\-achats(?:/)?$"
+    },
+    {
+      "page": "/mes-contributions",
+      "regex": "^/mes\\-contributions(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/mes\\-contributions(?:/)?$"
+    },
+    {
+      "page": "/mon-compte",
+      "regex": "^/mon\\-compte(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/mon\\-compte(?:/)?$"
+    },
+    {
+      "page": "/mot-de-passe-oublie",
+      "regex": "^/mot\\-de\\-passe\\-oublie(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/mot\\-de\\-passe\\-oublie(?:/)?$"
+    },
+    {
+      "page": "/panier",
+      "regex": "^/panier(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/panier(?:/)?$"
+    },
+    {
+      "page": "/reinitialiser-mot-de-passe",
+      "regex": "^/reinitialiser\\-mot\\-de\\-passe(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/reinitialiser\\-mot\\-de\\-passe(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments"
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

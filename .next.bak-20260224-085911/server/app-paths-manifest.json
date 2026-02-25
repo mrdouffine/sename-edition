@@ -1,0 +1,8 @@
+{
+  "/api/orders/route": "app/api/orders/route.js",
+  "/panier/page": "app/panier/page.js",
+  "/connexion/page": "app/connexion/page.js",
+  "/commande/paiement/stripe/page": "app/commande/paiement/stripe/page.js",
+  "/commande/echec/page": "app/commande/echec/page.js",
+  "/commande/annulee/page": "app/commande/annulee/page.js"
+}

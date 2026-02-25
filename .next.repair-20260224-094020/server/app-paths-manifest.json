@@ -1,0 +1,7 @@
+{
+  "/panier/page": "app/panier/page.js",
+  "/page": "app/page.js",
+  "/commande/paiement/stripe/page": "app/commande/paiement/stripe/page.js",
+  "/commande/annulee/page": "app/commande/annulee/page.js",
+  "/ouvrages/[slug]/page": "app/ouvrages/[slug]/page.js"
+}
