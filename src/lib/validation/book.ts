@@ -26,6 +26,22 @@ export function parseCreateBookPayload(input: unknown) {
     throw new ApiError("fundingGoal is required for crowdfunding books", 400);
   }
 
+  const staticReviews = Array.isArray(body.staticReviews)
+    ? body.staticReviews.map((review, index) => {
+        const reviewObj = asObject(review, `staticReviews[${index}]`);
+        if (Array.isArray(body.staticReviews) && body.staticReviews.length > 4) {
+          throw new ApiError("Maximum 4 static reviews allowed", 400);
+        }
+        return {
+          name: asString(reviewObj.name, `staticReviews[${index}].name`, { min: 2, max: 120 }),
+          role: asOptionalString(reviewObj.role, `staticReviews[${index}].role`, 100),
+          content: asString(reviewObj.content, `staticReviews[${index}].content`, { min: 2, max: 1000 }),
+          rating: asNumber(reviewObj.rating, `staticReviews[${index}].rating`, { min: 1, max: 5 }),
+          order: asNumber(reviewObj.order, `staticReviews[${index}].order`, { min: 1 })
+        };
+      })
+    : [];
+
   return {
     title: asString(body.title, "title", { min: 2, max: 200 }),
     subtitle: asOptionalString(body.subtitle, "subtitle", 300),
@@ -52,7 +68,8 @@ export function parseCreateBookPayload(input: unknown) {
       ? body.galleryImages.map((url, index) =>
           asString(url, `galleryImages[${index}]`, { min: 5, max: 1000000 })
         )
-      : []
+      : [],
+    staticReviews
   };
 }
 

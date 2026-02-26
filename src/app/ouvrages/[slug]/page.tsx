@@ -176,7 +176,7 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
           </div>
         </div>
 
-        <BookDetailTabs description={book.description ?? ""} bookId={String(book._id)} />
+        <BookDetailTabs description={book.description ?? ""} bookId={String(book._id)} staticReviews={book.staticReviews} />
       </main>
 
       <Footer />

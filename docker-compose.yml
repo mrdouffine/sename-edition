@@ -1,3 +1,4 @@
+
 services:
   traefik:
     image: traefik:v3.0
@@ -11,11 +12,25 @@ services:
       - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - livreo-network
 
   web:
     build: .
     environment:
       - MONGODB_URI=mongodb://mongo:27017/livreo
+      # Fedapay Configuration
+      - FEDAPAY_API_KEY=sk_sandbox_P4a939neFArRIbtF1Eou8KDn
+      - FEDAPAY_PUBLIC_KEY=pk_sandbox_hwiq2bz-FRNX3GS5LmSv4Vla
+      - FEDAPAY_ACCOUNT_ID=acc_4380133991
+      - FEDAPAY_ENVIRONMENT=sandbox
+      # Configuration proxy pour éviter que Traefik intercepte les appels Fedapay
+      - NO_PROXY=api-sandbox.fedapay.com,api.fedapay.com
+      - no_proxy=api-sandbox.fedapay.com,api.fedapay.com
+      # Cloudinary Configuration
+      - CLOUDINARY_CLOUD_NAME=dpgsskljs
+      - CLOUDINARY_API_KEY=545851351939782
+      - CLOUDINARY_API_SECRET=Ti7PEtCmJnp1XtD51npTqv_ib_E
     depends_on:
       - mongo
     labels:
@@ -23,12 +38,20 @@ services:
       - traefik.http.routers.livreo.rule=Host(`localhost`)
       - traefik.http.routers.livreo.entrypoints=web
       - traefik.http.services.livreo.loadbalancer.server.port=3000
+    networks:
+      - livreo-network
 
   mongo:
     image: mongo:7
     restart: unless-stopped
     volumes:
       - mongo_data:/data/db
+    networks:
+      - livreo-network
+
+networks:
+  livreo-network:
+    driver: bridge
 
 volumes:
   mongo_data:

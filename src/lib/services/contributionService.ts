@@ -69,7 +69,7 @@ export async function createPendingContribution(params: {
   reward?: string;
   contributorName?: string;
   isPublic: boolean;
-  paymentMethod: "stripe" | "paypal";
+  paymentMethod: "paypal";
 }) {
   await connectToDatabase();
 
@@ -124,7 +124,7 @@ async function runWithOptionalTransaction<T>(
 
 export async function markContributionAsPaid(params: {
   contributionId: string;
-  paymentMethod: "stripe" | "paypal";
+  paymentMethod: "paypal";
   transactionId?: string;
   paymentReference?: string;
 }) {

@@ -2,6 +2,14 @@ import mongoose, { Schema, type Document, type Model } from "mongoose";
 
 export type SaleType = "direct" | "preorder" | "crowdfunding";
 
+export interface StaticReview {
+  name: string;
+  role?: string;
+  content: string;
+  rating: number;
+  order: number;
+}
+
 export interface BookDocument extends Document {
   title: string;
   subtitle?: string;
@@ -20,6 +28,7 @@ export interface BookDocument extends Document {
   excerptUrl?: string;
   authorName?: string;
   tags?: string[];
+  staticReviews?: StaticReview[];
   preorderNotifiedAt?: Date;
   campaignEndNotifiedAt?: Date;
 }
@@ -47,6 +56,18 @@ const BookSchema = new Schema<BookDocument>(
     excerptUrl: { type: String },
     authorName: { type: String },
     tags: { type: [String], default: [] },
+    staticReviews: {
+      type: [
+        {
+          name: { type: String, required: true, trim: true, minlength: 2, maxlength: 120 },
+          role: { type: String, trim: true, maxlength: 100 },
+          content: { type: String, required: true, minlength: 2, maxlength: 1000 },
+          rating: { type: Number, required: true, min: 1, max: 5 },
+          order: { type: Number, required: true }
+        }
+      ],
+      default: []
+    },
     preorderNotifiedAt: { type: Date },
     campaignEndNotifiedAt: { type: Date }
   },

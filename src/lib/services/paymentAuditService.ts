@@ -4,7 +4,7 @@ import PaymentTransactionModel from "@/models/PaymentTransaction";
 type RecordPaymentParams = {
   orderId?: string;
   userId?: string;
-  provider: "stripe" | "paypal";
+  provider: "paypal" | "fedapay";
   kind: "payment" | "refund" | "webhook";
   providerEventId?: string;
   providerReference?: string;
@@ -30,10 +30,11 @@ export async function recordPaymentTransaction(params: RecordPaymentParams) {
 }
 
 export async function hasProcessedWebhookEvent(params: {
-  provider: "stripe" | "paypal";
+  provider: "paypal" | "fedapay";
   providerEventId: string;
 }) {
   await connectToDatabase();
+
   const exists = await PaymentTransactionModel.exists({
     provider: params.provider,
     providerEventId: params.providerEventId

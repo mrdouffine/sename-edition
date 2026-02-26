@@ -32,14 +32,21 @@ export async function POST(
       throw new ApiError("Only pending orders can be retried", 409);
     }
 
-    if (order.paymentMethod === "stripe") {
+    if (order.paymentProvider === "stripe") {
       return jsonSuccess({
         provider: "stripe",
         redirectUrl: `/commande/paiement/stripe?orderId=${order._id.toString()}`
       });
     }
 
-    if (order.paymentMethod === "paypal") {
+    if (order.paymentProvider === "fedapay") {
+      return jsonSuccess({
+        provider: "fedapay",
+        redirectUrl: `/commande/paiement/fedapay?orderId=${order._id.toString()}`
+      });
+    }
+
+    if (order.paymentProvider === "paypal") {
       const origin = getTrustedAppOrigin(request.url);
       const paypalOrder = await createPaypalOrder({
         orderId: order._id.toString(),

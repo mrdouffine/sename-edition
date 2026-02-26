@@ -9,7 +9,7 @@ import PromoCodeModel from "@/models/PromoCode";
 import UserModel from "@/models/User";
 import { markOrderAsPaid, markOrderAsRefunded } from "@/lib/services/orderService";
 import { recordPaymentTransaction } from "@/lib/services/paymentAuditService";
-import { refundPaypalCapture, refundStripePayment } from "@/lib/services/paymentService";
+import { refundPaypalCapture } from "@/lib/services/paymentService";
 
 export async function listAdminUsers() {
   await connectToDatabase();
@@ -113,7 +113,7 @@ export async function updateOrderStatus(params: {
   if (params.status === "paid") {
     const finalized = await markOrderAsPaid({
       orderId: params.orderId,
-      paymentMethod: "mobile_money",
+      paymentProvider: "fedapay",
       transactionId: `admin_${Date.now()}`
     });
 
@@ -134,10 +134,10 @@ export async function updateOrderStatus(params: {
       total: 1,
       status: 1,
       saleType: 1,
-      paymentMethod: 1,
       invoiceNumber: 1,
       transactionId: 1,
-      paymentReference: 1
+      paymentReference: 1,
+      paymentMethod: 1
     });
     if (!current) {
       throw new ApiError("Order not found", 404);
@@ -157,24 +157,7 @@ export async function updateOrderStatus(params: {
       throw new ApiError("Only paid orders can be refunded", 409);
     }
 
-    if (current.paymentMethod === "stripe") {
-      if (!current.transactionId) {
-        throw new ApiError("Missing Stripe payment intent", 409);
-      }
-      const refund = await refundStripePayment({ paymentIntentId: current.transactionId });
-      const refundId = typeof refund.id === "string" ? refund.id : undefined;
-      await markOrderAsRefunded({ orderId: current._id.toString(), paymentReference: refundId });
-      await recordPaymentTransaction({
-        orderId: current._id.toString(),
-        userId: current.user.toString(),
-        provider: "stripe",
-        kind: "refund",
-        providerReference: refundId ?? current.transactionId,
-        status: "succeeded",
-        amount: current.total,
-        currency: "EUR"
-      });
-    } else if (current.paymentMethod === "paypal") {
+    if (current.paymentMethod === "paypal") {
       if (!current.transactionId) {
         throw new ApiError("Missing PayPal capture ID", 409);
       }
@@ -246,7 +229,7 @@ export async function updateOrderStatus(params: {
     total: number;
     status: "pending" | "paid" | "cancelled" | "refunded";
     saleType: "direct" | "preorder";
-    paymentMethod: "stripe" | "paypal" | "mobile_money";
+    paymentMethod: "paypal" | "mobile_money";
     invoiceNumber: string;
   };
 

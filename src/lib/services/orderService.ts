@@ -47,7 +47,8 @@ export async function createOrder(params: {
   userId: string;
   items: Array<{ bookId: string; quantity: number }>;
   saleType: "direct" | "preorder";
-  paymentMethod: "stripe" | "paypal" | "mobile_money";
+  paymentProvider: "fedapay" | "paypal";
+  email: string;
   promoCode?: string;
 }) {
   await connectToDatabase();
@@ -93,9 +94,10 @@ export async function createOrder(params: {
       user: params.userId,
       items,
       total,
+      email: params.email,
       status: "pending",
       saleType: params.saleType,
-      paymentMethod: params.paymentMethod,
+      paymentProvider: params.paymentProvider,
       promoCode: params.promoCode,
       invoiceNumber,
       createdAt: new Date()
@@ -108,7 +110,7 @@ export async function createOrder(params: {
 
 export async function markOrderAsPaid(params: {
   orderId: string;
-  paymentMethod: "stripe" | "paypal" | "mobile_money";
+  paymentProvider: "fedapay" | "paypal";
   transactionId?: string;
   paymentReference?: string;
 }) {
@@ -168,9 +170,9 @@ export async function markOrderAsPaid(params: {
       invoiceNumber: order.invoiceNumber,
       orderId: effectiveTransactionId,
       customerName: user.name,
-      customerEmail: user.email,
+      customerEmail: order.email,
       saleType: order.saleType,
-      paymentMethod: params.paymentMethod,
+      paymentMethod: params.paymentProvider,
       paymentReference: params.paymentReference,
       total: order.total,
       createdAt,
@@ -178,7 +180,7 @@ export async function markOrderAsPaid(params: {
     });
 
     order.status = "paid";
-    order.paymentMethod = params.paymentMethod;
+    order.paymentProvider = params.paymentProvider;
     order.transactionId = effectiveTransactionId;
     order.paymentReference = params.paymentReference;
     order.paidAt = createdAt;

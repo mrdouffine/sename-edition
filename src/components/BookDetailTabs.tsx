@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 import BookCommentsSection from "@/components/BookCommentsSection";
+import { type StaticReview } from "@/models/Book";
 
 type BookDetailTabsProps = {
   description: string;
   bookId: string;
+  staticReviews?: StaticReview[];
 };
 
-export default function BookDetailTabs({ description, bookId }: BookDetailTabsProps) {
+export default function BookDetailTabs({ description, bookId, staticReviews = [] }: BookDetailTabsProps) {
   const [tab, setTab] = useState<"description" | "avis">("avis");
 
   const baseClass =
@@ -42,10 +44,10 @@ export default function BookDetailTabs({ description, bookId }: BookDetailTabsPr
           <div className="max-w-3xl text-[clamp(1rem,1.4vw,1.15rem)] leading-relaxed text-[#181810]">
             <p>{description}</p>
           </div>
-          <BookCommentsSection bookId={bookId} mode="formOnly" />
+          <BookCommentsSection bookId={bookId} mode="formOnly" staticReviews={staticReviews} />
         </div>
       ) : (
-        <BookCommentsSection bookId={bookId} mode="full" />
+        <BookCommentsSection bookId={bookId} mode="full" staticReviews={staticReviews} />
       )}
     </div>
   );

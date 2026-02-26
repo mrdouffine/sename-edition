@@ -23,18 +23,25 @@ export default function PanierPage() {
   const isAuthorized = useRequireAuth();
   const router = useRouter();
   const [items, setItems] = useState<CartItem[]>(() => getCartItems());
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState<string | null>(null);
   const [promo, setPromo] = useState("");
   const [promoApplied, setPromoApplied] = useState(false);
   const [promoCode, setPromoCode] = useState<string | null>(null);
   const [promoDiscount, setPromoDiscount] = useState(0);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [checkoutMessage, setCheckoutMessage] = useState<string | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<"stripe" | "paypal">("stripe");
+  const [paymentProvider, setPaymentProvider] = useState<"fedapay" | "paypal">("fedapay");
   const [lastSavedCartSignature, setLastSavedCartSignature] = useState<string | null>(null);
 
   const subtotal = useMemo(() => getCartSubtotal(items), [items]);
   const discount = promoApplied ? promoDiscount : 0;
   const total = Math.max(0, subtotal - discount);
+
+  function isValidEmail(emailToCheck: string) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailToCheck.trim().length > 0 && emailRegex.test(emailToCheck.trim());
+  }
 
   function updateQuantity(bookId: string, delta: number, current: number) {
     const nextQuantity = Math.max(1, current + delta);
@@ -87,8 +94,18 @@ export default function PanierPage() {
   async function checkout() {
     setCheckoutLoading(true);
     setCheckoutMessage(null);
+    setEmailError(null);
 
     try {
+      // Validate email
+      const trimmedEmail = email.trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
+        setEmailError("Veuillez entrer une adresse email valide.");
+        setCheckoutLoading(false);
+        return;
+      }
+
       const session = getSessionFromToken();
       if (!session) {
         router.push("/connexion?next=%2Fpanier&from=cart");
@@ -129,7 +146,8 @@ export default function PanierPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           saleType: group.saleType,
-          paymentMethod,
+          paymentProvider,
+          email: trimmedEmail,
           promoCode: promoCode ?? undefined,
           items: group.items.map((item) => ({
             bookId: item.bookId,
@@ -154,8 +172,8 @@ export default function PanierPage() {
       }
 
       const orderId = createOrderPayload.data._id;
-      if (paymentMethod === "stripe") {
-        router.push(`/commande/paiement/stripe?orderId=${orderId}`);
+      if (paymentProvider === "fedapay") {
+        router.push(`/commande/paiement/fedapay?orderId=${orderId}`);
         return;
       }
 
@@ -182,6 +200,14 @@ export default function PanierPage() {
       setCheckoutLoading(false);
     }
   }
+
+  // Initialize email from session
+  useEffect(() => {
+    const session = getSessionFromToken();
+    if (session?.email) {
+      setEmail(session.email);
+    }
+  }, []);
 
   useEffect(() => {
     if (items.length === 0 || checkoutLoading) {
@@ -309,24 +335,25 @@ export default function PanierPage() {
                     <p className="text-lg font-semibold sm:text-2xl md:text-3xl">{item.price.toFixed(2)} €</p>
 
                     <div className="inline-flex w-fit items-center gap-4 rounded-lg border border-[#ddd8c4] px-3 py-2 text-base sm:text-xl">
-                      <button
-                        onClick={() => updateQuantity(item.bookId, -1, item.quantity)}
-                        className="font-bold"
-                      >
-                        -
-                      </button>
-                      <span className="min-w-6 text-center font-semibold">{item.quantity}</span>
-                      <button
-                        onClick={() => updateQuantity(item.bookId, 1, item.quantity)}
-                        className="font-bold"
-                      >
-                        +
-                      </button>
+                    <button
+                    onClick={() => updateQuantity(item.bookId, -1, item.quantity)}
+                    className="font-bold"
+                    >
+                    -
+                    </button>
+                    <span className="min-w-6 text-center font-semibold">{item.quantity}</span>
+                    <button
+                    onClick={() => updateQuantity(item.bookId, 1, item.quantity)}
+                    className="font-bold"
+                    >
+                    +
+                    </button>
                     </div>
 
                     <p className="text-lg font-semibold sm:text-2xl md:text-3xl">
                       {(item.price * item.quantity).toFixed(2)} €
                     </p>
++
 
                     <button
                       onClick={() => onRemove(item.bookId)}
@@ -353,6 +380,22 @@ export default function PanierPage() {
 
           <aside className="rounded-xl border border-[#e3e0d0] bg-white p-5 sm:p-6">
             <h2 className="mb-6 text-[clamp(1.6rem,2.6vw,2.4rem)] font-bold">Résumé de commande</h2>
+
+            <label className="mb-2 block text-sm font-bold uppercase tracking-wider text-[#8d895e]">
+              Votre email
+            </label>
+            <div className="mb-5">
+              <input
+                type="email"
+                className="w-full rounded-lg border border-[#ddd8c4] bg-[#f8f8f5] px-3 py-2"
+                placeholder="votre@email.com"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+              />
+              {emailError ? (
+                <p className="mt-2 text-xs text-red-600">{emailError}</p>
+              ) : null}
+            </div>
 
             <label className="mb-2 block text-sm font-bold uppercase tracking-wider text-[#8d895e]">
               Code promo
@@ -394,7 +437,7 @@ export default function PanierPage() {
 
             <button
               className="mb-4 flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-5 py-3 text-base font-bold disabled:opacity-60 sm:py-4 sm:text-lg md:text-xl"
-              disabled={items.length === 0 || checkoutLoading}
+              disabled={items.length === 0 || checkoutLoading || !isValidEmail(email)}
               onClick={() => void checkout()}
             >
               Procéder au paiement
@@ -408,18 +451,18 @@ export default function PanierPage() {
                 <label className="inline-flex items-center gap-2">
                   <input
                     type="radio"
-                    name="paymentMethod"
-                    checked={paymentMethod === "stripe"}
-                    onChange={() => setPaymentMethod("stripe")}
+                    name="paymentProvider"
+                    checked={paymentProvider === "fedapay"}
+                    onChange={() => setPaymentProvider("fedapay")}
                   />
-                  Stripe
+                  Paiement par Carte
                 </label>
                 <label className="inline-flex items-center gap-2">
                   <input
                     type="radio"
-                    name="paymentMethod"
-                    checked={paymentMethod === "paypal"}
-                    onChange={() => setPaymentMethod("paypal")}
+                    name="paymentProvider"
+                    checked={paymentProvider === "paypal"}
+                    onChange={() => setPaymentProvider("paypal")}
                   />
                   PayPal
                 </label>

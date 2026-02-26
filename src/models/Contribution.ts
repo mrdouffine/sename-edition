@@ -8,7 +8,7 @@ export interface ContributionDocument extends Document {
   contributorName?: string;
   isPublic: boolean;
   status: "pending" | "paid" | "refunded";
-  paymentMethod?: "stripe" | "paypal" | "mobile_money";
+  paymentMethod?: "paypal" | "mobile_money";
   paymentReference?: string;
   transactionId?: string;
 }
@@ -28,7 +28,7 @@ const ContributionSchema = new Schema<ContributionDocument>(
     },
     paymentMethod: {
       type: String,
-      enum: ["stripe", "paypal", "mobile_money"]
+      enum: ["paypal", "mobile_money"]
     },
     paymentReference: { type: String },
     transactionId: { type: String }

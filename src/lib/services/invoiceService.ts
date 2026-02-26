@@ -16,8 +16,7 @@ function dateFr(value: Date) {
   }).format(value);
 }
 
-function paymentMethodLabel(method: "stripe" | "paypal" | "mobile_money") {
-  if (method === "stripe") return "Stripe";
+function paymentMethodLabel(method: "paypal" | "mobile_money") {
   if (method === "paypal") return "PayPal";
   return "Mobile Money";
 }
@@ -111,7 +110,7 @@ export function generateInvoicePdf(params: {
   customerName: string;
   customerEmail: string;
   saleType: "direct" | "preorder";
-  paymentMethod: "stripe" | "paypal" | "mobile_money";
+  paymentMethod: "paypal" | "mobile_money";
   paymentReference?: string;
   total: number;
   createdAt: Date;
@@ -124,11 +123,9 @@ export function generateInvoicePdf(params: {
   const commands: string[] = [];
   const paymentMethod = paymentMethodLabel(params.paymentMethod);
   const paymentLine =
-    params.paymentMethod === "stripe"
-      ? "Stripe (Paiement securise)"
-      : params.paymentMethod === "paypal"
-        ? "PayPal (Paiement securise)"
-        : "Mobile Money";
+    params.paymentMethod === "paypal"
+      ? "PayPal (Paiement securise)"
+      : "Mobile Money";
 
   // Page card
   commands.push(drawRect(35, 70, 525, 700, { fill: [0.98, 0.98, 0.98], stroke: [0.88, 0.88, 0.9], lineWidth: 1 }));

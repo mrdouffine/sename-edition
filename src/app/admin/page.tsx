@@ -160,7 +160,8 @@ export default function AdminPage() {
     coverVariant: "standard" as "featured" | "standard",
     stock: "",
     fundingGoal: "",
-    fundingRaised: "0"
+    fundingRaised: "0",
+    staticReviews: [] as Array<{ name: string; role?: string; content: string; rating: number; order: number }>
   });
   const [newBookSlugEdited, setNewBookSlugEdited] = useState(false);
   const [paymentsProviderFilter, setPaymentsProviderFilter] = useState<"all" | "stripe" | "paypal">("all");
@@ -697,6 +698,10 @@ export default function AdminPage() {
       body.fundingRaised = Number(newBook.fundingRaised);
     }
 
+    if (newBook.staticReviews.length > 0) {
+      body.staticReviews = newBook.staticReviews;
+    }
+
     const response = await fetchWithAuth("/api/books", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -722,7 +727,8 @@ export default function AdminPage() {
       coverVariant: "standard",
       stock: "",
       fundingGoal: "",
-      fundingRaised: "0"
+      fundingRaised: "0",
+      staticReviews: []
     });
     setNewBookSlugEdited(false);
 
@@ -1178,6 +1184,108 @@ export default function AdminPage() {
                       <input className="rounded border border-[#d8d7d0] px-3 py-2" placeholder="Stock (achat direct/precommande)" type="number" min={0} required={newBook.saleType !== "crowdfunding"} value={newBook.stock} onChange={(event) => setNewBook((prev) => ({ ...prev, stock: event.target.value }))} />
                       <input className="rounded border border-[#d8d7d0] px-3 py-2" placeholder="Objectif financement (crowdfunding)" type="number" min={0} required={newBook.saleType === "crowdfunding"} value={newBook.fundingGoal} onChange={(event) => setNewBook((prev) => ({ ...prev, fundingGoal: event.target.value }))} />
                       <input className="rounded border border-[#d8d7d0] px-3 py-2" placeholder="Montant collecte (suivi)" type="number" min={0} value={newBook.fundingRaised} onChange={(event) => setNewBook((prev) => ({ ...prev, fundingRaised: event.target.value }))} />
+
+                      <div className="md:col-span-2 space-y-3 rounded-lg border border-[#d8d7d0] bg-[#f8f8f5] p-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-bold">Avis statiques ({newBook.staticReviews.length}/4 max)</h3>
+                          {newBook.staticReviews.length < 4 && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setNewBook((prev) => ({
+                                  ...prev,
+                                  staticReviews: [
+                                    ...prev.staticReviews,
+                                    { name: "", role: "", content: "", rating: 5, order: prev.staticReviews.length + 1 }
+                                  ]
+                                }));
+                              }}
+                              className="text-xs bg-primary px-2 py-1 rounded font-semibold text-black"
+                            >
+                              + Ajouter
+                            </button>
+                          )}
+                        </div>
+
+                        {newBook.staticReviews.map((review, idx) => (
+                          <div key={idx} className="bg-white p-3 rounded border border-[#d8d7d0] space-y-2">
+                            <div className="grid grid-cols-2 gap-2">
+                              <input
+                                className="rounded border border-[#d8d7d0] px-2 py-1 text-sm"
+                                placeholder="Nom"
+                                value={review.name}
+                                onChange={(e) => {
+                                  setNewBook((prev) => ({
+                                    ...prev,
+                                    staticReviews: prev.staticReviews.map((r, i) =>
+                                      i === idx ? { ...r, name: e.target.value } : r
+                                    )
+                                  }));
+                                }}
+                              />
+                              <input
+                                className="rounded border border-[#d8d7d0] px-2 py-1 text-sm"
+                                placeholder="Rôle (optionnel)"
+                                value={review.role || ""}
+                                onChange={(e) => {
+                                  setNewBook((prev) => ({
+                                    ...prev,
+                                    staticReviews: prev.staticReviews.map((r, i) =>
+                                      i === idx ? { ...r, role: e.target.value } : r
+                                    )
+                                  }));
+                                }}
+                              />
+                            </div>
+                            <select
+                              className="rounded border border-[#d8d7d0] px-2 py-1 text-sm w-full"
+                              value={review.rating}
+                              onChange={(e) => {
+                                setNewBook((prev) => ({
+                                  ...prev,
+                                  staticReviews: prev.staticReviews.map((r, i) =>
+                                    i === idx ? { ...r, rating: Number(e.target.value) } : r
+                                  )
+                                }));
+                              }}
+                            >
+                              <option value={1}>★☆☆☆☆ (1 étoile)</option>
+                              <option value={2}>★★☆☆☆ (2 étoiles)</option>
+                              <option value={3}>★★★☆☆ (3 étoiles)</option>
+                              <option value={4}>★★★★☆ (4 étoiles)</option>
+                              <option value={5} selected>★★★★★ (5 étoiles)</option>
+                            </select>
+                            <textarea
+                              className="rounded border border-[#d8d7d0] px-2 py-1 text-sm w-full"
+                              placeholder="Texte de l'avis (min 2, max 1000)"
+                              rows={2}
+                              maxLength={1000}
+                              value={review.content}
+                              onChange={(e) => {
+                                setNewBook((prev) => ({
+                                  ...prev,
+                                  staticReviews: prev.staticReviews.map((r, i) =>
+                                    i === idx ? { ...r, content: e.target.value } : r
+                                  )
+                                }));
+                              }}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setNewBook((prev) => ({
+                                  ...prev,
+                                  staticReviews: prev.staticReviews.filter((_, i) => i !== idx).map((r, i) => ({ ...r, order: i + 1 }))
+                                }));
+                              }}
+                              className="text-xs text-red-700 font-semibold"
+                            >
+                              Supprimer
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+
                       <button className="rounded-lg bg-primary px-4 py-2 text-sm font-bold uppercase md:col-span-2">Créer ouvrage</button>
                     </form>
                   </Panel>

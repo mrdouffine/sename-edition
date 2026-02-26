@@ -3,7 +3,7 @@ import mongoose, { Schema, type Document, type Model } from "mongoose";
 export interface PaymentTransactionDocument extends Document {
   orderId?: mongoose.Types.ObjectId;
   userId?: mongoose.Types.ObjectId;
-  provider: "stripe" | "paypal";
+  provider: "paypal" | "fedapay";
   kind: "payment" | "refund" | "webhook";
   providerEventId?: string;
   providerReference?: string;
@@ -19,7 +19,7 @@ const PaymentTransactionSchema = new Schema<PaymentTransactionDocument>(
     userId: { type: Schema.Types.ObjectId, ref: "User" },
     provider: {
       type: String,
-      enum: ["stripe", "paypal"],
+      enum: ["paypal", "fedapay"],
       required: true
     },
     kind: {

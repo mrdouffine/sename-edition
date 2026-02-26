@@ -62,6 +62,24 @@ export function parseDeleteBookPayload(input: unknown) {
 export function parseUpdateBookPayload(input: unknown) {
   const body = asObject(input);
 
+  const staticReviews = body.staticReviews === undefined
+    ? undefined
+    : Array.isArray(body.staticReviews)
+    ? body.staticReviews.map((review, index) => {
+        const reviewObj = asObject(review, `staticReviews[${index}]`);
+        if (Array.isArray(body.staticReviews) && body.staticReviews.length > 4) {
+          throw new ApiError("Maximum 4 static reviews allowed", 400);
+        }
+        return {
+          name: asString(reviewObj.name, `staticReviews[${index}].name`, { min: 2, max: 120 }),
+          role: asOptionalString(reviewObj.role, `staticReviews[${index}].role`, 100),
+          content: asString(reviewObj.content, `staticReviews[${index}].content`, { min: 2, max: 1000 }),
+          rating: asNumber(reviewObj.rating, `staticReviews[${index}].rating`, { min: 1, max: 5 }),
+          order: asNumber(reviewObj.order, `staticReviews[${index}].order`, { min: 1 })
+        };
+      })
+    : [];
+
   return {
     bookId: asObjectId(body.bookId, "bookId"),
     title: asOptionalString(body.title, "title", 200),
@@ -83,7 +101,8 @@ export function parseUpdateBookPayload(input: unknown) {
     fundingRaised:
       body.fundingRaised === undefined
         ? undefined
-        : asNumber(body.fundingRaised, "fundingRaised", { min: 0 })
+        : asNumber(body.fundingRaised, "fundingRaised", { min: 0 }),
+    staticReviews
   };
 }
 

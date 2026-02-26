@@ -10,9 +10,10 @@ export interface OrderDocument extends Document {
   user: mongoose.Types.ObjectId;
   items: OrderItem[];
   total: number;
+  email: string;
   status: "pending" | "paid" | "cancelled" | "refunded";
   saleType: "direct" | "preorder";
-  paymentMethod: "stripe" | "paypal" | "mobile_money";
+  paymentProvider: "fedapay" | "paypal";
   transactionId?: string;
   paymentReference?: string;
   promoCode?: string;
@@ -35,6 +36,7 @@ const OrderSchema = new Schema<OrderDocument>(
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     items: { type: [OrderItemSchema], default: [] },
     total: { type: Number, required: true, min: 0 },
+    email: { type: String, required: true, match: /.+@.+\..+/ },
     status: {
       type: String,
       enum: ["pending", "paid", "cancelled", "refunded"],
@@ -45,9 +47,9 @@ const OrderSchema = new Schema<OrderDocument>(
       enum: ["direct", "preorder"],
       required: true
     },
-    paymentMethod: {
+    paymentProvider: {
       type: String,
-      enum: ["stripe", "paypal", "mobile_money"],
+      enum: ["fedapay", "paypal"],
       required: true
     },
     transactionId: { type: String },

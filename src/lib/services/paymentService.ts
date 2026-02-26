@@ -1,5 +1,8 @@
 import { ApiError } from "@/lib/api";
 import { createHmac, timingSafeEqual } from "node:crypto";
+import http from "node:http";
+import https from "node:https";
+import { URL } from "node:url";
 
 function normalizeAmountToCents(amount: number) {
   return Math.round(amount * 100);
@@ -35,149 +38,6 @@ function getRequiredEnv(name: string) {
   return value;
 }
 
-async function stripeRequest(path: string, body?: URLSearchParams) {
-  const secretKey = getRequiredEnv("STRIPE_SECRET_KEY");
-  const response = await fetch(`https://api.stripe.com${path}`, {
-    method: body ? "POST" : "GET",
-    headers: {
-      Authorization: `Bearer ${secretKey}`,
-      ...(body ? { "Content-Type": "application/x-www-form-urlencoded" } : {})
-    },
-    body: body?.toString()
-  });
-
-  if (!response.ok) {
-    throw new ApiError("Stripe provider error", 502);
-  }
-
-  return response.json() as Promise<Record<string, unknown>>;
-}
-
-type StripeRequestOptions = {
-  method?: "GET" | "POST";
-  body?: URLSearchParams;
-};
-
-async function stripeRequestWithMethod(path: string, options: StripeRequestOptions = {}) {
-  const secretKey = getRequiredEnv("STRIPE_SECRET_KEY");
-  const method = options.method ?? (options.body ? "POST" : "GET");
-  const response = await fetch(`https://api.stripe.com${path}`, {
-    method,
-    headers: {
-      Authorization: `Bearer ${secretKey}`,
-      ...(options.body ? { "Content-Type": "application/x-www-form-urlencoded" } : {})
-    },
-    body: options.body?.toString()
-  });
-
-  if (!response.ok) {
-    throw new ApiError("Stripe provider error", 502);
-  }
-
-  return response.json() as Promise<Record<string, unknown>>;
-}
-
-export async function createStripeEmbeddedCheckoutSession(params: {
-  orderId: string;
-  email: string;
-  successUrl: string;
-  lineItems: Array<{ name: string; unitAmountCents: number; quantity: number }>;
-}) {
-  const form = new URLSearchParams();
-  form.set("mode", "payment");
-  form.set("ui_mode", "embedded");
-  form.set("client_reference_id", params.orderId);
-  form.set("customer_email", params.email);
-  form.set("return_url", `${params.successUrl}?session_id={CHECKOUT_SESSION_ID}`);
-  form.set("metadata[orderId]", params.orderId);
-
-  params.lineItems.forEach((item, index) => {
-    form.set(`line_items[${index}][price_data][currency]`, "eur");
-    form.set(`line_items[${index}][price_data][product_data][name]`, item.name);
-    form.set(`line_items[${index}][price_data][unit_amount]`, String(item.unitAmountCents));
-    form.set(`line_items[${index}][quantity]`, String(item.quantity));
-  });
-
-  const totalAmountCents = params.lineItems.reduce((sum, item) => sum + item.unitAmountCents * item.quantity, 0);
-
-  const payload = await stripeRequest("/v1/checkout/sessions", form);
-  const clientSecret = payload.client_secret;
-  const sessionId = payload.id;
-
-  if (typeof clientSecret !== "string" || typeof sessionId !== "string") {
-    throw new ApiError("Invalid Stripe session response", 502);
-  }
-
-  return { clientSecret, sessionId, totalAmountCents };
-}
-
-export async function retrieveStripeCheckoutSession(sessionId: string) {
-  return stripeRequest(`/v1/checkout/sessions/${encodeURIComponent(sessionId)}`);
-}
-
-function parseStripeSignatureHeader(value: string) {
-  const parts = value.split(",");
-  const out: Record<string, string[]> = {};
-  for (const part of parts) {
-    const [k, v] = part.split("=");
-    if (!k || !v) continue;
-    const key = k.trim();
-    const val = v.trim();
-    out[key] = [...(out[key] ?? []), val];
-  }
-  return out;
-}
-
-export function verifyStripeWebhookSignature(params: {
-  rawBody: string;
-  signatureHeader: string | null;
-}) {
-  const secret = getRequiredEnv("STRIPE_WEBHOOK_SECRET");
-  if (!params.signatureHeader) {
-    throw new ApiError("Missing Stripe signature", 400);
-  }
-
-  const parsed = parseStripeSignatureHeader(params.signatureHeader);
-  const timestamp = parsed.t?.[0];
-  const signatures = parsed.v1 ?? [];
-  if (!timestamp || signatures.length === 0) {
-    throw new ApiError("Invalid Stripe signature header", 400);
-  }
-
-  const payloadToSign = `${timestamp}.${params.rawBody}`;
-  const expected = createHmac("sha256", secret).update(payloadToSign).digest("hex");
-  const expectedBuffer = Buffer.from(expected, "utf8");
-  const match = signatures.some((sig) => {
-    const provided = Buffer.from(sig, "utf8");
-    return provided.length === expectedBuffer.length && timingSafeEqual(provided, expectedBuffer);
-  });
-
-  if (!match) {
-    throw new ApiError("Invalid Stripe signature", 400);
-  }
-
-  const now = Math.floor(Date.now() / 1000);
-  const ts = Number(timestamp);
-  if (!Number.isFinite(ts) || Math.abs(now - ts) > 300) {
-    throw new ApiError("Expired Stripe signature", 400);
-  }
-}
-
-export async function refundStripePayment(params: {
-  paymentIntentId: string;
-  amountCents?: number;
-}) {
-  const form = new URLSearchParams();
-  form.set("payment_intent", params.paymentIntentId);
-  if (typeof params.amountCents === "number") {
-    form.set("amount", String(params.amountCents));
-  }
-
-  return stripeRequestWithMethod("/v1/refunds", {
-    method: "POST",
-    body: form
-  });
-}
 
 async function getPaypalAccessToken() {
   const clientId = getRequiredEnv("PAYPAL_CLIENT_ID");
@@ -365,4 +225,249 @@ export function assertAmountCentsMatch(expectedTotal: number, providerAmountCent
   if (providerAmountCents !== expectedCents) {
     throw new ApiError("Payment amount mismatch", 409);
   }
+}
+
+/**
+ * FedaPay Integration
+ * - If FEDAPAY_PRIVATE_KEY and FEDAPAY_PUBLIC_KEY are set: use private/public key auth
+ * - Else if FEDAPAY_AUTH_TOKEN is set: use token auth (legacy flow)
+ * - Else: use API key on each request via header "FEDAPAY-API-KEY"
+ * - account_id is optional; if absent, it's omitted
+ */
+
+async function getFedapayAuth() {
+  const environment = process.env.FEDAPAY_ENVIRONMENT ?? "sandbox";
+  const apiBase = environment === "production" ? "https://api.fedapay.com" : "https://api-sandbox.fedapay.com";
+  
+  // Use simple API key authentication (most reliable method)
+  const apiKey = process.env.FEDAPAY_API_KEY;
+  
+  if (apiKey) {
+    return { apiBase, token: null as string | null, apiKey, privateKey: null, publicKey: null };
+  }
+  
+  // If no API key, try private/public key authentication
+  const privateKey = process.env.FEDAPAY_PRIVATE_KEY;
+  const publicKey = process.env.FEDAPAY_PUBLIC_KEY;
+  
+  if (privateKey && publicKey) {
+    return { apiBase, token: null as string | null, apiKey: null, privateKey, publicKey };
+  }
+  
+  // Fall back to legacy token authentication
+  const authToken = process.env.FEDAPAY_AUTH_TOKEN;
+  if (authToken) {
+    const legacyApiKey = getRequiredEnv("FEDAPAY_API_KEY");
+    const response = await fetchWithProxy(`${apiBase}/v1/auth`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "FEDAPAY-API-KEY": legacyApiKey
+      },
+      body: JSON.stringify({ auth_token: authToken })
+    });
+
+    if (!response.ok) {
+      throw new ApiError("Fedapay provider error", 502);
+    }
+
+    const payload = (await response.json()) as { token?: string };
+    if (!payload.token) {
+      throw new ApiError("Invalid Fedapay token response", 502);
+    }
+
+    return { apiBase, token: payload.token, apiKey: legacyApiKey };
+  }
+  
+  // No valid authentication method found
+  throw new ApiError("No valid Fedapay authentication method configured", 500);
+}
+
+// Fetch function that bypasses proxy for Fedapay API calls using Node.js http/https
+function fetchWithProxy(url: string, options: RequestInit = {}): Promise<Response> {
+  return new Promise((resolve, reject) => {
+    const parsedUrl = new URL(url);
+    const isHttps = parsedUrl.protocol === "https:";
+    const client = isHttps ? https : http;
+
+    const requestOptions = {
+      hostname: parsedUrl.hostname,
+      port: parsedUrl.port || (isHttps ? 443 : 80),
+      path: parsedUrl.pathname + parsedUrl.search,
+      method: options.method || "GET",
+      headers: options.headers as Record<string, string> || {},
+      // Disable proxy by using agent without proxy
+      agent: isHttps 
+        ? new https.Agent({ 
+            rejectUnauthorized: true,
+            keepAlive: true 
+          })
+        : new http.Agent({ 
+            keepAlive: true 
+          }),
+    };
+
+    const req = client.request(requestOptions, (res) => {
+      const chunks: Buffer[] = [];
+      
+      res.on("data", (chunk: Buffer) => {
+        chunks.push(chunk);
+      });
+      
+      res.on("end", () => {
+        const body = Buffer.concat(chunks).toString("utf-8");
+        
+        // Create a mock Response object
+        const response = new Response(body, {
+          status: res.statusCode || 500,
+          statusText: res.statusMessage || "",
+          headers: new Headers(res.headers as Record<string, string>),
+        });
+        
+        resolve(response);
+      });
+    });
+
+    req.on("error", (error) => {
+      reject(new ApiError(`Network error: ${error.message}`, 502));
+    });
+
+    // Write body if present
+    if (options.body) {
+      req.write(options.body);
+    }
+
+    req.end();
+  });
+}
+
+export async function createFedapayTransaction(params: {
+  orderId: string;
+  email: string;
+  amount: number;
+  currency: string;
+  description: string;
+  callbackUrl: string;
+  returnUrl?: string;
+}) {
+  const { token, apiBase, apiKey, privateKey, publicKey } = await getFedapayAuth();
+  const accountId = process.env.FEDAPAY_ACCOUNT_ID;
+
+  if (params.amount <= 0 || !Number.isFinite(params.amount)) {
+    throw new ApiError("Invalid transaction amount", 400);
+  }
+
+  const body: Record<string, unknown> = {
+    amount: Math.round(params.amount * 100),
+    currency: params.currency,
+    description: params.description,
+    customer_email: params.email,
+    reference: params.orderId,
+    callback_url: params.callbackUrl,
+    metadata: { orderId: params.orderId },
+    return_url: params.returnUrl
+  };
+
+  if (accountId) body.account_id = accountId;
+
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  
+  // Use private/public key authentication if available
+  if (privateKey && publicKey) {
+    headers["FEDAPAY-PRIVATE-KEY"] = privateKey;
+    headers["FEDAPAY-PUBLIC-KEY"] = publicKey;
+  } else if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  } else {
+    headers["FEDAPAY-API-KEY"] = apiKey!;
+  }
+
+  const response = await fetchWithProxy(`${apiBase}/v1/transactions`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body)
+  });
+
+  // Get response text first to handle non-JSON responses
+  const responseText = await response.text();
+  
+  if (!response.ok) {
+    let errorData: Record<string, unknown>;
+    try {
+      errorData = JSON.parse(responseText);
+    } catch {
+      throw new ApiError(`Fedapay error (${response.status}): ${responseText.substring(0, 200)}`, 502);
+    }
+    throw new ApiError(`Fedapay error: ${JSON.stringify(errorData)}`, 502);
+  }
+
+  let payload: {
+    id?: string;
+    token?: string;
+    transaction_link?: { url?: string };
+  };
+  
+  try {
+    payload = JSON.parse(responseText);
+  } catch {
+    throw new ApiError("Invalid Fedapay transaction response", 502);
+  }
+
+  if (!payload.id) {
+    throw new ApiError("Invalid Fedapay transaction response", 502);
+  }
+
+  return {
+    transactionId: payload.id,
+    token: payload.token ?? payload.id,
+    paymentUrl: payload.transaction_link?.url ?? `${apiBase}/transactions/${payload.id}`
+  };
+}
+
+export function verifyFedapayWebhookSignature(params: {
+  rawBody: string;
+  signature: string | null;
+  secret?: string;
+}) {
+  const secret = params.secret ?? getRequiredEnv("FEDAPAY_WEBHOOK_SECRET");
+
+  if (!params.signature) {
+    throw new ApiError("Missing Fedapay signature", 400);
+  }
+
+  const expectedSignature = createHmac("sha256", secret).update(params.rawBody).digest("hex");
+  const expectedBuffer = Buffer.from(expectedSignature, "utf8");
+  const providedBuffer = Buffer.from(params.signature, "utf8");
+
+  const isValid = providedBuffer.length === expectedBuffer.length && timingSafeEqual(providedBuffer, expectedBuffer);
+  if (!isValid) {
+    throw new ApiError("Invalid Fedapay signature", 400);
+  }
+}
+
+export async function getFedapayTransactionStatus(transactionId: string) {
+  const { token, apiBase, apiKey, privateKey, publicKey } = await getFedapayAuth();
+
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  
+  // Use private/public key authentication if available
+  if (privateKey && publicKey) {
+    headers["FEDAPAY-PRIVATE-KEY"] = privateKey;
+    headers["FEDAPAY-PUBLIC-KEY"] = publicKey;
+  } else if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  } else {
+    headers["FEDAPAY-API-KEY"] = apiKey!;
+  }
+
+  const response = await fetchWithProxy(`${apiBase}/v1/transactions/${encodeURIComponent(transactionId)}`, {
+    method: "GET",
+    headers
+  });
+
+  if (!response.ok) {
+    throw new ApiError("Fedapay provider error", 502);
+  }
+
+  return response.json() as Promise<Record<string, unknown>>;
 }

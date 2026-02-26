@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     if (order.status !== "pending") {
       throw new ApiError("Only pending orders can be paid", 409);
     }
-    if (order.paymentMethod !== "paypal") {
+    if (order.paymentProvider !== "paypal") {
       throw new ApiError("Order payment method must be paypal", 409);
     }
     if (!Number.isFinite(order.total) || order.total <= 0) {
