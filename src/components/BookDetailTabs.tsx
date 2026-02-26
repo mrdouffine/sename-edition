@@ -13,14 +13,13 @@ type BookDetailTabsProps = {
 export default function BookDetailTabs({ description, bookId, staticReviews = [] }: BookDetailTabsProps) {
   const [tab, setTab] = useState<"description" | "avis">("avis");
 
-  const baseClass =
-    "relative pb-2 text-sm font-black uppercase tracking-widest transition-all";
-  const activeClass = "text-[#181810] after:absolute after:bottom-0 after:left-0 after:h-1 after:w-full after:bg-primary";
-  const inactiveClass = "text-[#8d895e] hover:text-[#181810]";
+  const baseClass = "relative pt-4 text-[0.65rem] font-bold uppercase tracking-widest transition-all";
+  const activeClass = "text-[#181810] before:absolute before:top-0 before:left-1/4 before:w-1/2 before:h-[2px] before:bg-[#EE7455]";
+  const inactiveClass = "text-[#a3a3a3] hover:text-[#666]";
 
   return (
-    <div className="border-t border-[#e5e5e0]">
-      <div className="mb-8 flex flex-wrap gap-4 pt-6 sm:gap-10">
+    <div className="mt-8">
+      <div className="mb-8 flex justify-center gap-10 border-t border-[#e5e5e0]">
         <button
           type="button"
           onClick={() => setTab("description")}

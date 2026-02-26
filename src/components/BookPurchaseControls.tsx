@@ -31,37 +31,30 @@ export default function BookPurchaseControls({ book, disabled }: Props) {
   }
 
   return (
-    <div className="mb-8 flex flex-col gap-4 sm:mb-10 sm:flex-row">
-      <div className="flex h-12 items-center rounded-lg border-2 border-[#e5e5e0] bg-white sm:h-14">
+    <div className="flex flex-col gap-6 sm:mb-8 sm:flex-row sm:items-center">
+      <div className="flex h-12 w-20 items-center justify-center border-b border-[#e5e5e0] sm:h-14">
         <button
           type="button"
           onClick={decrement}
-          className="h-full px-4 transition-colors hover:bg-gray-100"
-          aria-label="Diminuer"
+          className="px-2 text-gray-400 hover:text-black"
         >
-          <span className="material-symbols-outlined text-sm">remove</span>
+          -
         </button>
-        <input
-          className="w-10 border-none bg-transparent text-center text-sm font-bold focus:ring-0 sm:w-12 sm:text-base"
-          type="text"
-          inputMode="numeric"
-          value={quantity}
-          readOnly
-          aria-label="Quantité"
-        />
+        <span className="w-8 text-center text-sm font-bold text-black sm:text-base">
+          {quantity}
+        </span>
         <button
           type="button"
           onClick={increment}
-          className="h-full px-4 transition-colors hover:bg-gray-100"
-          aria-label="Augmenter"
+          className="px-2 text-gray-400 hover:text-black"
         >
-          <span className="material-symbols-outlined text-sm">add</span>
+          +
         </button>
       </div>
       <AddToCartButton
         book={book}
         quantity={quantity}
-        className="h-12 flex-1 rounded-lg bg-primary text-xs font-black uppercase tracking-widest text-black shadow-md transition-all hover:brightness-95 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-gray-200 sm:h-14 sm:text-sm"
+        className="h-12 flex-1 max-w-[280px] bg-[#EE7455] text-xs font-bold tracking-widest text-white transition-opacity hover:opacity-90 disabled:opacity-50 sm:h-14 sm:text-[0.65rem] uppercase"
         disabled={disabled}
       />
     </div>

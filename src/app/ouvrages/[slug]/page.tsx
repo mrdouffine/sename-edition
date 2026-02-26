@@ -66,88 +66,89 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
       <main className="mx-auto w-full max-w-[1200px] px-4 pb-28 sm:px-6 sm:pb-32 md:px-10">
         <div className="mb-12 grid grid-cols-1 gap-8 sm:gap-12 lg:mb-16 lg:grid-cols-2">
           <div className="flex flex-col gap-4">
-            <div className="w-full overflow-hidden rounded-xl border-[10px] border-primary shadow-lg">
+            <div className="flex w-full items-center justify-center border border-[#e5e5e0] p-4 shadow-sm bg-white sm:p-12">
               <BookCover
                 title={book.title}
                 subtitle={book.subtitle}
                 authorName={book.authorName}
                 variant={(book as any).coverVariant === "dark" ? "dark" : "light"}
-                className="w-full"
+                className="w-full shadow-md"
               />
             </div>
           </div>
 
           <div className="flex flex-col">
-            <h1 className="mb-2 text-[clamp(2rem,3.2vw,3.6rem)] font-black uppercase leading-tight tracking-tight text-[#181810]">
+            <h1 className="mb-2 text-4xl sm:text-5xl font-black uppercase text-black">
               {book.title}
             </h1>
             {book.subtitle ? (
-              <p className="mb-3 text-[clamp(1rem,1.6vw,1.5rem)] font-semibold text-[#4a4a40]">
+              <p className="mb-3 text-[1.2rem] font-semibold text-[#4a4a40]">
                 {book.subtitle}
               </p>
             ) : null}
-            <p className="mb-6 text-[clamp(1.6rem,2.4vw,2.4rem)] font-extrabold text-primary drop-shadow-sm sm:mb-8">
-              {book.price.toFixed(2)}€
+            <p className="mb-8 text-3xl font-black text-[#FFEA00]">
+              {book.price.toFixed(2).replace('.', ',')}€
             </p>
-            <div className="mb-8 flex flex-col gap-3 border-y border-[#e5e5e0] py-6">
-              <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-2xl text-primary">
+
+            {book.description && (
+              <div className="mb-10 text-sm leading-relaxed text-[#181810]">
+                {book.description.split('\n').map((line, i) => (
+                  <p key={i}>{line}</p>
+                ))}
+              </div>
+            )}
+
+            <div className="mb-3 flex items-center relative">
+              <span className="text-sm font-medium">
+                Statut : disponible en: <span className="font-normal">{saleStatus}</span>
+              </span>
+              <div className="ml-auto mr-12 -translate-y-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#FFEA00]">
+                <span className="material-symbols-outlined text-[1.2rem] text-black">
                   hourglass_empty
                 </span>
-                <p className="text-sm font-semibold uppercase tracking-wider">
-                  Statut : <span className="text-primary">{saleStatus}</span>
-                </p>
               </div>
-              {book.releaseDate ? (
-                <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-2xl text-[#8d895e]">
-                    calendar_month
-                  </span>
-                  <p className="text-sm text-[#8d895e]">
-                    Sortie :{" "}
-                    <span className="font-bold text-[#181810]">
-                      {new Date(book.releaseDate).toLocaleDateString("fr-FR", {
-                        month: "long",
-                        year: "numeric"
-                      })}
-                    </span>
-                  </p>
-                </div>
-              ) : null}
-              <div className="flex flex-wrap gap-x-8 gap-y-2 text-sm text-[#8d895e]">
-                {book.isbn ? (
-                  <p>
-                    ISBN :{" "}
-                    <span className="font-bold text-[#181810]">{book.isbn}</span>
-                  </p>
-                ) : null}
-                {book.pages ? (
-                  <p>
-                    Pages : <span className="font-bold text-[#181810]">{book.pages}</span>
-                  </p>
-                ) : null}
+            </div>
+
+            {book.releaseDate ? (
+              <div className="mb-4 text-sm font-medium">
+                Sortie :{" "}
+                <span className="font-normal">
+                  {new Date(book.releaseDate).toLocaleDateString("fr-FR", {
+                    month: "long",
+                    year: "numeric"
+                  })}
+                </span>
               </div>
-              {book.saleType === "crowdfunding" ? (
-                <div className="mt-3">
-                  <div className="mb-2 flex items-center justify-between text-xs font-bold uppercase text-[#8d895e]">
-                    <span>{funding.percent}% financé</span>
-                    <span>Reste {funding.remaining.toFixed(0)}€</span>
-                  </div>
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-[#e5e5e0]">
-                    <div
-                      className="h-full bg-primary"
-                      style={{ width: `${funding.percent}%` }}
-                    ></div>
-                  </div>
-                </div>
-              ) : null}
+            ) : null}
+
+            <hr className="my-6 border-black" />
+
+            <div className="mb-10 text-sm font-medium">
+              <p>
+                {book.pages ? `${book.pages} pages ` : null}
+                {book.isbn ? `ISBN : ${book.isbn}` : null}
+              </p>
             </div>
 
             {book.saleType === "crowdfunding" ? (
-              <div className="mb-8 rounded-lg border border-[#e5e5e0] bg-[#f7f7f3] px-4 py-3 text-xs font-semibold sm:text-sm">
-                Ce projet se finance par contribution.
+              <div className="mb-3">
+                <div className="mb-2 flex items-center justify-between text-xs font-bold uppercase text-[#8d895e]">
+                  <span>{funding.percent}% financé</span>
+                  <span>Reste {funding.remaining.toFixed(0)}€</span>
+                </div>
+                <div className="h-2 w-full overflow-hidden rounded-full bg-[#e5e5e0]">
+                  <div
+                    className="h-full bg-[#FFEA00]"
+                    style={{ width: `${funding.percent}%` }}
+                  ></div>
+                </div>
+                <div className="mt-4 rounded-lg border border-[#e5e5e0] bg-[#f7f7f3] px-4 py-3 text-xs font-semibold sm:text-sm">
+                  Ce projet se finance par contribution.
+                </div>
               </div>
-            ) : (
+            ) : null}
+
+            {book.saleType !== "crowdfunding" ? (
               <BookPurchaseControls
                 book={{
                   bookId: bookId,
@@ -163,8 +164,7 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
                 }}
                 disabled={outOfStock}
               />
-            )}
-            {book.saleType === "crowdfunding" ? (
+            ) : (
               <>
                 <ContributionForm bookId={bookId} />
                 <CrowdfundingLivePanel
@@ -173,12 +173,13 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
                   initialRaised={book.fundingRaised ?? 0}
                 />
               </>
-            ) : null}
+            )}
+
             <WishlistButton bookId={bookId} />
 
-            <div className="flex flex-wrap items-center gap-4 text-[#8d895e]">
-              <span className="text-xs font-bold uppercase tracking-widest">Partager :</span>
-              <SocialShareButtons title={book.title} className="flex flex-wrap gap-3" />
+            <div className="mt-8 flex items-center justify-between border-t border-b border-[#e5e5e0] py-6">
+              <span className="text-[0.65rem] font-bold uppercase tracking-widest text-[#a3a3a3]">Partager this product</span>
+              <SocialShareButtons title={book.title} className="flex gap-2" />
             </div>
           </div>
         </div>
