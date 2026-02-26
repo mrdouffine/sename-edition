@@ -46,10 +46,10 @@ export async function getHomeFeaturedBook() {
     if (latest) {
       return latest as unknown as BookDocument;
     }
-    return mockBooks.find(b => b.tags.includes("featured")) || mockBooks[0] || null;
+    return mockBooks.find((b) => b.tags?.includes("featured")) || mockBooks[0] || null;
   } catch (error) {
     console.warn("Falling back to mock featured book", error);
-    return mockBooks.find(b => b.tags.includes("featured")) || mockBooks[0] || null;
+    return mockBooks.find((b) => b.tags?.includes("featured")) || mockBooks[0] || null;
   }
 }
 

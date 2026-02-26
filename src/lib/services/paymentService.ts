@@ -156,11 +156,11 @@ export async function refundPaypalCapture(params: {
       },
       body: params.amount
         ? JSON.stringify({
-            amount: {
-              value: params.amount.value,
-              currency_code: params.amount.currencyCode
-            }
-          })
+          amount: {
+            value: params.amount.value,
+            currency_code: params.amount.currencyCode
+          }
+        })
         : "{}"
     }
   );
@@ -237,23 +237,23 @@ export function assertAmountCentsMatch(expectedTotal: number, providerAmountCent
 
 async function getFedapayAuth() {
   const environment = process.env.FEDAPAY_ENVIRONMENT ?? "sandbox";
-  const apiBase = environment === "production" ? "https://api.fedapay.com" : "https://api-sandbox.fedapay.com";
-  
+  const apiBase = environment === "production" ? "https://api.fedapay.com" : "https://sandbox-api.fedapay.com";
+
   // Use simple API key authentication (most reliable method)
   const apiKey = process.env.FEDAPAY_API_KEY;
-  
+
   if (apiKey) {
     return { apiBase, token: null as string | null, apiKey, privateKey: null, publicKey: null };
   }
-  
+
   // If no API key, try private/public key authentication
   const privateKey = process.env.FEDAPAY_PRIVATE_KEY;
   const publicKey = process.env.FEDAPAY_PUBLIC_KEY;
-  
+
   if (privateKey && publicKey) {
     return { apiBase, token: null as string | null, apiKey: null, privateKey, publicKey };
   }
-  
+
   // Fall back to legacy token authentication
   const authToken = process.env.FEDAPAY_AUTH_TOKEN;
   if (authToken) {
@@ -278,7 +278,7 @@ async function getFedapayAuth() {
 
     return { apiBase, token: payload.token, apiKey: legacyApiKey };
   }
-  
+
   // No valid authentication method found
   throw new ApiError("No valid Fedapay authentication method configured", 500);
 }
@@ -297,33 +297,33 @@ function fetchWithProxy(url: string, options: RequestInit = {}): Promise<Respons
       method: options.method || "GET",
       headers: options.headers as Record<string, string> || {},
       // Disable proxy by using agent without proxy
-      agent: isHttps 
-        ? new https.Agent({ 
-            rejectUnauthorized: true,
-            keepAlive: true 
-          })
-        : new http.Agent({ 
-            keepAlive: true 
-          }),
+      agent: isHttps
+        ? new https.Agent({
+          rejectUnauthorized: true,
+          keepAlive: true
+        })
+        : new http.Agent({
+          keepAlive: true
+        }),
     };
 
     const req = client.request(requestOptions, (res) => {
       const chunks: Buffer[] = [];
-      
+
       res.on("data", (chunk: Buffer) => {
         chunks.push(chunk);
       });
-      
+
       res.on("end", () => {
         const body = Buffer.concat(chunks).toString("utf-8");
-        
+
         // Create a mock Response object
         const response = new Response(body, {
           status: res.statusCode || 500,
           statusText: res.statusMessage || "",
           headers: new Headers(res.headers as Record<string, string>),
         });
-        
+
         resolve(response);
       });
     });
@@ -371,7 +371,7 @@ export async function createFedapayTransaction(params: {
   if (accountId) body.account_id = accountId;
 
   const headers: Record<string, string> = { "Content-Type": "application/json" };
-  
+
   // Use private/public key authentication if available
   if (privateKey && publicKey) {
     headers["FEDAPAY-PRIVATE-KEY"] = privateKey;
@@ -390,7 +390,7 @@ export async function createFedapayTransaction(params: {
 
   // Get response text first to handle non-JSON responses
   const responseText = await response.text();
-  
+
   if (!response.ok) {
     let errorData: Record<string, unknown>;
     try {
@@ -406,7 +406,7 @@ export async function createFedapayTransaction(params: {
     token?: string;
     transaction_link?: { url?: string };
   };
-  
+
   try {
     payload = JSON.parse(responseText);
   } catch {
@@ -435,13 +435,41 @@ export function verifyFedapayWebhookSignature(params: {
     throw new ApiError("Missing Fedapay signature", 400);
   }
 
-  const expectedSignature = createHmac("sha256", secret).update(params.rawBody).digest("hex");
-  const expectedBuffer = Buffer.from(expectedSignature, "utf8");
-  const providedBuffer = Buffer.from(params.signature, "utf8");
+  // extract timestamp (t) and signature (s) from the header
+  // e.g. "t=1492774577,s=5257a869e7..."
+  const elements = params.signature.split(',');
+  const sigParams: Record<string, string> = {};
+  for (const element of elements) {
+    const [key, value] = element.split('=');
+    if (key && value) {
+      sigParams[key.trim()] = value.trim();
+    }
+  }
+
+  if (!sigParams.t || (!sigParams.s && !sigParams.v1)) {
+    throw new ApiError("Invalid Fedapay signature format", 400);
+  }
+
+  const timestamp = sigParams.t;
+  const signatureToVerify = sigParams.s || sigParams.v1;
+
+  // The signed payload is the timestamp and the body
+  const signedPayload = `${timestamp}.${params.rawBody}`;
+  const verifySignature = createHmac('sha256', secret)
+    .update(signedPayload)
+    .digest('hex');
+
+  const expectedBuffer = Buffer.from(verifySignature, "utf8");
+  const providedBuffer = Buffer.from(signatureToVerify, "utf8");
 
   const isValid = providedBuffer.length === expectedBuffer.length && timingSafeEqual(providedBuffer, expectedBuffer);
-  if (!isValid) {
-    throw new ApiError("Invalid Fedapay signature", 400);
+
+  // Optional: Prevent replay attacks by checking timestamp age (e.g. max 5 mins)
+  const webhookAgeSeconds = Math.floor(Date.now() / 1000) - parseInt(timestamp, 10);
+  const isTimingValid = webhookAgeSeconds > 0 && webhookAgeSeconds < 300; // 5 minutes tolerance
+
+  if (!isValid || !isTimingValid) {
+    throw new ApiError("Invalid Fedapay signature or expired timestamp", 400);
   }
 }
 
@@ -449,7 +477,7 @@ export async function getFedapayTransactionStatus(transactionId: string) {
   const { token, apiBase, apiKey, privateKey, publicKey } = await getFedapayAuth();
 
   const headers: Record<string, string> = { "Content-Type": "application/json" };
-  
+
   // Use private/public key authentication if available
   if (privateKey && publicKey) {
     headers["FEDAPAY-PRIVATE-KEY"] = privateKey;
