@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function CommandeEchecPage() {
+function CommandeEchecContent() {
   const searchParams = useSearchParams();
   const reason = searchParams.get("reason") ?? "La commande n'a pas pu être finalisée.";
   const orderId = searchParams.get("orderId");
@@ -30,5 +31,17 @@ export default function CommandeEchecPage() {
         </Link>
       </div>
     </main>
+  );
+}
+
+export default function CommandeEchecPage() {
+  return (
+    <Suspense fallback={
+      <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col items-center justify-center px-4 py-10 text-center sm:px-6 sm:py-12">
+        <p className="text-sm font-semibold text-[#6b6959]">Chargement...</p>
+      </main>
+    }>
+      <CommandeEchecContent />
+    </Suspense>
   );
 }

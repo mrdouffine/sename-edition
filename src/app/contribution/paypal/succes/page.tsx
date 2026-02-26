@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { fetchWithAuth } from "@/lib/api/client";
 
-export default function PaypalContributionSuccessPage() {
+function PaypalContributionSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -48,6 +48,18 @@ export default function PaypalContributionSuccessPage() {
       <h1 className="text-2xl font-black text-[#181810] sm:text-4xl">Validation PayPal...</h1>
       <p className="mt-3 text-sm text-[#6b6959] sm:text-base">Merci de patienter pendant la confirmation du paiement.</p>
     </main>
+  );
+}
+
+export default function PaypalContributionSuccessPage() {
+  return (
+    <Suspense fallback={
+      <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col items-center justify-center px-4 py-10 text-center sm:px-6 sm:py-12">
+        <p className="text-sm font-semibold text-[#6b6959]">Validation PayPal...</p>
+      </main>
+    }>
+      <PaypalContributionSuccessContent />
+    </Suspense>
   );
 }
 

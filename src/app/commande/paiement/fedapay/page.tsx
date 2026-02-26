@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { fetchWithAuth } from "@/lib/api/client";
 
-export default function FedapayPaymentPage() {
+function FedapayPaymentContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -65,5 +65,17 @@ export default function FedapayPaymentPage() {
         <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</div>
       ) : null}
     </main>
+  );
+}
+
+export default function FedapayPaymentPage() {
+  return (
+    <Suspense fallback={
+      <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col items-center justify-center px-4 py-10 text-center sm:px-6 sm:py-12">
+        <p className="text-sm font-semibold text-[#6b6959]">Préparation du paiement...</p>
+      </main>
+    }>
+      <FedapayPaymentContent />
+    </Suspense>
   );
 }

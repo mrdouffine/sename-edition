@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { fetchWithAuth } from "@/lib/api/client";
 
@@ -13,7 +13,7 @@ type RetryResponse = {
   error?: string;
 };
 
-export default function CommandeReessayerPage() {
+function CommandeReessayerContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
@@ -71,5 +71,17 @@ export default function CommandeReessayerPage() {
         </>
       ) : null}
     </main>
+  );
+}
+
+export default function CommandeReessayerPage() {
+  return (
+    <Suspense fallback={
+      <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col items-center justify-center px-4 py-10 text-center sm:px-6 sm:py-12">
+        <p className="text-sm font-semibold text-[#6b6959]">Préparation du paiement...</p>
+      </main>
+    }>
+      <CommandeReessayerContent />
+    </Suspense>
   );
 }

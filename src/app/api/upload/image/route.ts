@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
   try {
     // Check authentication
     const session = requireAuth(request);
-    
+
     if (!session.sub) {
       return NextResponse.json(
         { error: "Authentication required" },
@@ -54,8 +54,9 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Image upload error:", error);
+    const message = process.env.NODE_ENV === "development" && error instanceof Error ? error.message : "Internal server error";
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: message },
       { status: 500 }
     );
   }
@@ -65,7 +66,7 @@ export async function DELETE(request: NextRequest) {
   try {
     // Check authentication
     const session = requireAuth(request);
-    
+
     if (!session.sub) {
       return NextResponse.json(
         { error: "Authentication required" },
@@ -98,8 +99,9 @@ export async function DELETE(request: NextRequest) {
     });
   } catch (error) {
     console.error("Image delete error:", error);
+    const message = process.env.NODE_ENV === "development" && error instanceof Error ? error.message : "Internal server error";
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: message },
       { status: 500 }
     );
   }

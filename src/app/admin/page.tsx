@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, Suspense, useEffect, useMemo, useState } from "react";
+import { FormEvent, Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { fetchWithAuth } from "@/lib/api/client";
 import { clearAuthToken, getSessionFromToken } from "@/lib/auth/client";
@@ -315,7 +315,7 @@ function AdminPageContent() {
   const pagedBooks = paginate(filteredBooks, page.ouvrages, PAGE_SIZE);
   const pagedPromos = paginate(filteredPromos, page.promos, PAGE_SIZE);
 
-  async function loadAdminData() {
+  const loadAdminData = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -426,7 +426,7 @@ function AdminPageContent() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [pathname, router, searchParams]);
 
   function handleLogout() {
     clearAuthToken();
@@ -436,7 +436,7 @@ function AdminPageContent() {
 
   useEffect(() => {
     void loadAdminData();
-  }, []);
+  }, [loadAdminData]);
 
   async function exportCsv(endpoint: string, filename: string) {
     const response = await fetchWithAuth(`${endpoint}?format=csv`);

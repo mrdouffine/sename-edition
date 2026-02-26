@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { fetchWithAuth } from "@/lib/api/client";
 
-export default function CommandeAnnuleePage() {
+function CommandeAnnuleeContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
   const [notice, setNotice] = useState("Annulation en cours...");
@@ -50,5 +50,17 @@ export default function CommandeAnnuleePage() {
         </Link>
       </div>
     </main>
+  );
+}
+
+export default function CommandeAnnuleePage() {
+  return (
+    <Suspense fallback={
+      <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col items-center justify-center px-4 py-10 text-center sm:px-6 sm:py-12">
+        <p className="text-sm font-semibold text-[#6b6959]">Chargement...</p>
+      </main>
+    }>
+      <CommandeAnnuleeContent />
+    </Suspense>
   );
 }

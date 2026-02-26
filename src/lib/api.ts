@@ -30,9 +30,11 @@ export function handleApiError(error: unknown) {
     return jsonError(error.message, error.status);
   }
 
+  const isDev = process.env.NODE_ENV === "development";
+
   if (error instanceof Error) {
     console.error("[API_ERROR]", error);
-    return jsonError("Internal server error", 500);
+    return jsonError(isDev ? `Internal server error: ${error.message}` : "Internal server error", 500);
   }
 
   return jsonError("Internal server error", 500);
