@@ -1,0 +1,25 @@
+services:
+  web:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - ../../.env.local
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/livreo
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
