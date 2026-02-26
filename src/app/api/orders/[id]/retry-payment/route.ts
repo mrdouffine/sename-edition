@@ -32,13 +32,6 @@ export async function POST(
       throw new ApiError("Only pending orders can be retried", 409);
     }
 
-    if (order.paymentProvider === "stripe") {
-      return jsonSuccess({
-        provider: "stripe",
-        redirectUrl: `/commande/paiement/stripe?orderId=${order._id.toString()}`
-      });
-    }
-
     if (order.paymentProvider === "fedapay") {
       return jsonSuccess({
         provider: "fedapay",

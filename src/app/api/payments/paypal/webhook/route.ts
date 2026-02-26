@@ -75,7 +75,7 @@ export async function POST(request: Request) {
       if (!order) {
         throw new ApiError("Order not found", 404);
       }
-      if (order.paymentMethod !== "paypal") {
+      if (order.paymentProvider !== "paypal") {
         throw new ApiError("Order payment method must be paypal", 409);
       }
       if (status !== "COMPLETED") {
@@ -89,7 +89,7 @@ export async function POST(request: Request) {
       if (order.status !== "paid") {
         const finalized = await markOrderAsPaid({
           orderId: order._id.toString(),
-          paymentMethod: "paypal",
+          paymentProvider: "paypal",
           transactionId: captureId,
           paymentReference: paypalOrderId
         });

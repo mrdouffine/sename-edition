@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     const bookId = typeof body?.bookId === "string" ? body.bookId : "";
     const amount = typeof body?.amount === "number" ? body.amount : Number(body?.amount);
     const reward = typeof body?.reward === "string" && body.reward.trim() ? body.reward.trim() : undefined;
-    const paymentMethod = body?.paymentMethod === "paypal" ? "paypal" : body?.paymentMethod === "stripe" ? "stripe" : "";
+    const paymentMethod = body?.paymentMethod === "paypal" ? "paypal" : body?.paymentMethod === "mobile_money" ? "mobile_money" : "";
 
     if (!bookId || !Number.isFinite(amount) || amount <= 0 || !paymentMethod) {
       throw new ApiError("bookId, amount and paymentMethod are required", 400);
@@ -36,14 +36,6 @@ export async function POST(request: Request) {
       isPublic: true,
       paymentMethod
     });
-
-    if (paymentMethod === "stripe") {
-      return jsonSuccess({
-        provider: "stripe",
-        contributionId: contribution._id.toString(),
-        redirectUrl: `/contribution/paiement/stripe?contributionId=${contribution._id.toString()}`
-      });
-    }
 
     const origin = getTrustedAppOrigin(request.url);
     const paypalOrder = await createPaypalOrder({

@@ -42,7 +42,7 @@ export async function GET(
         customerName: user?.name ?? "Client SENAME EDITION’S",
         customerEmail: user?.email ?? "client@senameedition.local",
         saleType: order.saleType,
-        paymentMethod: order.paymentMethod,
+        paymentMethod: order.paymentProvider === "paypal" ? "paypal" : "mobile_money",
         paymentReference: order.paymentReference,
         total: order.total,
         createdAt: (order as { createdAt?: Date }).createdAt ?? new Date(),

@@ -172,7 +172,7 @@ export async function markOrderAsPaid(params: {
       customerName: user.name,
       customerEmail: order.email,
       saleType: order.saleType,
-      paymentMethod: params.paymentProvider,
+      paymentMethod: params.paymentProvider === "paypal" ? "paypal" : "mobile_money",
       paymentReference: params.paymentReference,
       total: order.total,
       createdAt,

@@ -50,7 +50,7 @@ export async function POST(request: Request) {
     if (order.status !== "pending") {
       throw new ApiError("Order cannot be paid in its current state", 409);
     }
-    if (order.paymentMethod !== "paypal") {
+    if (order.paymentProvider !== "paypal") {
       throw new ApiError("Order payment method must be paypal", 409);
     }
     if (typeof order.paymentReference === "string" && order.paymentReference && order.paymentReference !== paypalOrderId) {
@@ -76,10 +76,10 @@ export async function POST(request: Request) {
     const amountCents = parseAmountToCents(amountValue);
     const captures =
       purchaseUnits.length > 0 &&
-      typeof purchaseUnits[0] === "object" &&
-      typeof purchaseUnits[0].payments === "object" &&
-      purchaseUnits[0].payments &&
-      Array.isArray((purchaseUnits[0].payments as Record<string, unknown>).captures)
+        typeof purchaseUnits[0] === "object" &&
+        typeof purchaseUnits[0].payments === "object" &&
+        purchaseUnits[0].payments &&
+        Array.isArray((purchaseUnits[0].payments as Record<string, unknown>).captures)
         ? ((purchaseUnits[0].payments as Record<string, unknown>).captures as Array<Record<string, unknown>>)
         : [];
     const captureId = captures.length > 0 && typeof captures[0].id === "string" ? captures[0].id : "";
@@ -106,7 +106,7 @@ export async function POST(request: Request) {
 
     const finalized = await markOrderAsPaid({
       orderId: order._id.toString(),
-      paymentMethod: "paypal",
+      paymentProvider: "paypal",
       transactionId: captureId,
       paymentReference: paypalOrderId
     });

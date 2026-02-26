@@ -67,11 +67,16 @@ export default async function Home() {
         </section>
 
         <section className="mb-16 sm:mb-20">
-          <div className="mb-8 flex items-center gap-4">
-            <div className="h-[2px] w-12 bg-primary"></div>
-            <h2 className="text-xl font-black uppercase tracking-tight sm:text-2xl">
-              À la une
+          <div className="mb-12">
+            <h2 className="text-xl font-black uppercase tracking-[0.2em] text-gray-800">
+              *OUVRAGES <span className="text-gray-300">{'................................................................................'}</span>
             </h2>
+          </div>
+
+          <div className="mb-8 flex items-center gap-4">
+            <h3 className="bg-yellow-200 px-4 py-1 text-2xl font-black uppercase tracking-tight text-black sm:text-3xl">
+              A la une :
+            </h3>
           </div>
           {featuredBook ? (
             <div className="relative flex min-h-[360px] flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm sm:min-h-[420px] md:min-h-[450px] md:flex-row">
@@ -117,45 +122,40 @@ export default async function Home() {
         </section>
 
         <section className="mb-16 sm:mb-20">
-          <h3 className="mb-8 text-lg font-bold uppercase tracking-tight sm:text-xl">
-            Options d'achat
+          <h3 className="mb-12 bg-yellow-200 px-4 py-1 text-2xl font-black uppercase tracking-tight text-black sm:text-3xl">
+            Ouvrages disponibles :
           </h3>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="group rounded-xl border border-gray-100 bg-white p-6 transition-colors hover:border-primary sm:p-8">
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-lg bg-primary transition-transform group-hover:scale-110">
-                <span className="material-symbols-outlined text-black">
-                  shopping_bag
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="group flex flex-col items-center gap-4 rounded-xl p-6 transition-all sm:p-8">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-yellow-400 shadow-md">
+                <span className="material-symbols-outlined text-4xl text-black">
+                  diamond
                 </span>
               </div>
-              <h4 className="mb-2 text-lg font-black">Achat-Acquisition</h4>
-              <p className="text-sm leading-relaxed text-gray-500">
-                Disponibilité immédiate. Livraison sous 3 à 5 jours ouvrés.
+              <p className="text-center text-lg font-medium text-gray-800">
+                Disponible en <span className="font-bold">Acquisition</span>
               </p>
             </div>
 
-            <div className="group rounded-xl border border-gray-100 bg-white p-6 transition-colors hover:border-primary sm:p-8">
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-lg bg-primary transition-transform group-hover:scale-110">
-                <span className="material-symbols-outlined text-black">
-                  calendar_today
+            <div className="group flex flex-col items-center gap-4 rounded-xl p-6 transition-all sm:p-8">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-yellow-400 shadow-md">
+                <span className="material-symbols-outlined text-4xl text-black">
+                  hourglass_empty
                 </span>
               </div>
-              <h4 className="mb-2 text-lg font-black">achat-Pré-commande</h4>
-              <p className="text-sm leading-relaxed text-gray-500">
-                Soyez les premiers à recevoir les futures parutions à tarif
-                préférentiel.
+              <p className="text-center text-lg font-medium text-gray-800">
+                Disponible en <span className="font-bold">Pré-commande</span>
               </p>
             </div>
 
-            <div className="group rounded-xl border border-gray-100 bg-white p-6 transition-colors hover:border-primary sm:p-8">
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-lg bg-primary transition-transform group-hover:scale-110">
-                <span className="material-symbols-outlined text-black">group</span>
+            <div className="group flex flex-col items-center gap-4 rounded-xl p-6 transition-all sm:p-8">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-yellow-400 shadow-md">
+                <span className="material-symbols-outlined text-4xl text-black">
+                  psychology
+                </span>
               </div>
-              <h4 className="mb-2 text-lg font-black">
-                achat- financement participatif
-              </h4>
-              <p className="text-sm leading-relaxed text-gray-500">
-                Soutenez les auteurs émergents et participez à l'éclosion de
-                nouveaux talents.
+              <p className="text-center text-lg font-medium text-gray-800">
+                Disponible en <span className="font-bold">financement participatif :</span>
               </p>
             </div>
           </div>
@@ -163,10 +163,15 @@ export default async function Home() {
 
         <div className="space-y-20">
           <section>
-            <div className="mb-8 flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-4">
-              <h3 className="text-lg font-black uppercase sm:text-xl">
-                Disponible en Acquisition
-              </h3>
+            <div className="mb-12 flex flex-col items-center gap-6">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-yellow-400 shadow-md">
+                <span className="material-symbols-outlined text-4xl text-black">
+                  diamond
+                </span>
+              </div>
+              <p className="text-center text-lg font-medium text-gray-800">
+                Disponible en <span className="font-bold">Acquisition</span>
+              </p>
             </div>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {books.map((book) => (
@@ -206,10 +211,15 @@ export default async function Home() {
           </section>
 
           <section>
-            <div className="mb-8 flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-4">
-              <h3 className="text-lg font-black uppercase sm:text-xl">
-                Disponible en Pré-commande
-              </h3>
+            <div className="mb-12 flex flex-col items-center gap-6">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-yellow-400 shadow-md">
+                <span className="material-symbols-outlined text-4xl text-black">
+                  hourglass_empty
+                </span>
+              </div>
+              <p className="text-center text-lg font-medium text-gray-800">
+                Disponible en <span className="font-bold">Pré-commande</span>
+              </p>
             </div>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {preorders.map((book) => {
@@ -230,8 +240,8 @@ export default async function Home() {
                     </div>
                     <h5
                       className={`text-base font-bold ${book.slug
-                          ? "underline decoration-primary decoration-2 transition-colors group-hover:text-primary"
-                          : ""
+                        ? "underline decoration-primary decoration-2 transition-colors group-hover:text-primary"
+                        : ""
                         }`}
                     >
                       {book.title}
@@ -264,10 +274,15 @@ export default async function Home() {
           </section>
 
           <section>
-            <div className="mb-8 flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-4">
-              <h3 className="text-lg font-black uppercase sm:text-xl">
-                Disponible en financement participatif
-              </h3>
+            <div className="mb-12 flex flex-col items-center gap-6">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-yellow-400 shadow-md">
+                <span className="material-symbols-outlined text-4xl text-black">
+                  psychology
+                </span>
+              </div>
+              <p className="text-center text-lg font-medium text-gray-800">
+                Disponible en <span className="font-bold">financement participatif :</span>
+              </p>
             </div>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {crowdfunding.map((project) => {

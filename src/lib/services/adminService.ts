@@ -87,7 +87,7 @@ export async function listAdminOrders() {
 
   const orders = await OrderModel.find(
     {},
-    { user: 1, total: 1, status: 1, saleType: 1, paymentMethod: 1, invoiceNumber: 1 }
+    { user: 1, total: 1, status: 1, saleType: 1, paymentProvider: 1, invoiceNumber: 1 }
   )
     .sort({ _id: -1 })
     .limit(200)
@@ -99,7 +99,7 @@ export async function listAdminOrders() {
     total: order.total,
     status: order.status,
     saleType: order.saleType,
-    paymentMethod: order.paymentMethod,
+    paymentMethod: (order as any).paymentProvider,
     invoiceNumber: order.invoiceNumber
   }));
 }
@@ -123,7 +123,7 @@ export async function updateOrderStatus(params: {
       total: finalized.total,
       status: finalized.status,
       saleType: finalized.saleType,
-      paymentMethod: finalized.paymentMethod,
+      paymentMethod: finalized.paymentProvider,
       invoiceNumber: finalized.invoiceNumber
     };
   }
@@ -137,7 +137,7 @@ export async function updateOrderStatus(params: {
       invoiceNumber: 1,
       transactionId: 1,
       paymentReference: 1,
-      paymentMethod: 1
+      paymentProvider: 1
     });
     if (!current) {
       throw new ApiError("Order not found", 404);
@@ -149,7 +149,7 @@ export async function updateOrderStatus(params: {
         total: current.total,
         status: current.status,
         saleType: current.saleType,
-        paymentMethod: current.paymentMethod,
+        paymentMethod: current.paymentProvider,
         invoiceNumber: current.invoiceNumber
       };
     }
@@ -157,7 +157,7 @@ export async function updateOrderStatus(params: {
       throw new ApiError("Only paid orders can be refunded", 409);
     }
 
-    if (current.paymentMethod === "paypal") {
+    if (current.paymentProvider === "paypal") {
       if (!current.transactionId) {
         throw new ApiError("Missing PayPal capture ID", 409);
       }
@@ -183,7 +183,7 @@ export async function updateOrderStatus(params: {
       total: 1,
       status: 1,
       saleType: 1,
-      paymentMethod: 1,
+      paymentProvider: 1,
       invoiceNumber: 1
     });
     if (!refunded) {
@@ -196,7 +196,7 @@ export async function updateOrderStatus(params: {
       total: refunded.total,
       status: refunded.status,
       saleType: refunded.saleType,
-      paymentMethod: refunded.paymentMethod,
+      paymentMethod: refunded.paymentProvider,
       invoiceNumber: refunded.invoiceNumber
     };
   }
@@ -206,7 +206,7 @@ export async function updateOrderStatus(params: {
     total: 1,
     status: 1,
     saleType: 1,
-    paymentMethod: 1,
+    paymentProvider: 1,
     invoiceNumber: 1
   });
   if (!current) {
@@ -229,7 +229,7 @@ export async function updateOrderStatus(params: {
     total: number;
     status: "pending" | "paid" | "cancelled" | "refunded";
     saleType: "direct" | "preorder";
-    paymentMethod: "paypal" | "mobile_money";
+    paymentProvider: "paypal" | "fedapay";
     invoiceNumber: string;
   };
 
@@ -239,7 +239,7 @@ export async function updateOrderStatus(params: {
     total: order.total,
     status: order.status,
     saleType: order.saleType,
-    paymentMethod: order.paymentMethod,
+    paymentMethod: order.paymentProvider,
     invoiceNumber: order.invoiceNumber
   };
 }

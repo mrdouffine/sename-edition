@@ -65,8 +65,8 @@ export function parseUpdateBookPayload(input: unknown) {
   const staticReviews = body.staticReviews === undefined
     ? undefined
     : Array.isArray(body.staticReviews)
-    ? body.staticReviews.map((review, index) => {
-        const reviewObj = asObject(review, `staticReviews[${index}]`);
+      ? body.staticReviews.map((review, index) => {
+        const reviewObj = asObject(review);
         if (Array.isArray(body.staticReviews) && body.staticReviews.length > 4) {
           throw new ApiError("Maximum 4 static reviews allowed", 400);
         }
@@ -78,7 +78,7 @@ export function parseUpdateBookPayload(input: unknown) {
           order: asNumber(reviewObj.order, `staticReviews[${index}].order`, { min: 1 })
         };
       })
-    : [];
+      : [];
 
   return {
     bookId: asObjectId(body.bookId, "bookId"),

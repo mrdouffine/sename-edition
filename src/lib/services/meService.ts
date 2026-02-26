@@ -75,7 +75,7 @@ export async function listMyOrders(userId: string) {
     total: order.total,
     status: order.status,
     saleType: order.saleType,
-    paymentMethod: order.paymentMethod,
+    paymentMethod: (order as any).paymentProvider,
     invoiceNumber: order.invoiceNumber,
     createdAt: (order as { createdAt?: Date }).createdAt ?? null,
     items: order.items.map((item) => ({
@@ -83,11 +83,11 @@ export async function listMyOrders(userId: string) {
       unitPrice: item.unitPrice,
       book: item.book
         ? {
-            id: (item.book as { _id: { toString(): string } })._id.toString(),
-            title: (item.book as { title?: string }).title,
-            slug: (item.book as { slug?: string }).slug,
-            coverImage: (item.book as { coverImage?: string }).coverImage
-          }
+          id: (item.book as { _id: { toString(): string } })._id.toString(),
+          title: (item.book as { title?: string }).title,
+          slug: (item.book as { slug?: string }).slug,
+          coverImage: (item.book as { coverImage?: string }).coverImage
+        }
         : null
     }))
   }));
@@ -108,11 +108,11 @@ export async function listMyContributions(userId: string) {
     status: contribution.status,
     book: contribution.book
       ? {
-          id: (contribution.book as { _id: { toString(): string } })._id.toString(),
-          title: (contribution.book as { title?: string }).title,
-          slug: (contribution.book as { slug?: string }).slug,
-          coverImage: (contribution.book as { coverImage?: string }).coverImage
-        }
+        id: (contribution.book as { _id: { toString(): string } })._id.toString(),
+        title: (contribution.book as { title?: string }).title,
+        slug: (contribution.book as { slug?: string }).slug,
+        coverImage: (contribution.book as { coverImage?: string }).coverImage
+      }
       : null
   }));
 }

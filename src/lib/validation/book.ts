@@ -28,18 +28,18 @@ export function parseCreateBookPayload(input: unknown) {
 
   const staticReviews = Array.isArray(body.staticReviews)
     ? body.staticReviews.map((review, index) => {
-        const reviewObj = asObject(review, `staticReviews[${index}]`);
-        if (Array.isArray(body.staticReviews) && body.staticReviews.length > 4) {
-          throw new ApiError("Maximum 4 static reviews allowed", 400);
-        }
-        return {
-          name: asString(reviewObj.name, `staticReviews[${index}].name`, { min: 2, max: 120 }),
-          role: asOptionalString(reviewObj.role, `staticReviews[${index}].role`, 100),
-          content: asString(reviewObj.content, `staticReviews[${index}].content`, { min: 2, max: 1000 }),
-          rating: asNumber(reviewObj.rating, `staticReviews[${index}].rating`, { min: 1, max: 5 }),
-          order: asNumber(reviewObj.order, `staticReviews[${index}].order`, { min: 1 })
-        };
-      })
+      const reviewObj = asObject(review);
+      if (Array.isArray(body.staticReviews) && body.staticReviews.length > 4) {
+        throw new ApiError("Maximum 4 static reviews allowed", 400);
+      }
+      return {
+        name: asString(reviewObj.name, `staticReviews[${index}].name`, { min: 2, max: 120 }),
+        role: asOptionalString(reviewObj.role, `staticReviews[${index}].role`, 100),
+        content: asString(reviewObj.content, `staticReviews[${index}].content`, { min: 2, max: 1000 }),
+        rating: asNumber(reviewObj.rating, `staticReviews[${index}].rating`, { min: 1, max: 5 }),
+        order: asNumber(reviewObj.order, `staticReviews[${index}].order`, { min: 1 })
+      };
+    })
     : [];
 
   return {
@@ -66,8 +66,8 @@ export function parseCreateBookPayload(input: unknown) {
       : [],
     galleryImages: Array.isArray(body.galleryImages)
       ? body.galleryImages.map((url, index) =>
-          asString(url, `galleryImages[${index}]`, { min: 5, max: 1000000 })
-        )
+        asString(url, `galleryImages[${index}]`, { min: 5, max: 1000000 })
+      )
       : [],
     staticReviews
   };

@@ -11,7 +11,10 @@ export async function listBooksByType(type: SaleType) {
   try {
     await connectToDatabase();
     const books = await BookModel.find({ saleType: type }).lean();
-    return sortBooks(books as unknown as BookDocument[]);
+    if (books.length > 0) {
+      return sortBooks(books as unknown as BookDocument[]);
+    }
+    return sortBooks(mockBooks.filter((book) => book.saleType === type));
   } catch (error) {
     console.warn("Falling back to mock books", error);
     return sortBooks(mockBooks.filter((book) => book.saleType === type));
@@ -22,7 +25,10 @@ export async function getBookBySlug(slug: string) {
   try {
     await connectToDatabase();
     const book = await BookModel.findOne({ slug }).lean();
-    return book as unknown as BookDocument | null;
+    if (book) {
+      return book as unknown as BookDocument;
+    }
+    return mockBooks.find((b) => b.slug === slug) ?? null;
   } catch (error) {
     console.warn("Falling back to mock books", error);
     return mockBooks.find((book) => book.slug === slug) ?? null;
@@ -37,10 +43,13 @@ export async function getHomeFeaturedBook() {
       return featured as unknown as BookDocument;
     }
     const latest = await BookModel.findOne({}).sort({ createdAt: -1 }).lean();
-    return (latest as unknown as BookDocument | null) ?? null;
+    if (latest) {
+      return latest as unknown as BookDocument;
+    }
+    return mockBooks.find(b => b.tags.includes("featured")) || mockBooks[0] || null;
   } catch (error) {
     console.warn("Falling back to mock featured book", error);
-    return mockBooks[0] ?? null;
+    return mockBooks.find(b => b.tags.includes("featured")) || mockBooks[0] || null;
   }
 }
 
