@@ -11,6 +11,7 @@ import { getBookBySlug } from "@/lib/services/bookService";
 import { getFundingProgress, getSaleStatus, isOutOfStock } from "@/lib/domain/book";
 import { notFound } from "next/navigation";
 import BookDetailTabs from "@/components/BookDetailTabs";
+import BookCover from "@/components/BookCover";
 
 export default async function BookDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -23,6 +24,7 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
   const saleStatus = getSaleStatus(book);
   const funding = getFundingProgress(book);
   const outOfStock = isOutOfStock(book);
+  const bookId = book._id ? String(book._id) : book.slug;
 
   return (
     <div className="flex min-h-screen flex-col bg-background-light text-[#181810]">
@@ -64,13 +66,15 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
       <main className="mx-auto w-full max-w-[1200px] px-4 pb-28 sm:px-6 sm:pb-32 md:px-10">
         <div className="mb-12 grid grid-cols-1 gap-8 sm:gap-12 lg:mb-16 lg:grid-cols-2">
           <div className="flex flex-col gap-4">
-            <div className="aspect-[4/5] w-full overflow-hidden rounded-xl bg-[#e5e5e0] shadow-sm">
-              <div
-                className="h-full w-full bg-cover bg-center bg-no-repeat"
-                style={{ backgroundImage: `url('${book.coverImage}')` }}
-              ></div>
+            <div className="w-full overflow-hidden rounded-xl border-[10px] border-primary shadow-lg">
+              <BookCover
+                title={book.title}
+                subtitle={book.subtitle}
+                authorName={book.authorName}
+                variant={(book as any).coverVariant === "dark" ? "dark" : "light"}
+                className="w-full"
+              />
             </div>
-            
           </div>
 
           <div className="flex flex-col">
@@ -146,7 +150,7 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
             ) : (
               <BookPurchaseControls
                 book={{
-                  bookId: String(book._id),
+                  bookId: bookId,
                   slug: book.slug,
                   title: book.title,
                   authorName: book.authorName,
@@ -159,15 +163,15 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
             )}
             {book.saleType === "crowdfunding" ? (
               <>
-                <ContributionForm bookId={String(book._id)} />
+                <ContributionForm bookId={bookId} />
                 <CrowdfundingLivePanel
-                  bookId={String(book._id)}
+                  bookId={bookId}
                   initialGoal={book.fundingGoal ?? 0}
                   initialRaised={book.fundingRaised ?? 0}
                 />
               </>
             ) : null}
-            <WishlistButton bookId={String(book._id)} />
+            <WishlistButton bookId={bookId} />
 
             <div className="flex flex-wrap items-center gap-4 text-[#8d895e]">
               <span className="text-xs font-bold uppercase tracking-widest">Partager :</span>
@@ -176,7 +180,7 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
           </div>
         </div>
 
-        <BookDetailTabs description={book.description ?? ""} bookId={String(book._id)} staticReviews={book.staticReviews} />
+        <BookDetailTabs description={book.description ?? ""} bookId={bookId} staticReviews={book.staticReviews} />
       </main>
 
       <Footer />

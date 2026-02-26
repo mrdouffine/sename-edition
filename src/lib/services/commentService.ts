@@ -48,29 +48,34 @@ export async function createComment(params: {
 }
 
 export async function listPublicComments(bookId: string) {
-  await connectToDatabase();
+  try {
+    await connectToDatabase();
 
-  const comments = await CommentModel.find({ book: bookId, status: "approved" })
-    .sort({ _id: -1 })
-    .populate({ path: "user", select: "name" })
-    .lean();
+    const comments = await CommentModel.find({ book: bookId, status: "approved" })
+      .sort({ _id: -1 })
+      .populate({ path: "user", select: "name" })
+      .lean();
 
-  return comments.map((comment) => ({
-    id: comment._id.toString(),
-    rating: comment.rating,
-    content: comment.content,
-    status: comment.status,
-    authorReply: comment.authorReply,
-    reportCount: comment.reportCount,
-    reviewerName: comment.reviewerName,
-    reviewerEmail: comment.reviewerEmail,
-    user: comment.user
-      ? {
+    return comments.map((comment) => ({
+      id: comment._id.toString(),
+      rating: comment.rating,
+      content: comment.content,
+      status: comment.status,
+      authorReply: comment.authorReply,
+      reportCount: comment.reportCount,
+      reviewerName: comment.reviewerName,
+      reviewerEmail: comment.reviewerEmail,
+      user: comment.user
+        ? {
           id: (comment.user as { _id: { toString(): string } })._id.toString(),
           name: (comment.user as { name?: string }).name ?? "Lecteur"
         }
-      : null
-  }));
+        : null
+    }));
+  } catch (error) {
+    console.warn("Comments unavailable, returning empty list", error);
+    return [];
+  }
 }
 
 export async function replyToComment(params: {
