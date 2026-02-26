@@ -41,8 +41,10 @@ export default function BookDetailTabs({ description, bookId, staticReviews = []
 
       {tab === "description" ? (
         <div className="space-y-10">
-          <div className="max-w-3xl text-[clamp(1rem,1.4vw,1.15rem)] leading-relaxed text-[#181810]">
-            <p>{description}</p>
+          <div className="max-w-3xl text-[clamp(1rem,1.4vw,1.15rem)] leading-relaxed text-[#181810] space-y-4">
+            {description.split("\n\n").map((paragraph, i) => (
+              <p key={i}>{paragraph}</p>
+            ))}
           </div>
           <BookCommentsSection bookId={bookId} mode="formOnly" staticReviews={staticReviews} />
         </div>
