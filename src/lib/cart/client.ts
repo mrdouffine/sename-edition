@@ -4,6 +4,9 @@ export type CartItem = {
   title: string;
   authorName?: string;
   coverImage: string;
+  description?: string;
+  subtitle?: string;
+  coverVariant?: "light" | "dark";
   price: number;
   quantity: number;
   saleType: "direct" | "preorder" | "crowdfunding";

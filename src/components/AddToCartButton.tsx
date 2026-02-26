@@ -13,6 +13,9 @@ type Props = {
     title: string;
     authorName?: string;
     coverImage: string;
+    description?: string;
+    subtitle?: string;
+    coverVariant?: "dark" | "light";
     price: number;
     saleType: "direct" | "preorder" | "crowdfunding";
   };

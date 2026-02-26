@@ -155,6 +155,9 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
                   title: book.title,
                   authorName: book.authorName,
                   coverImage: book.coverImage,
+                  description: book.description,
+                  subtitle: book.subtitle,
+                  coverVariant: (book as any).coverVariant === "dark" ? "dark" : "light",
                   price: book.price,
                   saleType: book.saleType
                 }}

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "cloudinary": "^2.5.1",
+    "fedapay": "^1.2.5",
     "mongoose": "^8.10.0",
     "next": "^15.1.0",
     "next-cloudinary": "^6.17.5",

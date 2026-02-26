@@ -4,6 +4,7 @@ import type { BookDocument } from "@/models/Book";
 // The coverImage field is kept for the model but not used in the homepage display
 export const mockBooks = [
   {
+    _id: "653e8f1b9a1d4b001a2b3c4d",
     title: "décoloniser le Futur",
     subtitle: "CARNETS DE CONFINEMENT",
     slug: "decoloniser-le-futur",
@@ -25,6 +26,7 @@ export const mockBooks = [
     coverVariant: "light"
   },
   {
+    _id: "653e8f1b9a1d4b001a2b3c4e",
     title: "le Centre de Flammes",
     subtitle: "Livre d'une sortie au jour",
     slug: "le-centre-de-flammes",
@@ -46,6 +48,7 @@ export const mockBooks = [
     coverVariant: "light"
   },
   {
+    _id: "653e8f1b9a1d4b001a2b3c4f",
     title: "Girations",
     subtitle: "chantiers poétiques",
     slug: "girations",
@@ -67,6 +70,7 @@ export const mockBooks = [
     coverVariant: "light"
   },
   {
+    _id: "653e8f1b9a1d4b001a2b3c50",
     title: "principes d'une cosmo architecture",
     subtitle: "Architecture et Univers",
     slug: "cosmo-architecture",
@@ -92,6 +96,7 @@ export const mockBooks = [
     coverVariant: "dark"
   },
   {
+    _id: "653e8f1b9a1d4b001a2b3c51",
     title: "comprendre l'architecture en afrique noire",
     subtitle: "Essai sur l'espace africain",
     slug: "comprendre-architecture-afrique",
@@ -117,6 +122,7 @@ export const mockBooks = [
     coverVariant: "dark"
   },
   {
+    _id: "653e8f1b9a1d4b001a2b3c52",
     title: "Esthétiques du Féminin",
     subtitle: "dans les arts nègres",
     slug: "esthetiques-du-feminin",
@@ -141,6 +147,7 @@ export const mockBooks = [
     coverVariant: "dark"
   },
   {
+    _id: "653e8f1b9a1d4b001a2b3c53",
     title: "Rencontres",
     subtitle: "Nouvelles",
     slug: "rencontres",

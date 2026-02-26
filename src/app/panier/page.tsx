@@ -18,6 +18,7 @@ import {
 import { fetchWithAuth } from "@/lib/api/client";
 import { clearAuthToken, getSessionFromToken } from "@/lib/auth/client";
 import { useRequireAuth } from "@/lib/auth/useRequireAuth";
+import BookCover from "@/components/BookCover";
 
 export default function PanierPage() {
   const isAuthorized = useRequireAuth();
@@ -133,11 +134,9 @@ export default function PanierPage() {
       }
 
       if (orderGroups.length > 1) {
-        const reason = encodeURIComponent(
-          "Merci de passer des commandes séparées pour achat direct et précommande."
-        );
-        router.push(`/commande/echec?reason=${reason}`);
-        return;
+        // Instead of crashing, we gracefully warn them and just checkout the first group.
+        // The remaining items will be left in the cart.
+        setCheckoutMessage("Attention: votre commande a été scindée (Achat direct et Précommande sont traités séparément). Vous paierez le reste plus tard.");
       }
 
       const group = orderGroups[0];
@@ -209,13 +208,24 @@ export default function PanierPage() {
     }
   }, []);
 
+  // Internal cleanup of cart items + saving last signature
   useEffect(() => {
-    if (items.length === 0 || checkoutLoading) {
+    // 1. Clean up invalid old cart items
+    const validHexId = /^[a-fA-F0-9]{24}$/;
+    const validItems = items.filter((item) => item.bookId && validHexId.test(item.bookId));
+    if (validItems.length !== items.length) {
+      setItems(validItems);
+      // Let the saveCartItems function naturally pick this up next cycle, or save directly
+      // By calling saveCartItems directly from the client module we make sure local storage is clean:
+      window.localStorage.setItem("livreo_cart", JSON.stringify(validItems));
+    }
+
+    if (validItems.length === 0 || checkoutLoading) {
       return;
     }
 
     const signature = JSON.stringify(
-      items.map((item) => ({
+      validItems.map((item) => ({
         bookId: item.bookId,
         quantity: item.quantity
       }))
@@ -230,7 +240,7 @@ export default function PanierPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           subtotal,
-          items: items.map((item) => ({
+          items: validItems.map((item) => ({
             bookId: item.bookId,
             slug: item.slug,
             title: item.title,
@@ -271,207 +281,220 @@ export default function PanierPage() {
 
       <main className="flex-1 px-4 pb-10 pt-24 sm:px-6 sm:pb-12 sm:pt-28 md:px-12">
         <div className="mx-auto max-w-6xl">
-        <div className="mb-6 text-xs text-[#8d895e] sm:mb-8 sm:text-sm">
-          <Link href="/" className="hover:text-[#181810]">
-            Accueil
-          </Link>
-          <span className="px-2">›</span>
-          <span className="font-bold text-[#181810]">Panier</span>
-        </div>
+          <div className="mb-6 text-xs text-[#8d895e] sm:mb-8 sm:text-sm">
+            <Link href="/" className="hover:text-[#181810]">
+              Accueil
+            </Link>
+            <span className="px-2">›</span>
+            <span className="font-bold text-[#181810]">Panier</span>
+          </div>
 
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[2fr_1fr]">
-          <section>
-            <div className="mb-4 flex items-center justify-between">
-              <h1 className="text-[clamp(2rem,3.2vw,3.2rem)] font-light tracking-tight">Votre panier</h1>
-              <p className="text-[clamp(0.95rem,1.4vw,1.25rem)] text-[#8d895e]">{getCartCount(items)} articles</p>
-            </div>
-
-            <div className="overflow-hidden rounded-xl border border-[#e3e0d0] bg-white">
-              <div className="hidden grid-cols-[2fr_1fr_1fr_1fr_auto] gap-4 border-b border-[#ece9dc] px-6 py-4 text-sm font-semibold uppercase tracking-wider text-[#a8a382] md:grid">
-                <p>Produit</p>
-                <p>Prix</p>
-                <p>Quantité</p>
-                <p>Sous-total</p>
-                <p></p>
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[2fr_1fr]">
+            <section>
+              <div className="mb-4 flex items-center justify-between">
+                <h1 className="text-[clamp(2rem,3.2vw,3.2rem)] font-light tracking-tight">Votre panier</h1>
+                <p className="text-[clamp(0.95rem,1.4vw,1.25rem)] text-[#8d895e]">{getCartCount(items)} articles</p>
               </div>
 
-              {items.length === 0 ? (
-                <div className="px-6 py-12 text-center">
-                  <p className="text-lg text-[#6b6959]">Votre panier est vide.</p>
-                  <Link
-                    href="/"
-                    className="mt-4 inline-block rounded-lg bg-primary px-5 py-3 text-sm font-bold uppercase"
-                  >
-                    Découvrir les ouvrages
-                  </Link>
+              <div className="overflow-hidden rounded-xl border border-[#e3e0d0] bg-white">
+                <div className="hidden grid-cols-[3fr_1fr_1fr_1fr_auto] gap-4 border-b border-[#ece9dc] px-6 py-4 text-sm font-semibold uppercase tracking-wider text-[#a8a382] md:grid">
+                  <p>Produit</p>
+                  <p>Prix</p>
+                  <p>Quantité</p>
+                  <p>Sous-total</p>
+                  <p></p>
                 </div>
-              ) : (
-                items.map((item) => (
-                  <div
-                    key={item.bookId}
-                    className="grid grid-cols-1 gap-4 border-b border-[#ece9dc] px-6 py-5 md:grid-cols-[2fr_1fr_1fr_1fr_auto] md:items-center"
-                  >
-                  <div className="flex items-start gap-4">
-                    <img
-                      src={item.coverImage}
-                      alt={`Couverture ${item.title}`}
-                      className="h-20 w-14 rounded object-cover sm:h-24 sm:w-16"
-                    />
-                    <div>
-                      <h3 className="text-xl font-bold leading-tight sm:text-2xl">{item.title}</h3>
-                      {item.authorName ? (
-                          <p className="text-base text-[#8d895e] sm:text-xl">{item.authorName}</p>
-                        ) : null}
-                      <span className="mt-2 inline-block rounded bg-[#ece9dc] px-2 py-1 text-xs font-semibold uppercase text-[#8d895e]">
-                          {item.saleType === "direct"
-                            ? "Achat direct"
-                            : item.saleType === "preorder"
-                              ? "Précommande"
-                              : "Crowdfunding"}
-                        </span>
-                      </div>
-                    </div>
 
-                    <p className="text-lg font-semibold sm:text-2xl md:text-3xl">{item.price.toFixed(2)} €</p>
-
-                    <div className="inline-flex w-fit items-center gap-4 rounded-lg border border-[#ddd8c4] px-3 py-2 text-base sm:text-xl">
-                    <button
-                    onClick={() => updateQuantity(item.bookId, -1, item.quantity)}
-                    className="font-bold"
+                {items.length === 0 ? (
+                  <div className="px-6 py-12 text-center">
+                    <p className="text-lg text-[#6b6959]">Votre panier est vide.</p>
+                    <Link
+                      href="/"
+                      className="mt-4 inline-block rounded-lg bg-primary px-5 py-3 text-sm font-bold uppercase"
                     >
-                    -
-                    </button>
-                    <span className="min-w-6 text-center font-semibold">{item.quantity}</span>
-                    <button
-                    onClick={() => updateQuantity(item.bookId, 1, item.quantity)}
-                    className="font-bold"
-                    >
-                    +
-                    </button>
-                    </div>
-
-                    <p className="text-lg font-semibold sm:text-2xl md:text-3xl">
-                      {(item.price * item.quantity).toFixed(2)} €
-                    </p>
-+
-
-                    <button
-                      onClick={() => onRemove(item.bookId)}
-                      className="text-[#a8a382] transition hover:text-[#181810]"
-                      aria-label="Supprimer"
-                    >
-                      <span className="material-symbols-outlined">delete</span>
-                    </button>
+                      Découvrir les ouvrages
+                    </Link>
                   </div>
-                ))
-              )}
-            </div>
+                ) : (
+                  items.map((item) => (
+                    <div
+                      key={item.bookId}
+                      className="grid grid-cols-1 gap-4 border-b border-[#ece9dc] px-6 py-5 md:grid-cols-[3fr_1fr_1fr_1fr_auto] md:items-center"
+                    >
+                      <div className="flex items-start gap-4">
+                        <div className="h-[120px] w-[80px] shrink-0 overflow-hidden sm:h-[135px] sm:w-[90px] border border-[#ece9dc] relative bg-white flex-shrink-0">
+                          <div className="absolute top-0 left-0 origin-top-left flex items-center justify-center p-2" style={{ width: '300px', height: '450px', transform: 'scale(0.3)' }}>
+                            <BookCover
+                              title={item.title}
+                              subtitle={item.subtitle}
+                              authorName={item.authorName}
+                              variant={item.coverVariant || "light"}
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-bold leading-tight sm:text-2xl">{item.title}</h3>
+                          {item.authorName ? (
+                            <p className="text-base text-[#8d895e] sm:text-xl font-medium">{item.authorName}</p>
+                          ) : null}
 
-            <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-base text-[#8d895e] sm:text-xl">
-              <Link href="/" className="inline-flex items-center gap-2 font-semibold hover:text-[#181810]">
-                <span className="material-symbols-outlined text-base">arrow_back</span>
-                Continuer les achats
-              </Link>
-              <button onClick={onClear} className="font-semibold hover:text-[#181810]">
-                Vider le panier
-              </button>
-            </div>
-          </section>
+                          <div className="mt-2 mb-2 flex items-center gap-2">
+                            <span className="inline-block rounded bg-[#ece9dc] px-2 py-1 text-xs font-semibold uppercase text-[#8d895e]">
+                              {item.saleType === "direct"
+                                ? "Achat direct"
+                                : item.saleType === "preorder"
+                                  ? "Précommande"
+                                  : "Crowdfunding"}
+                            </span>
+                          </div>
 
-          <aside className="rounded-xl border border-[#e3e0d0] bg-white p-5 sm:p-6">
-            <h2 className="mb-6 text-[clamp(1.6rem,2.6vw,2.4rem)] font-bold">Résumé de commande</h2>
+                          {item.description ? (
+                            <p className="text-sm text-[#6b6959] leading-relaxed line-clamp-2 md:line-clamp-3">
+                              {item.description.replace(/\u00A0/g, ' ')}
+                            </p>
+                          ) : null}
+                        </div>
+                      </div>
 
-            <label className="mb-2 block text-sm font-bold uppercase tracking-wider text-[#8d895e]">
-              Votre email
-            </label>
-            <div className="mb-5">
-              <input
-                type="email"
-                className="w-full rounded-lg border border-[#ddd8c4] bg-[#f8f8f5] px-3 py-2"
-                placeholder="votre@email.com"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-              />
-              {emailError ? (
-                <p className="mt-2 text-xs text-red-600">{emailError}</p>
-              ) : null}
-            </div>
+                      <p className="text-lg font-semibold sm:text-2xl md:text-3xl">{item.price.toFixed(2)} €</p>
 
-            <label className="mb-2 block text-sm font-bold uppercase tracking-wider text-[#8d895e]">
-              Code promo
-            </label>
-            <div className="mb-5 flex gap-2">
-              <input
-                className="w-full rounded-lg border border-[#ddd8c4] bg-[#f8f8f5] px-3 py-2"
-                placeholder="Entrez le code"
-                value={promo}
-                onChange={(event) => setPromo(event.target.value)}
-              />
-              <button
-                onClick={onApplyPromo}
-                className="rounded-lg bg-black px-4 py-2 font-bold text-white"
-              >
-                Appliquer
-              </button>
-            </div>
+                      <div className="inline-flex w-fit items-center gap-4 rounded-lg border border-[#ddd8c4] px-3 py-2 text-base sm:text-xl">
+                        <button
+                          onClick={() => updateQuantity(item.bookId, -1, item.quantity)}
+                          className="font-bold"
+                        >
+                          -
+                        </button>
+                        <span className="min-w-6 text-center font-semibold">{item.quantity}</span>
+                        <button
+                          onClick={() => updateQuantity(item.bookId, 1, item.quantity)}
+                          className="font-bold"
+                        >
+                          +
+                        </button>
+                      </div>
 
-            <div className="mb-5 border-t border-dashed border-[#e3e0d0]"></div>
+                      <p className="text-lg font-semibold sm:text-2xl md:text-3xl">
+                        {(item.price * item.quantity).toFixed(2)} €
+                      </p>
 
-            <div className="mb-6 space-y-3 text-[clamp(1rem,1.6vw,1.25rem)]">
-              <div className="flex justify-between">
-                <span className="text-[#8d895e]">Montant ouvrages</span>
-                <span className="font-semibold">{subtotal.toFixed(2)} €</span>
+                      <button
+                        onClick={() => onRemove(item.bookId)}
+                        className="text-[#a8a382] transition hover:text-[#181810]"
+                        aria-label="Supprimer"
+                      >
+                        <span className="material-symbols-outlined">delete</span>
+                      </button>
+                    </div>
+                  ))
+                )}
               </div>
-              {promoApplied ? (
-                <div className="flex justify-between text-green-700">
-                  <span>Réduction promo</span>
-                  <span>-{discount.toFixed(2)} €</span>
+
+              <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-base text-[#8d895e] sm:text-xl">
+                <Link href="/" className="inline-flex items-center gap-2 font-semibold hover:text-[#181810]">
+                  <span className="material-symbols-outlined text-base">arrow_back</span>
+                  Continuer les achats
+                </Link>
+                <button onClick={onClear} className="font-semibold hover:text-[#181810]">
+                  Vider le panier
+                </button>
+              </div>
+            </section>
+
+            <aside className="rounded-xl border border-[#e3e0d0] bg-white p-5 sm:p-6">
+              <h2 className="mb-6 text-[clamp(1.6rem,2.6vw,2.4rem)] font-bold">Résumé de commande</h2>
+
+              <label className="mb-2 block text-sm font-bold uppercase tracking-wider text-[#8d895e]">
+                Votre email
+              </label>
+              <div className="mb-5">
+                <input
+                  type="email"
+                  className="w-full rounded-lg border border-[#ddd8c4] bg-[#f8f8f5] px-3 py-2"
+                  placeholder="votre@email.com"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                />
+                {emailError ? (
+                  <p className="mt-2 text-xs text-red-600">{emailError}</p>
+                ) : null}
+              </div>
+
+              <label className="mb-2 block text-sm font-bold uppercase tracking-wider text-[#8d895e]">
+                Code promo
+              </label>
+              <div className="mb-5 flex gap-2">
+                <input
+                  className="w-full rounded-lg border border-[#ddd8c4] bg-[#f8f8f5] px-3 py-2"
+                  placeholder="Entrez le code"
+                  value={promo}
+                  onChange={(event) => setPromo(event.target.value)}
+                />
+                <button
+                  onClick={onApplyPromo}
+                  className="rounded-lg bg-black px-4 py-2 font-bold text-white"
+                >
+                  Appliquer
+                </button>
+              </div>
+
+              <div className="mb-5 border-t border-dashed border-[#e3e0d0]"></div>
+
+              <div className="mb-6 space-y-3 text-[clamp(1rem,1.6vw,1.25rem)]">
+                <div className="flex justify-between">
+                  <span className="text-[#8d895e]">Montant ouvrages</span>
+                  <span className="font-semibold">{subtotal.toFixed(2)} €</span>
                 </div>
-              ) : null}
-            </div>
-
-            <div className="mb-6 flex items-center justify-between text-[clamp(1.4rem,2.6vw,2.4rem)]">
-              <span className="font-bold">Total</span>
-              <span className="font-bold">{total.toFixed(2)} €</span>
-            </div>
-
-            <button
-              className="mb-4 flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-5 py-3 text-base font-bold disabled:opacity-60 sm:py-4 sm:text-lg md:text-xl"
-              disabled={items.length === 0 || checkoutLoading || !isValidEmail(email)}
-              onClick={() => void checkout()}
-            >
-              Procéder au paiement
-              <span className="material-symbols-outlined">arrow_forward</span>
-            </button>
-
-            {checkoutMessage ? <p className="mb-4 text-sm text-[#6b6959]">{checkoutMessage}</p> : null}
-            <div className="mb-4 rounded-lg border border-[#ece9dc] bg-[#f8f8f5] p-3">
-              <p className="mb-2 text-xs font-bold uppercase tracking-wider text-[#8d895e]">Mode de paiement</p>
-              <div className="flex flex-wrap gap-3 text-sm">
-                <label className="inline-flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="paymentProvider"
-                    checked={paymentProvider === "fedapay"}
-                    onChange={() => setPaymentProvider("fedapay")}
-                  />
-                  Paiement par Carte
-                </label>
-                <label className="inline-flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="paymentProvider"
-                    checked={paymentProvider === "paypal"}
-                    onChange={() => setPaymentProvider("paypal")}
-                  />
-                  PayPal
-                </label>
+                {promoApplied ? (
+                  <div className="flex justify-between text-green-700">
+                    <span>Réduction promo</span>
+                    <span>-{discount.toFixed(2)} €</span>
+                  </div>
+                ) : null}
               </div>
-            </div>
-            <p className="text-sm text-[#8d895e]">Paiement sécurisé SSL</p>
-            <p className="mt-1 text-sm text-[#8d895e]">Livraison offerte dès 50 €</p>
-          </aside>
-        </div>
+
+              <div className="mb-6 flex items-center justify-between text-[clamp(1.4rem,2.6vw,2.4rem)]">
+                <span className="font-bold">Total</span>
+                <span className="font-bold">{total.toFixed(2)} €</span>
+              </div>
+
+              <button
+                className="mb-4 flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-5 py-3 text-base font-bold disabled:opacity-60 sm:py-4 sm:text-lg md:text-xl"
+                disabled={items.length === 0 || checkoutLoading || !isValidEmail(email)}
+                onClick={() => void checkout()}
+              >
+                Procéder au paiement
+                <span className="material-symbols-outlined">arrow_forward</span>
+              </button>
+
+              {checkoutMessage ? <p className="mb-4 text-sm text-[#6b6959]">{checkoutMessage}</p> : null}
+              <div className="mb-4 rounded-lg border border-[#ece9dc] bg-[#f8f8f5] p-3">
+                <p className="mb-2 text-xs font-bold uppercase tracking-wider text-[#8d895e]">Mode de paiement</p>
+                <div className="flex flex-wrap gap-3 text-sm">
+                  <label className="inline-flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="paymentProvider"
+                      checked={paymentProvider === "fedapay"}
+                      onChange={() => setPaymentProvider("fedapay")}
+                    />
+                    Paiement par Carte
+                  </label>
+                  <label className="inline-flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="paymentProvider"
+                      checked={paymentProvider === "paypal"}
+                      onChange={() => setPaymentProvider("paypal")}
+                    />
+                    PayPal
+                  </label>
+                </div>
+              </div>
+              <p className="text-sm text-[#8d895e]">Paiement sécurisé SSL</p>
+              <p className="mt-1 text-sm text-[#8d895e]">Livraison offerte dès 50 €</p>
+            </aside>
+          </div>
         </div>
       </main>
 
