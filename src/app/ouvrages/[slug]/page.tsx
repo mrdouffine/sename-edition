@@ -166,7 +166,13 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
               />
             ) : (
               <>
-                <ContributionForm bookId={bookId} />
+                <Suspense fallback={
+                  <div className="mt-5 rounded-xl border border-[#e5e5e0] bg-white p-4">
+                    <p className="text-sm font-semibold text-[#6b6959]">Chargement du formulaire...</p>
+                  </div>
+                }>
+                  <ContributionForm bookId={bookId} />
+                </Suspense>
                 <CrowdfundingLivePanel
                   bookId={bookId}
                   initialGoal={book.fundingGoal ?? 0}

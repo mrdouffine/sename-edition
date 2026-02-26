@@ -19,7 +19,9 @@ type LoginResponse = {
   error?: string;
 };
 
-export default function LoginPage() {
+import { Suspense } from "react";
+
+function LoginForm() {
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -164,3 +166,19 @@ export default function LoginPage() {
     </main>
   );
 }
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center bg-background-light">
+        <div className="flex items-center gap-3">
+          <div className="size-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+          <p className="text-sm font-semibold text-[#6b6959]">Chargement...</p>
+        </div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
+  );
+}
+

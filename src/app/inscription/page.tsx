@@ -19,7 +19,9 @@ type SignupResponse = {
   error?: string;
 };
 
-export default function SignupPage() {
+import { Suspense } from "react";
+
+function SignupForm() {
   const searchParams = useSearchParams();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -31,9 +33,8 @@ export default function SignupPage() {
 
   const nextPath = normalizeNextPath(searchParams.get("next"), "/");
   const from = searchParams.get("from");
-  const loginHref = `/connexion?next=${encodeURIComponent(nextPath)}${
-    from ? `&from=${encodeURIComponent(from)}` : ""
-  }`;
+  const loginHref = `/connexion?next=${encodeURIComponent(nextPath)}${from ? `&from=${encodeURIComponent(from)}` : ""
+    }`;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -204,3 +205,19 @@ export default function SignupPage() {
     </main>
   );
 }
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center bg-background-light">
+        <div className="flex items-center gap-3">
+          <div className="size-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+          <p className="text-sm font-semibold text-[#6b6959]">Chargement...</p>
+        </div>
+      </div>
+    }>
+      <SignupForm />
+    </Suspense>
+  );
+}
+
