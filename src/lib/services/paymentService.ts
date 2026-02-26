@@ -359,7 +359,7 @@ export async function createFedapayTransaction(params: {
 
   const body: Record<string, unknown> = {
     amount: Math.round(params.amount * 100),
-    currency: params.currency,
+    currency: { iso: params.currency },
     description: params.description,
     customer_email: params.email,
     reference: params.orderId,
@@ -372,14 +372,13 @@ export async function createFedapayTransaction(params: {
 
   const headers: Record<string, string> = { "Content-Type": "application/json" };
 
-  // Use private/public key authentication if available
-  if (privateKey && publicKey) {
-    headers["FEDAPAY-PRIVATE-KEY"] = privateKey;
-    headers["FEDAPAY-PUBLIC-KEY"] = publicKey;
+  // Use private key authentication if available (FedaPay requires the secret key as Bearer token)
+  if (privateKey) {
+    headers.Authorization = `Bearer ${privateKey}`;
   } else if (token) {
     headers.Authorization = `Bearer ${token}`;
   } else {
-    headers["FEDAPAY-API-KEY"] = apiKey!;
+    headers.Authorization = `Bearer ${apiKey!}`;
   }
 
   const response = await fetchWithProxy(`${apiBase}/v1/transactions`, {
@@ -401,26 +400,30 @@ export async function createFedapayTransaction(params: {
     throw new ApiError(`Fedapay error: ${JSON.stringify(errorData)}`, 502);
   }
 
-  let payload: {
-    id?: string;
-    token?: string;
-    transaction_link?: { url?: string };
+  let parsedJson: {
+    "v1/transaction"?: {
+      id?: string | number;
+      payment_token?: string;
+      payment_url?: string;
+    };
   };
 
   try {
-    payload = JSON.parse(responseText);
+    parsedJson = JSON.parse(responseText);
   } catch {
     throw new ApiError("Invalid Fedapay transaction response", 502);
   }
 
-  if (!payload.id) {
-    throw new ApiError("Invalid Fedapay transaction response", 502);
+  const payload = parsedJson["v1/transaction"];
+
+  if (!payload || !payload.id) {
+    throw new ApiError("Invalid Fedapay transaction response structure", 502);
   }
 
   return {
-    transactionId: payload.id,
-    token: payload.token ?? payload.id,
-    paymentUrl: payload.transaction_link?.url ?? `${apiBase}/transactions/${payload.id}`
+    transactionId: payload.id.toString(),
+    token: payload.payment_token ?? payload.id.toString(),
+    paymentUrl: payload.payment_url ?? `${apiBase}/transactions/${payload.id}`
   };
 }
 
@@ -478,14 +481,13 @@ export async function getFedapayTransactionStatus(transactionId: string) {
 
   const headers: Record<string, string> = { "Content-Type": "application/json" };
 
-  // Use private/public key authentication if available
-  if (privateKey && publicKey) {
-    headers["FEDAPAY-PRIVATE-KEY"] = privateKey;
-    headers["FEDAPAY-PUBLIC-KEY"] = publicKey;
+  // Use private key authentication if available
+  if (privateKey) {
+    headers.Authorization = `Bearer ${privateKey}`;
   } else if (token) {
     headers.Authorization = `Bearer ${token}`;
   } else {
-    headers["FEDAPAY-API-KEY"] = apiKey!;
+    headers.Authorization = `Bearer ${apiKey!}`;
   }
 
   const response = await fetchWithProxy(`${apiBase}/v1/transactions/${encodeURIComponent(transactionId)}`, {
