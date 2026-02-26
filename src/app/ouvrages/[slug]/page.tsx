@@ -12,6 +12,7 @@ import { getFundingProgress, getSaleStatus, isOutOfStock } from "@/lib/domain/bo
 import { notFound } from "next/navigation";
 import BookDetailTabs from "@/components/BookDetailTabs";
 import BookCover from "@/components/BookCover";
+import { Suspense } from "react";
 
 export default async function BookDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

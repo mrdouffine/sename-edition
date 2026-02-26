@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, Suspense, useEffect, useMemo, useState } from "react";
 
 type ApiResult<T> = { data?: T; error?: string };
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const tokenFromQuery = useMemo(() => searchParams.get("token") ?? "", [searchParams]);
 
@@ -60,16 +60,16 @@ export default function ResetPasswordPage() {
     <main className="flex min-h-screen items-center justify-center bg-background-light px-4 py-10 sm:px-6 sm:py-12">
       <div className="w-full max-w-md rounded-2xl border border-[#e5e5e0] bg-white p-6 shadow-sm sm:p-8">
         <div className="flex items-center gap-3 justify-center">
-            <div className="flex size-8 items-center justify-center rounded-full bg-black text-primary">
-              <span className="material-symbols-outlined text-xl">menu_book</span>
-            </div>
-            <div>
-              <h1 className="text-base font-extrabold uppercase leading-tight tracking-tight text-[#181810] sm:text-lg">
-                SENAME EDITION’S
-              </h1>
-            </div>
+          <div className="flex size-8 items-center justify-center rounded-full bg-black text-primary">
+            <span className="material-symbols-outlined text-xl">menu_book</span>
           </div>
-          <br />
+          <div>
+            <h1 className="text-base font-extrabold uppercase leading-tight tracking-tight text-[#181810] sm:text-lg">
+              SENAME EDITION’S
+            </h1>
+          </div>
+        </div>
+        <br />
         <h2 className="mb-2 text-[clamp(1.4rem,2.2vw,2rem)] font-black">Réinitialiser le mot de passe</h2>
 
         <form className="space-y-4" onSubmit={onSubmit}>
@@ -138,5 +138,17 @@ export default function ResetPasswordPage() {
         </p>
       </div>
     </main>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center bg-background-light">
+        <p className="text-sm font-semibold text-[#6b6959]">Chargement...</p>
+      </div>
+    }>
+      <ResetPasswordForm />
+    </Suspense>
   );
 }

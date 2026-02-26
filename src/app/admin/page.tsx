@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, Suspense, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { fetchWithAuth } from "@/lib/api/client";
 import { clearAuthToken, getSessionFromToken } from "@/lib/auth/client";
@@ -122,7 +122,7 @@ const MENU: Array<{ key: Section; label: string; icon: string; href: string }> =
   { key: "marketing", label: "Marketing", icon: "local_offer", href: "/admin/marketing" }
 ];
 
-export default function AdminPage() {
+function AdminPageContent() {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -400,15 +400,15 @@ export default function AdminPage() {
       ) {
         setError(
           statsPayload.error ||
-            usersPayload.error ||
-            ordersPayload.error ||
-            contributionsPayload.error ||
-            paymentsPayload.error ||
-            booksPayload.error ||
-            promosPayload.error ||
-            auditPayload.error ||
-            "Erreur de chargement admin"
-          );
+          usersPayload.error ||
+          ordersPayload.error ||
+          contributionsPayload.error ||
+          paymentsPayload.error ||
+          booksPayload.error ||
+          promosPayload.error ||
+          auditPayload.error ||
+          "Erreur de chargement admin"
+        );
         setLoading(false);
         return;
       }
@@ -770,11 +770,10 @@ export default function AdminPage() {
               <Link
                 key={item.key}
                 href={item.href}
-                className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-semibold transition ${
-                  activeSection === item.key
-                    ? "bg-primary text-black"
-                    : "text-[#4b5563] hover:bg-[#f4f5f7]"
-                }`}
+                className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-semibold transition ${activeSection === item.key
+                  ? "bg-primary text-black"
+                  : "text-[#4b5563] hover:bg-[#f4f5f7]"
+                  }`}
               >
                 <span className="material-symbols-outlined text-lg">{item.icon}</span>
                 <span>{item.label}</span>
@@ -882,21 +881,21 @@ export default function AdminPage() {
                   </div>
 
                   <div className="rounded-2xl border border-[#e5e7eb] bg-white p-6">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h2 className="text-2xl font-black">Commandes récentes</h2>
-                          <p className="text-sm text-[#6b7280]">
-                            {pendingOrdersCount} commande(s) en attente — focus sur les 4 dernières commandes
-                          </p>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => void router.push("/admin/orders")}
-                          className="text-xs font-bold text-[#6b7280] uppercase"
-                        >
-                          Voir tout
-                        </button>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h2 className="text-2xl font-black">Commandes récentes</h2>
+                        <p className="text-sm text-[#6b7280]">
+                          {pendingOrdersCount} commande(s) en attente — focus sur les 4 dernières commandes
+                        </p>
                       </div>
+                      <button
+                        type="button"
+                        onClick={() => void router.push("/admin/orders")}
+                        className="text-xs font-bold text-[#6b7280] uppercase"
+                      >
+                        Voir tout
+                      </button>
+                    </div>
                     <div className="mt-4 overflow-x-auto">
                       <table className="w-full text-left text-sm">
                         <thead className="text-xs uppercase tracking-wider text-[#6b7280]">
@@ -1451,11 +1450,10 @@ export default function AdminPage() {
                           key={promo.id}
                           type="button"
                           onClick={() => void togglePromoActive(promo)}
-                          className={`rounded border px-2 py-1 text-xs font-semibold ${
-                            promo.active
-                              ? "border-green-200 text-green-700"
-                              : "border-[#d8d7d0] text-[#6b7280]"
-                          }`}
+                          className={`rounded border px-2 py-1 text-xs font-semibold ${promo.active
+                            ? "border-green-200 text-green-700"
+                            : "border-[#d8d7d0] text-[#6b7280]"
+                            }`}
                         >
                           {promo.active ? "Actif" : "Inactif"}
                         </button>
@@ -1475,6 +1473,21 @@ export default function AdminPage() {
         </section>
       </div>
     </main>
+  );
+}
+
+export default function AdminPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center bg-[#f3f4f6]">
+        <div className="flex items-center gap-3">
+          <div className="size-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+          <p className="text-sm font-semibold text-[#6b7280] uppercase tracking-wide">Administration en chargement...</p>
+        </div>
+      </div>
+    }>
+      <AdminPageContent />
+    </Suspense>
   );
 }
 

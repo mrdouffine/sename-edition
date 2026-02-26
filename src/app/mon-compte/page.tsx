@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { clearAuthToken } from "@/lib/auth/client";
 import { fetchWithAuth } from "@/lib/api/client";
 import { useSearchParams } from "next/navigation";
@@ -114,7 +114,7 @@ const contributionStatusLabel: Record<MyContribution["status"], string> = {
   refunded: "Remboursée"
 };
 
-export default function AccountPage() {
+function AccountPageContent() {
   const searchParams = useSearchParams();
   const requestedSection = searchParams.get("section");
   const [activeSection, setActiveSection] = useState<Section>(() =>
@@ -650,8 +650,8 @@ export default function AccountPage() {
                   key={tab.key}
                   onClick={() => setActiveSection(tab.key as typeof activeSection)}
                   className={`rounded-full px-4 py-2 text-xs font-bold ${activeSection === tab.key
-                      ? "bg-primary text-[#181810]"
-                      : "bg-white border border-[#e5e5e0] text-[#181810]"
+                    ? "bg-primary text-[#181810]"
+                    : "bg-white border border-[#e5e5e0] text-[#181810]"
                     }`}
                 >
                   {tab.label}
@@ -1548,5 +1548,20 @@ export default function AccountPage() {
         </div>
       ) : null}
     </main>
+  );
+}
+
+export default function AccountPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center bg-[#f8f8f5]">
+        <div className="flex items-center gap-3">
+          <div className="size-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+          <p className="text-sm font-semibold text-[#6b6959]">Chargement de votre compte...</p>
+        </div>
+      </div>
+    }>
+      <AccountPageContent />
+    </Suspense>
   );
 }

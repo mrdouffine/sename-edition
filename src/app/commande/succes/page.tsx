@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { fetchWithAuth } from "@/lib/api/client";
 import { clearCartItems } from "@/lib/cart/client";
 
-export default function CommandeSuccesPage() {
+function CommandeSuccesContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [message, setMessage] = useState("Votre commande est créée avec succès et reste en attente de paiement.");
@@ -72,5 +72,17 @@ export default function CommandeSuccesPage() {
         </Link>
       </div>
     </main>
+  );
+}
+
+export default function CommandeSuccesPage() {
+  return (
+    <Suspense fallback={
+      <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col items-center justify-center px-4 py-10 text-center sm:px-6 sm:py-12">
+        <p className="text-sm font-semibold text-[#6b6959]">Finalisation de la commande...</p>
+      </main>
+    }>
+      <CommandeSuccesContent />
+    </Suspense>
   );
 }
