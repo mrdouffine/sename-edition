@@ -435,6 +435,7 @@ function AdminPageContent() {
   }
 
   useEffect(() => {
+    // Initial data load for admin dashboard
     void loadAdminData();
   }, [loadAdminData]);
 
