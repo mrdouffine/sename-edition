@@ -1,5 +1,8 @@
 import type { BookDocument } from "@/models/Book";
 
+// Base Cloudinary URL for cloud: dw7mr4ob0
+const CDN = "https://res.cloudinary.com/dw7mr4ob0/image/upload";
+
 export const mockBooks = [
   {
     title: "décoloniser le Futur",
@@ -8,7 +11,7 @@ export const mockBooks = [
     description: "Un ouvrage majeur sur la décolonisation de la pensée et du futur dans le contexte des carnets de confinement.",
     price: 35,
     saleType: "preorder",
-    coverImage: "https://res.cloudinary.com/dw7mr4ob0/image/upload/v1740564177/livreo/decoloniser_le_futur.jpg",
+    coverImage: `${CDN}/1_xqp956`,
     galleryImages: [],
     authorName: "sename",
     tags: ["featured", "essai"]
@@ -20,7 +23,7 @@ export const mockBooks = [
     description: "Poésie et réflexion sur l'éveil et la lumière intérieure.",
     price: 25,
     saleType: "direct",
-    coverImage: "https://res.cloudinary.com/dw7mr4ob0/image/upload/v1740564177/livreo/centre_de_flammes.jpg",
+    coverImage: `${CDN}/2_yd4jhw`,
     galleryImages: [],
     authorName: "sename",
     tags: ["poésie"]
@@ -32,7 +35,7 @@ export const mockBooks = [
     description: "Exploration des chantiers poétiques et des mouvements de l'esprit.",
     price: 30,
     saleType: "preorder",
-    coverImage: "https://res.cloudinary.com/dw7mr4ob0/image/upload/v1740564177/livreo/girations.jpg",
+    coverImage: `${CDN}/3_xrtktf`,
     galleryImages: [],
     authorName: "sename",
     tags: ["poésie"]
@@ -46,7 +49,7 @@ export const mockBooks = [
     saleType: "crowdfunding",
     fundingGoal: 15000,
     fundingRaised: 8500,
-    coverImage: "https://res.cloudinary.com/dw7mr4ob0/image/upload/v1740564177/livreo/cosmo_architecture.jpg",
+    coverImage: `${CDN}/4_irxhxb`,
     galleryImages: [],
     authorName: "sename",
     tags: ["architecture"]
@@ -60,7 +63,7 @@ export const mockBooks = [
     saleType: "crowdfunding",
     fundingGoal: 12000,
     fundingRaised: 4200,
-    coverImage: "https://res.cloudinary.com/dw7mr4ob0/image/upload/v1740564177/livreo/architecture_afrique.jpg",
+    coverImage: `${CDN}/3_xrtktf`,
     galleryImages: [],
     authorName: "sename",
     tags: ["architecture"]
@@ -74,7 +77,7 @@ export const mockBooks = [
     saleType: "crowdfunding",
     fundingGoal: 10000,
     fundingRaised: 6000,
-    coverImage: "https://res.cloudinary.com/dw7mr4ob0/image/upload/v1740564177/livreo/esthetiques_feminin.jpg",
+    coverImage: `${CDN}/4_irxhxb`,
     galleryImages: [],
     authorName: "sename",
     tags: ["arts"]
@@ -88,9 +91,10 @@ export const mockBooks = [
     saleType: "crowdfunding",
     fundingGoal: 5000,
     fundingRaised: 1200,
-    coverImage: "https://res.cloudinary.com/dw7mr4ob0/image/upload/v1740564177/livreo/rencontres.jpg",
+    coverImage: `${CDN}/1_xqp956`,
     galleryImages: [],
     authorName: "sename",
     tags: ["littérature"]
   }
 ] as unknown as BookDocument[];
+

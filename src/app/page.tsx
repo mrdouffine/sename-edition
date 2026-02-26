@@ -15,12 +15,14 @@ export default async function Home() {
     listBooksByType("crowdfunding"),
     getHomeFeaturedBook()
   ]);
+
   return (
-    <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+    <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-[#F3F4F6]">
+      {/* Header / Navbar */}
       <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between border-b border-solid border-[#e5e4e0] bg-white px-3 py-3 sm:px-6 sm:py-4 md:px-10 lg:px-20">
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="flex size-8 items-center justify-center rounded-full bg-black text-primary">
-            <span className="material-symbols-outlined text-xl">menu_book</span>
+            <span className="material-symbols-outlined text-xl text-[#FACC15]">menu_book</span>
           </div>
           <h2 className="max-w-[38vw] truncate text-sm font-extrabold uppercase leading-tight tracking-tight text-[#181810] sm:max-w-none sm:text-lg">
             SENAME EDITION’S
@@ -33,290 +35,251 @@ export default async function Home() {
       </header>
 
       <main className="mx-auto w-full max-w-[1440px] flex-1 px-4 pb-28 pt-24 sm:px-6 sm:pb-32 sm:pt-28 md:px-10 lg:px-12">
-        <section className="mb-16 grid grid-cols-1 items-center gap-10 lg:mb-20 lg:grid-cols-2 lg:gap-12">
+        {/* Hero Section */}
+        <section className="mb-24 grid grid-cols-1 items-center gap-10 lg:mb-32 lg:grid-cols-2 lg:gap-12">
           <div className="flex flex-col gap-8">
-            <h1 className="text-[clamp(2.2rem,3.6vw,4.6rem)] font-black leading-[1.1] tracking-tighter text-[#181810]">
+            <h1 className="text-[clamp(2.5rem,4vw,5rem)] font-black leading-[1.05] tracking-tighter text-[#181810]">
               Essais, littérature, arts... <br />
               <span className="text-gray-400">Conférences & cours.</span>
             </h1>
-            <p className="max-w-xl text-[clamp(1rem,1.4vw,1.2rem)] leading-relaxed text-[#4a4a40]">
+            <p className="max-w-xl text-[clamp(1.1rem,1.5vw,1.3rem)] leading-relaxed text-[#4b5563]">
               Conçu pour rendre possible le financement, la production et la
               diffusion de chantiers intellectuels de{" "}
-              <span className="font-semibold">Seydou Koffi Abodjinou</span> sous
+              <span className="font-bold border-b-2 border-primary">Seydou Koffi Abodjinou</span> sous
               toutes formes imprimées ou audiovisuelles.
             </p>
-            <p className="max-w-xl text-[clamp(0.9rem,1.1vw,1rem)] leading-relaxed text-[#4a4a40]">
+            <p className="max-w-xl text-[clamp(0.9rem,1.1vw,1rem)] leading-relaxed text-[#6b7280]">
               Les gains financent les engagements de l'association L'Africaine
               d'architecture.
             </p>
-            <button className="group flex w-fit items-center justify-center gap-3 rounded-full bg-primary px-6 py-3 text-sm font-extrabold text-black transition-all hover:shadow-xl sm:px-8 sm:py-4 sm:text-base">
+            <button className="group flex w-fit items-center justify-center gap-3 rounded-full bg-primary px-8 py-4 text-base font-black text-black transition-all hover:shadow-xl sm:px-10 sm:py-5">
               <span>Catalogue d'ouvrages + Enseignements</span>
             </button>
           </div>
 
-          <div className="relative flex items-center justify-center">
-            <div className="flex items-center justify-center">
+          {/* Hero right column — matches reference screenshot exactly */}
+          <div className="relative flex items-center justify-center py-10">
+            {/* Dot grid decoration — top left */}
+            <div
+              className="absolute top-4 left-4 w-20 h-20 z-10"
+              style={{
+                background: "radial-gradient(circle, #FACC15 1.5px, transparent 1.5px)",
+                backgroundSize: "8px 8px"
+              }}
+            />
+
+            {/* Striped circle decoration — bottom left */}
+            <div className="absolute bottom-4 left-10 w-24 h-24 rounded-full overflow-hidden z-10"
+              style={{
+                background: "repeating-linear-gradient(45deg, #FACC15, #FACC15 2px, transparent 2px, transparent 10px)"
+              }}
+            />
+
+            {/* White background card */}
+            <div className="relative bg-white shadow-xl" style={{ width: 480, height: 520 }}>
+              {/* Big yellow circle — positioned to be centered-right, partially cropped */}
+              <div
+                className="absolute rounded-full bg-primary"
+                style={{
+                  width: 360,
+                  height: 360,
+                  top: "50%",
+                  right: -30,
+                  transform: "translateY(-50%)"
+                }}
+              >
+                {/* White hole in center */}
+                <div
+                  className="absolute bg-white rounded-full"
+                  style={{
+                    width: 130,
+                    height: 130,
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)"
+                  }}
+                />
+              </div>
+
+              {/* Portrait image — on top of circle */}
               <img
-                alt="Portrait"
-                className="max-h-[20rem] w-full max-w-full object-contain sm:max-h-[26rem] md:max-h-[32rem]"
+                alt="Portrait de Seydou Koffi Abodjinou"
+                className="absolute bottom-0 left-0 h-full object-contain object-bottom z-10"
+                style={{ maxHeight: "100%", maxWidth: "90%" }}
                 src="/images/image.png"
-                style={{ background: 'none', display: 'block' }}
               />
             </div>
           </div>
         </section>
 
-        <section className="mb-16 sm:mb-20">
+        {/* Separator Line */}
+        <div className="mb-16">
+          <h2 className="text-xl font-black uppercase tracking-[0.2em] text-gray-800 flex items-center gap-4">
+            *OUVRAGES <span className="text-gray-300 flex-1 overflow-hidden whitespace-nowrap tracking-[0.3em]">................................................................................................................................................................................................</span>
+          </h2>
+        </div>
+
+        {/* Section A la une */}
+        <section className="mb-32">
           <div className="mb-12">
-            <h2 className="text-xl font-black uppercase tracking-[0.2em] text-gray-800">
-              *OUVRAGES <span className="text-gray-300">{'................................................................................'}</span>
+            <h2 className="bg-primary inline-block px-4 py-1 text-2xl font-black uppercase tracking-tight text-black sm:text-3xl">
+              A la une :
             </h2>
           </div>
 
-          <div className="mb-8 flex items-center gap-4">
-            <h3 className="bg-yellow-200 px-4 py-1 text-2xl font-black uppercase tracking-tight text-black sm:text-3xl">
-              A la une :
-            </h3>
-          </div>
-          {featuredBook ? (
-            <div className="relative flex min-h-[360px] flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm sm:min-h-[420px] md:min-h-[450px] md:flex-row">
-              <div className="flex w-full items-center justify-center overflow-hidden bg-gray-50 p-6 sm:p-10 md:w-1/2 md:p-12">
-                <div className="relative h-72 w-52 shadow-2xl transition-transform duration-500 hover:scale-105 sm:h-80 sm:w-60 md:h-96 md:w-64">
+          {featuredBook && (
+            <div className="flex flex-col items-center justify-center">
+              <Link href={`/ouvrages/${featuredBook.slug}`} className="group relative transition-all duration-500 hover:scale-[1.02]">
+                <div className="border-[12px] border-primary shadow-2xl bg-white p-1">
                   <img
-                    alt={`Couverture de ${featuredBook.title}`}
-                    className="h-full w-full rounded-sm object-cover"
+                    alt={featuredBook.title}
+                    className="max-h-[70vh] w-auto object-contain"
                     src={featuredBook.coverImage}
                   />
                 </div>
-              </div>
-              <div className="flex w-full flex-col justify-center gap-5 bg-[#fafafa] p-6 sm:gap-6 sm:p-10 md:w-1/2 md:p-16">
-                <span className="w-fit rounded bg-primary/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-black">
-                  Vedette
-                </span>
-                <h3 className="text-2xl font-black leading-tight sm:text-3xl md:text-4xl">{featuredBook.title}</h3>
-                <p className="text-base leading-relaxed text-[#8d895e] sm:text-lg">
-                  {(featuredBook.description ?? "").slice(0, 220)}
-                  {(featuredBook.description ?? "").length > 220 ? "..." : ""}
-                </p>
-                <div className="flex flex-col gap-4 pt-4">
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-primary">check_circle</span>
-                    <span className="text-sm font-medium">{featuredBook.subtitle ?? "Édition spéciale"}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-primary">check_circle</span>
-                    <span className="text-sm font-medium">
-                      {featuredBook.authorName ?? "SENAME EDITION’S"}
-                    </span>
-                  </div>
-                </div>
-                <Link
-                  href={`/ouvrages/${featuredBook.slug}`}
-                  className="mt-4 inline-flex w-fit rounded-lg bg-primary px-6 py-3 text-sm font-bold text-black transition-all hover:brightness-105 sm:px-10"
-                >
-                  Découvrir l&apos;ouvrage
-                </Link>
-              </div>
+              </Link>
+              {/* Short line separator below featured image as per screenshot 4 */}
+              <div className="mt-20 w-48 h-[2px] bg-black opacity-40"></div>
             </div>
-          ) : null}
+          )}
         </section>
 
-        <section className="mb-16 sm:mb-20">
-          <h3 className="mb-12 bg-yellow-200 px-4 py-1 text-2xl font-black uppercase tracking-tight text-black sm:text-3xl">
-            Ouvrages disponibles :
-          </h3>
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="group flex flex-col items-center gap-4 rounded-xl p-6 transition-all sm:p-8">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-yellow-400 shadow-md">
-                <span className="material-symbols-outlined text-4xl text-black">
-                  diamond
-                </span>
-              </div>
-              <p className="text-center text-lg font-medium text-gray-800">
-                Disponible en <span className="font-bold">Acquisition</span>
-              </p>
-            </div>
+        {/* Header for Category sections */}
+        <div className="mb-24">
+          <h2 className="bg-primary inline-block px-4 py-1 text-2xl font-black uppercase tracking-tight text-black sm:text-3xl">
+            OUVRAGES DISPONIBLES :
+          </h2>
+        </div>
 
-            <div className="group flex flex-col items-center gap-4 rounded-xl p-6 transition-all sm:p-8">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-yellow-400 shadow-md">
-                <span className="material-symbols-outlined text-4xl text-black">
-                  hourglass_empty
-                </span>
-              </div>
-              <p className="text-center text-lg font-medium text-gray-800">
-                Disponible en <span className="font-bold">Pré-commande</span>
-              </p>
+        {/* Section Acquisition */}
+        <section className="mb-40">
+          <div className="flex flex-col items-center gap-6 mb-16 px-4 text-center">
+            <div className="flex h-24 w-24 items-center justify-center rounded-full bg-primary shadow-lg border-2 border-white">
+              <span className="material-symbols-outlined text-5xl text-black">diamond</span>
             </div>
+            <p className="text-lg font-medium text-gray-900">
+              Disponible en <span className="font-bold uppercase tracking-tight">Acquisition</span>
+            </p>
+          </div>
 
-            <div className="group flex flex-col items-center gap-4 rounded-xl p-6 transition-all sm:p-8">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-yellow-400 shadow-md">
-                <span className="material-symbols-outlined text-4xl text-black">
-                  psychology
-                </span>
+          <div className="grid grid-cols-1 gap-20 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-items-center">
+            {books.map((book) => (
+              <div key={book.slug} className="group flex flex-col items-center">
+                <Link href={`/ouvrages/${book.slug}`} className="relative border-[12px] border-primary p-1 transition-transform hover:scale-105 shadow-xl bg-white">
+                  <img
+                    alt={book.title}
+                    className="h-[400px] w-auto object-contain"
+                    src={book.coverImage}
+                  />
+                </Link>
+                <div className="mt-4 flex flex-col items-center gap-2">
+                  <h4 className="font-black text-sm uppercase tracking-tight">{book.title}</h4>
+                  <AddToCartButton
+                    book={{
+                      bookId: String((book as any)._id ?? ""),
+                      slug: book.slug,
+                      title: book.title,
+                      authorName: book.authorName,
+                      coverImage: book.coverImage,
+                      price: book.price,
+                      saleType: book.saleType
+                    }}
+                    className="rounded bg-black px-4 py-2 text-[10px] font-black text-white hover:bg-primary hover:text-black transition-colors"
+                  />
+                </div>
               </div>
-              <p className="text-center text-lg font-medium text-gray-800">
-                Disponible en <span className="font-bold">financement participatif :</span>
-              </p>
-            </div>
+            ))}
           </div>
         </section>
 
-        <div className="space-y-20">
-          <section>
-            <div className="mb-12 flex flex-col items-center gap-6">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-yellow-400 shadow-md">
-                <span className="material-symbols-outlined text-4xl text-black">
-                  diamond
-                </span>
-              </div>
-              <p className="text-center text-lg font-medium text-gray-800">
-                Disponible en <span className="font-bold">Acquisition</span>
-              </p>
+        {/* Section Pre-commande */}
+        <section className="mb-40">
+          <div className="flex flex-col items-center gap-6 mb-16 px-4 text-center">
+            <div className="flex h-24 w-24 items-center justify-center rounded-full bg-primary shadow-lg border-2 border-white">
+              <span className="material-symbols-outlined text-5xl text-black">hourglass_empty</span>
             </div>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {books.map((book) => (
-                <div className="group" key={book.slug}>
-                  <Link href={`/ouvrages/${book.slug}`} className="block">
-                    <div className="relative mb-4 aspect-[3/4] overflow-hidden rounded-lg bg-gray-100 shadow-sm transition-all group-hover:shadow-xl">
-                      <img
-                        alt={`Couverture ${book.title}`}
-                        className="h-full w-full object-cover"
-                        src={book.coverImage}
-                      />
-                    </div>
-                    <h5 className="text-base font-bold transition-colors group-hover:text-primary">{book.title}</h5>
-                  </Link>
-                  <p className="text-xs text-gray-500">{book.subtitle}</p>
-                  <div className="mt-2">
-                    <AddToCartButton
-                      book={{
-                        bookId: String((book as { _id?: { toString(): string } })._id ?? ""),
-                        slug: book.slug,
-                        title: book.title,
-                        authorName: book.authorName,
-                        coverImage: book.coverImage,
-                        price: book.price,
-                        saleType: book.saleType
-                      }}
-                      className="rounded bg-primary px-4 py-2 text-xs font-bold text-black"
-                      disabled={!((book as { _id?: unknown })._id)}
-                    />
-                  </div>
-                  {(book as { _id?: unknown })._id ? (
-                    <WishlistButton bookId={String((book as { _id?: { toString(): string } })._id)} />
-                  ) : null}
+            <p className="text-lg font-medium text-gray-900">
+              Disponible en <span className="font-bold uppercase tracking-tight">Pré-commande</span>
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-20 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-items-center">
+            {preorders.map((book) => (
+              <div key={book.slug} className="group flex flex-col items-center">
+                <Link href={`/ouvrages/${book.slug}`} className="relative border-[12px] border-primary p-1 transition-transform hover:scale-105 shadow-xl bg-white">
+                  <img
+                    alt={book.title}
+                    className="h-[400px] w-auto object-contain"
+                    src={book.coverImage}
+                  />
+                  <div className="absolute top-2 right-2 bg-black text-white px-2 py-1 text-[8px] font-black uppercase tracking-tight">PRÉ-COMMANDE</div>
+                </Link>
+                <div className="mt-4 flex flex-col items-center gap-2">
+                  <h4 className="font-black text-sm uppercase tracking-tight">{book.title}</h4>
+                  <AddToCartButton
+                    book={{
+                      bookId: String((book as any)._id ?? ""),
+                      slug: book.slug,
+                      title: book.title,
+                      authorName: book.authorName,
+                      coverImage: book.coverImage,
+                      price: book.price,
+                      saleType: book.saleType
+                    }}
+                    className="rounded bg-black px-4 py-2 text-[10px] font-black text-white hover:bg-primary hover:text-black transition-colors"
+                  />
                 </div>
-              ))}
-            </div>
-          </section>
-
-          <section>
-            <div className="mb-12 flex flex-col items-center gap-6">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-yellow-400 shadow-md">
-                <span className="material-symbols-outlined text-4xl text-black">
-                  hourglass_empty
-                </span>
               </div>
-              <p className="text-center text-lg font-medium text-gray-800">
-                Disponible en <span className="font-bold">Pré-commande</span>
-              </p>
-            </div>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {preorders.map((book) => {
-                const content = (
-                  <>
-                    <div className="relative mb-4 aspect-[3/4] overflow-hidden rounded-lg bg-gray-100 shadow-sm transition-all group-hover:shadow-xl">
-                      <img
-                        alt={`Couverture ${book.title}`}
-                        className="h-full w-full object-cover"
-                        src={book.coverImage}
-                      />
-                      <div className="absolute right-2 top-2 rounded bg-black px-2 py-1 text-[10px] font-bold text-white">
-                        PRÉ-COMMANDE
-                      </div>
-                      {book.slug ? (
-                        <div className="absolute inset-0 bg-primary/10 opacity-0 transition-opacity group-hover:opacity-100"></div>
-                      ) : null}
-                    </div>
-                    <h5
-                      className={`text-base font-bold ${book.slug
-                        ? "underline decoration-primary decoration-2 transition-colors group-hover:text-primary"
-                        : ""
-                        }`}
-                    >
-                      {book.title}
-                    </h5>
-                    <p className="text-xs text-gray-500">{book.subtitle}</p>
-                  </>
-                );
+            ))}
+          </div>
+        </section>
 
-                if (book.slug) {
-                  return (
-                    <div className="group" key={book.slug}>
-                      <Link href={`/ouvrages/${book.slug}`}>{content}</Link>
-                      {(book as { _id?: unknown })._id ? (
-                        <WishlistButton bookId={String((book as { _id?: { toString(): string } })._id)} />
-                      ) : null}
-                    </div>
-                  );
-                }
-
-                return (
-                  <div className="group" key={book.slug}>
-                    {content}
-                    {(book as { _id?: unknown })._id ? (
-                      <WishlistButton bookId={String((book as { _id?: { toString(): string } })._id)} />
-                    ) : null}
-                  </div>
-                );
-              })}
+        {/* Section Crowdfunding */}
+        <section className="mb-40">
+          <div className="flex flex-col items-center gap-6 mb-16 px-4 text-center">
+            <div className="flex h-24 w-24 items-center justify-center rounded-full bg-primary shadow-lg border-2 border-white">
+              <span className="material-symbols-outlined text-5xl text-black">psychology</span>
             </div>
-          </section>
+            <p className="text-lg font-medium text-gray-900">
+              Disponible en <span className="font-bold uppercase tracking-tight">financement participatif :</span>
+            </p>
+          </div>
 
-          <section>
-            <div className="mb-12 flex flex-col items-center gap-6">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-yellow-400 shadow-md">
-                <span className="material-symbols-outlined text-4xl text-black">
-                  psychology
-                </span>
-              </div>
-              <p className="text-center text-lg font-medium text-gray-800">
-                Disponible en <span className="font-bold">financement participatif :</span>
-              </p>
-            </div>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {crowdfunding.map((project) => {
-                const funding = getFundingProgress(project);
-                return (
-                  <div className="group" key={project.slug}>
-                    <Link href={`/ouvrages/${project.slug}`} className="block">
-                      <div className="mb-4 aspect-[3/4] overflow-hidden rounded-lg bg-gray-100 shadow-sm transition-all group-hover:shadow-md">
-                        <img
-                          alt={`Couverture ${project.title}`}
-                          className="h-full w-full object-cover"
-                          src={project.coverImage}
-                        />
-                      </div>
-                      <h5 className="text-base font-bold transition-colors group-hover:text-primary">{project.title}</h5>
-                    </Link>
-                    <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-gray-200">
+          <div className="grid grid-cols-1 gap-20 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-items-center">
+            {crowdfunding.map((project) => {
+              const funding = getFundingProgress(project);
+              return (
+                <div key={project.slug} className="group flex flex-col items-center">
+                  <Link href={`/ouvrages/${project.slug}`} className="relative border-[12px] border-primary p-1 transition-transform hover:scale-105 shadow-xl bg-white">
+                    <img
+                      alt={project.title}
+                      className="h-[400px] w-auto object-contain"
+                      src={project.coverImage}
+                    />
+                  </Link>
+                  <div className="mt-4 w-full flex flex-col items-center gap-3">
+                    <h4 className="font-black text-sm uppercase tracking-tight">{project.title}</h4>
+                    <div className="w-48 h-1.5 overflow-hidden rounded-full bg-gray-200 border border-gray-300">
                       <div
                         className="h-full bg-primary"
                         style={{ width: `${funding.percent}%` }}
                       ></div>
                     </div>
-                    <p className="mt-1 text-[10px] font-bold uppercase">
+                    <p className="text-[10px] font-black uppercase tracking-tighter">
                       {funding.percent}% financé
                     </p>
-                    {(project as { _id?: unknown })._id ? (
-                      <WishlistButton bookId={String((project as { _id?: { toString(): string } })._id)} />
-                    ) : null}
+                    <Link
+                      href={`/ouvrages/${project.slug}`}
+                      className="rounded-full bg-black px-6 py-2 text-[10px] font-black text-white uppercase hover:bg-primary hover:text-black transition-all"
+                    >
+                      Soutenir le projet
+                    </Link>
                   </div>
-                );
-              })}
-            </div>
-          </section>
-        </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
       </main>
 
       <Footer />
