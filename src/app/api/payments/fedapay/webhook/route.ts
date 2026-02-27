@@ -54,3 +54,17 @@ export async function POST(req: NextRequest) {
     return handleApiError(err);
   }
 }
+
+export async function GET(req: NextRequest) {
+  const { searchParams, origin } = req.nextUrl;
+  const status = searchParams.get("status");
+  const orderId = searchParams.get("id"); // Sometimes FedaPay uses 'id' or other params in the return URL
+
+  // If we have status=approved or similar, consider it a success redirect
+  if (status === "approved" || status === "success" || status === "pending") {
+    return NextResponse.redirect(`${origin}/commande/succes?provider=fedapay&orderId=${orderId || ""}`);
+  }
+
+  // Otherwise treat as failure or unknown
+  return NextResponse.redirect(`${origin}/commande/echec?provider=fedapay`);
+}
