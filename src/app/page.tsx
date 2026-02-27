@@ -8,6 +8,9 @@ import CartNavButton from "@/components/CartNavButton";
 import BookCover from "@/components/BookCover";
 import { getFundingProgress } from "@/lib/domain/book";
 import { getHomeFeaturedBook, listBooksByType } from "@/lib/services/bookService";
+/*je fais mon import du composant juste ici*/
+import ScrollAnimations from "@/components/ScrollAnimations";
+
 
 export default async function Home() {
   const [books, preorders, crowdfunding, featuredBook] = await Promise.all([
@@ -36,26 +39,29 @@ export default async function Home() {
       </header>
 
       <main className="mx-auto w-full max-w-[1440px] flex-1 px-4 pb-28 pt-24 sm:px-6 sm:pb-32 sm:pt-28 md:px-10 lg:px-16">
-
+        <ScrollAnimations/>
         {/* ──────────────────────────────────────────────── */}
         {/* HERO SECTION                                    */}
         {/* ──────────────────────────────────────────────── */}
         <section className="mb-20 grid grid-cols-1 items-center gap-10 lg:mb-28 lg:grid-cols-2 lg:gap-16">
           <div className="flex flex-col gap-8">
-            <h1 className="text-[clamp(2.4rem,4vw,4.8rem)] font-black leading-[1.05] tracking-tighter text-[#181810]">
+            <h1 className="anim-hero-title text-[clamp(2.4rem,4vw,4.8rem)] font-black leading-[1.05] tracking-tighter text-[#181810]">
               Essais, littérature, arts... <br />
-              <span className="text-gray-400">Conférences & cours.</span>
+              <span className="anim-hero-sub text-gray-400">Conférences & cours.</span>
             </h1>
-            <p className="max-w-xl text-[clamp(1rem,1.4vw,1.25rem)] leading-relaxed text-[#4b5563]">
+            <p className="fade-up max-w-xl text-[clamp(1rem,1.4vw,1.25rem)] leading-relaxed text-[#4b5563]">
               Conçu pour rendre possible le financement, la production et la
               diffusion de chantiers intellectuels de{" "}
               <span className="font-bold border-b-2 border-primary">Seydou Koffi Abodjinou</span>{" "}
               sous toutes formes imprimées ou audiovisuelles.
             </p>
-            <p className="max-w-xl text-[clamp(0.9rem,1.1vw,1rem)] leading-relaxed text-[#6b7280]">
+            <p className="fade-up max-w-xl text-[clamp(0.9rem,1.1vw,1rem)] leading-relaxed text-[#6b7280]">
               Les gains financent les engagements de l'association L'Africaine d'architecture.
             </p>
-            <a href="#ouvrages" className="flex w-fit items-center gap-3 rounded-full bg-primary px-8 py-4 text-base font-black text-black transition-all hover:shadow-xl hover:scale-105">
+            <a
+              href="#ouvrages"
+              className="anim-hero-cta btn-cta flex w-fit items-center gap-3 rounded-full bg-primary px-8 py-4 text-base font-black text-black transition-all hover:shadow-xl hover:scale-105"
+            >
               Catalogue d'ouvrages + Enseignements
             </a>
           </div>
@@ -64,7 +70,7 @@ export default async function Home() {
           <div className="flex items-center justify-center">
             <img
               alt="Portrait de Seydou Koffi Abodjinou"
-              className="w-full max-w-[520px] h-auto object-contain"
+              className="hero-image w-full max-w-[520px] h-auto object-contain"
               src="/images/image.png"
             />
           </div>
@@ -128,14 +134,14 @@ export default async function Home() {
             <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary shadow-lg">
               <span className="material-symbols-outlined text-4xl text-black">diamond</span>
             </div>
-            <p className="text-lg text-gray-900">
+            <p className="fade-up text-lg text-gray-900">
               Disponible en <span className="font-bold uppercase">Acquisition</span>
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-14 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-14 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 books-grid">
             {books.map((book) => (
-              <div key={book.slug} className="group flex flex-col items-center">
+              <div key={book.slug} className="group flex flex-col items-center book-card">
                 <Link href={`/ouvrages/${book.slug}`} className="block w-full transition-transform duration-300 hover:scale-[1.03]">
                   <div className="border-[8px] border-primary shadow-lg mx-auto" style={{ maxWidth: 280 }}>
                     <BookCover
@@ -147,8 +153,8 @@ export default async function Home() {
                   </div>
                 </Link>
                 <div className="mt-6 flex flex-col items-center gap-3 text-center">
-                  <h4 className="font-black text-sm uppercase tracking-tight leading-tight">{book.title}</h4>
-                  <p className="text-xs text-gray-500 italic">{book.subtitle}</p>
+                  <h4 className="fade-up font-black text-sm uppercase tracking-tight leading-tight">{book.title}</h4>
+                  <p className="fade-up text-xs text-gray-500 italic">{book.subtitle}</p>
                   <AddToCartButton
                     book={{
                       bookId: String((book as any)._id ?? ""),
@@ -159,7 +165,7 @@ export default async function Home() {
                       price: book.price,
                       saleType: book.saleType,
                     }}
-                    className="rounded bg-black px-5 py-2 text-[10px] font-black text-white uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
+                    className="btn-cta rounded bg-black px-5 py-2 text-[10px] font-black text-white uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
                   />
                 </div>
               </div>
@@ -173,14 +179,14 @@ export default async function Home() {
             <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary shadow-lg">
               <span className="material-symbols-outlined text-4xl text-black">hourglass_empty</span>
             </div>
-            <p className="text-lg text-gray-900">
+            <p className="fade-up text-lg text-gray-900">
               Disponible en <span className="font-bold uppercase">Pré-commande</span>
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-14 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 gap-14 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto books-grid">
             {preorders.map((book) => (
-              <div key={book.slug} className="group flex flex-col items-center">
+              <div key={book.slug} className="group flex flex-col items-center book-card">
                 <Link href={`/ouvrages/${book.slug}`} className="block w-full transition-transform duration-300 hover:scale-[1.03]">
                   <div className="border-[8px] border-primary shadow-lg mx-auto" style={{ maxWidth: 280 }}>
                     <BookCover
@@ -192,8 +198,8 @@ export default async function Home() {
                   </div>
                 </Link>
                 <div className="mt-6 flex flex-col items-center gap-3 text-center">
-                  <h4 className="font-black text-sm uppercase tracking-tight leading-tight">{book.title}</h4>
-                  <p className="text-xs text-gray-500 italic">{book.subtitle}</p>
+                  <h4 className="fade-up font-black text-sm uppercase tracking-tight leading-tight">{book.title}</h4>
+                  <p className="fade-up text-xs text-gray-500 italic">{book.subtitle}</p>
                   <AddToCartButton
                     book={{
                       bookId: String((book as any)._id ?? ""),
@@ -204,7 +210,7 @@ export default async function Home() {
                       price: book.price,
                       saleType: book.saleType,
                     }}
-                    className="rounded bg-black px-5 py-2 text-[10px] font-black text-white uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
+                    className="btn-cta rounded bg-black px-5 py-2 text-[10px] font-black text-white uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
                   />
                 </div>
               </div>
@@ -218,16 +224,16 @@ export default async function Home() {
             <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary shadow-lg">
               <span className="material-symbols-outlined text-4xl text-black">psychology</span>
             </div>
-            <p className="text-lg text-gray-900">
+            <p className="fade-up text-lg text-gray-900">
               Disponible en <span className="font-bold uppercase">financement participatif :</span>
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-14 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-14 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 books-grid">
             {crowdfunding.map((project) => {
               const funding = getFundingProgress(project);
               return (
-                <div key={project.slug} className="group flex flex-col items-center">
+                <div key={project.slug} className="group flex flex-col items-center book-card">
                   <Link href={`/ouvrages/${project.slug}`} className="block w-full transition-transform duration-300 hover:scale-[1.03]">
                     <div className="border-[8px] border-primary shadow-lg mx-auto" style={{ maxWidth: 280 }}>
                       <BookCover
@@ -239,17 +245,21 @@ export default async function Home() {
                     </div>
                   </Link>
                   <div className="mt-6 flex flex-col items-center gap-3 text-center w-full" style={{ maxWidth: 280 }}>
-                    <h4 className="font-black text-sm uppercase tracking-tight leading-tight">{project.title}</h4>
-                    <p className="text-xs text-gray-500 italic">{project.subtitle}</p>
-                    <div className="w-full h-2 overflow-hidden rounded-full bg-gray-200 border border-gray-300">
-                      <div className="h-full bg-primary rounded-full" style={{ width: `${funding.percent}%` }} />
+                    <h4 className="fade-up font-black text-sm uppercase tracking-tight leading-tight">{project.title}</h4>
+                    <p className="fade-up text-xs text-gray-500 italic">{project.subtitle}</p>
+                    <div className="w-full h-2 overflow-hidden rounded-full bg-gray-200 border border-gray-300 funding-bar">
+                      <div
+                          className="h-full funding-fill bg-primary rounded-full"
+                          data-width={`${funding.percent}%`}
+                          style={{ width: "0%" }}
+                      />
                     </div>
                     <p className="text-[10px] font-black uppercase tracking-widest text-gray-600">
                       {funding.percent}% financé
                     </p>
                     <Link
                       href={`/ouvrages/${project.slug}`}
-                      className="rounded bg-black px-5 py-2 text-[10px] font-black text-white uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
+                      className="btn-cta rounded bg-black px-5 py-2 text-[10px] font-black text-white uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
                     >
                       Soutenir le projet
                     </Link>
@@ -259,7 +269,6 @@ export default async function Home() {
             })}
           </div>
         </section>
-
       </main>
 
       <Footer />
