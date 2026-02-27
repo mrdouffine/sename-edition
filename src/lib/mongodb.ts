@@ -24,7 +24,6 @@ export async function connectToDatabase() {
   }
 
   if (!cached.promise) {
-    console.log("[DB] Initializing new Mongoose connection to:", MONGODB_URI?.substring(0, 15) + "...");
     cached.promise = mongoose.connect(MONGODB_URI, {
       bufferCommands: false
     });
