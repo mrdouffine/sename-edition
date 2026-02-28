@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { saveAuthToken } from "@/lib/auth/client";
 import { normalizeNextPath } from "@/lib/auth/redirect";
+import { syncCartWithBackend } from "@/lib/cart/client";
 
 type LoginResponse = {
   data?: {
@@ -69,6 +70,7 @@ function LoginForm() {
       }
 
       saveAuthToken(payload.data.token, payload.data.user.role === "admin" ? "session" : "local");
+      await syncCartWithBackend();
       window.location.replace(payload.data.user.role === "admin" ? "/admin" : nextPath);
       return;
     } catch {

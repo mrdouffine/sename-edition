@@ -91,3 +91,34 @@ export function getCartCount(items: CartItem[]) {
 export function getCartSubtotal(items: CartItem[]) {
   return items.reduce((total, item) => total + item.price * item.quantity, 0);
 }
+
+export async function syncCartWithBackend() {
+  const items = getCartItems();
+  if (items.length === 0) {
+    return;
+  }
+
+  try {
+    const response = await fetch("/api/me/cart/sync", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        items: items.map((item) => ({
+          bookId: item.bookId,
+          quantity: item.quantity,
+        })),
+      }),
+    });
+
+    if (response.ok) {
+      // Once synced, we can keep the local ones or rely on the backend.
+      // But clearing them might be safer since we've already synced.
+      // However, the rest of the app relies on localStorage.
+      // So let's keep them in localStorage for now to avoid flickering.
+    }
+  } catch (error) {
+    console.error("Failed to sync cart with backend:", error);
+  }
+}

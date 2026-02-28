@@ -17,11 +17,9 @@ import {
 } from "@/lib/cart/client";
 import { fetchWithAuth } from "@/lib/api/client";
 import { clearAuthToken, getSessionFromToken } from "@/lib/auth/client";
-import { useRequireAuth } from "@/lib/auth/useRequireAuth";
 import BookCover from "@/components/BookCover";
 
 export default function PanierPage() {
-  const isAuthorized = useRequireAuth();
   const router = useRouter();
   const [items, setItems] = useState<CartItem[]>(() => getCartItems());
   const [email, setEmail] = useState("");
@@ -258,9 +256,6 @@ export default function PanierPage() {
     };
   }, [checkoutLoading, items, lastSavedCartSignature, subtotal]);
 
-  if (!isAuthorized) {
-    return null;
-  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background-light text-[#181810]">

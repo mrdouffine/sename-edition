@@ -36,13 +36,6 @@ export default function AddToCartButton({
   const [added, setAdded] = useState(false);
 
   function handleClick() {
-    const session = getSessionFromToken();
-    if (!session) {
-      const nextPath = normalizeNextPath("/panier", "/panier");
-      router.push(`/connexion?next=${encodeURIComponent(nextPath)}&from=cart`);
-      return;
-    }
-
     addToCart(book, quantity);
     setAdded(true);
     window.setTimeout(() => setAdded(false), 1500);

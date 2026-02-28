@@ -85,3 +85,42 @@ export async function addWishlistToCart(userId: string) {
   await cart.save();
   return { items: cart.items };
 }
+
+export async function syncCart(userId: string, items: Array<{ bookId: string; quantity: number }>) {
+  await connectToDatabase();
+  const cart = await CartModel.findOne({ user: userId });
+
+  const cartItems: CartItem[] = [];
+  for (const item of items) {
+    const book = await BookModel.findById(item.bookId).lean();
+    if (book) {
+      cartItems.push({
+        book: book._id,
+        quantity: Math.max(1, item.quantity),
+        unitPrice: book.price ?? 0,
+        title: book.title,
+        slug: book.slug,
+        coverImage: book.coverImage,
+        saleType: book.saleType as CartItem["saleType"]
+      });
+    }
+  }
+
+  if (!cart) {
+    const created = await CartModel.create({ user: userId, items: cartItems });
+    return { items: created.items };
+  }
+
+  // Merge items
+  for (const newItem of cartItems) {
+    const existing = cart.items.find((item) => item.book.toString() === newItem.book.toString());
+    if (existing) {
+      existing.quantity = Math.max(1, existing.quantity + newItem.quantity);
+    } else {
+      cart.items.push(newItem);
+    }
+  }
+
+  await cart.save();
+  return { items: cart.items };
+}

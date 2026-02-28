@@ -10,12 +10,7 @@ export default function CartNavButton() {
 
   useEffect(() => {
     const sync = () => {
-      const session = getSessionFromToken();
-      if (!session) {
-        setCount(0);
-      } else {
-        setCount(getCartItems().length);
-      }
+      setCount(getCartItems().length);
     };
     sync();
 
