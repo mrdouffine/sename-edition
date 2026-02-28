@@ -6,11 +6,9 @@ import AddToCartButton from "@/components/AddToCartButton";
 import WishlistButton from "@/components/WishlistButton";
 import CartNavButton from "@/components/CartNavButton";
 import BookCover from "@/components/BookCover";
+import ScrollAnimations from "@/components/ScrollAnimations";
 import { getFundingProgress } from "@/lib/domain/book";
 import { getHomeFeaturedBook, listBooksByType } from "@/lib/services/bookService";
-/*je fais mon import du composant juste ici*/
-import ScrollAnimations from "@/components/ScrollAnimations";
-
 
 export default async function Home() {
   const [books, preorders, crowdfunding, featuredBook] = await Promise.all([
@@ -22,6 +20,7 @@ export default async function Home() {
 
   return (
     <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-[#f5f5f0]">
+      <ScrollAnimations />
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between border-b border-[#e5e4e0] bg-white px-4 py-3 sm:px-6 sm:py-4 md:px-10 lg:px-20">
         <div className="flex items-center gap-3 sm:gap-4">
@@ -39,7 +38,7 @@ export default async function Home() {
       </header>
 
       <main className="mx-auto w-full max-w-[1440px] flex-1 px-4 pb-28 pt-24 sm:px-6 sm:pb-32 sm:pt-28 md:px-10 lg:px-16">
-        <ScrollAnimations/>
+
         {/* ──────────────────────────────────────────────── */}
         {/* HERO SECTION                                    */}
         {/* ──────────────────────────────────────────────── */}
@@ -47,21 +46,18 @@ export default async function Home() {
           <div className="flex flex-col gap-8">
             <h1 className="anim-hero-title text-[clamp(2.4rem,4vw,4.8rem)] font-black leading-[1.05] tracking-tighter text-[#181810]">
               Essais, littérature, arts... <br />
-              <span className="anim-hero-sub text-gray-400">Conférences & cours.</span>
+              <span className="text-gray-400">Conférences & cours.</span>
             </h1>
-            <p className="fade-up max-w-xl text-[clamp(1rem,1.4vw,1.25rem)] leading-relaxed text-[#4b5563]">
+            <p className="anim-hero-sub fade-up max-w-xl text-[clamp(1rem,1.4vw,1.25rem)] leading-relaxed text-[#4b5563]">
               Conçu pour rendre possible le financement, la production et la
               diffusion de chantiers intellectuels de{" "}
               <span className="font-bold border-b-2 border-primary">Seydou Koffi Abodjinou</span>{" "}
               sous toutes formes imprimées ou audiovisuelles.
             </p>
-            <p className="fade-up max-w-xl text-[clamp(0.9rem,1.1vw,1rem)] leading-relaxed text-[#6b7280]">
+            <p className="anim-hero-sub fade-up max-w-xl text-[clamp(0.9rem,1.1vw,1rem)] leading-relaxed text-[#6b7280]">
               Les gains financent les engagements de l'association L'Africaine d'architecture.
             </p>
-            <a
-              href="#ouvrages"
-              className="anim-hero-cta btn-cta flex w-fit items-center gap-3 rounded-full bg-primary px-8 py-4 text-base font-black text-black transition-all hover:shadow-xl hover:scale-105"
-            >
+            <a href="#ouvrages" className="anim-hero-cta btn-cta flex w-fit items-center gap-3 rounded-full bg-primary px-8 py-4 text-base font-black text-black transition-all hover:shadow-xl hover:scale-105">
               Catalogue d'ouvrages + Enseignements
             </a>
           </div>
@@ -79,7 +75,7 @@ export default async function Home() {
         {/* ──────────────────────────────────────────────── */}
         {/* *OUVRAGES SEPARATOR                             */}
         {/* ──────────────────────────────────────────────── */}
-        <div id="ouvrages" className="mb-14">
+        <div id="ouvrages" className="mb-14 fade-up">
           <h2 className="text-xl font-black uppercase tracking-[0.2em] text-gray-800 flex items-center gap-4">
             *OUVRAGES{" "}
             <span className="text-gray-300 flex-1 overflow-hidden whitespace-nowrap tracking-[0.3em]">
@@ -92,14 +88,14 @@ export default async function Home() {
         {/* A LA UNE                                        */}
         {/* ──────────────────────────────────────────────── */}
         <section className="mb-28">
-          <div className="mb-10">
+          <div className="mb-10 fade-up">
             <h2 className="bg-primary inline-block px-4 py-1 text-2xl font-black uppercase tracking-tight text-black sm:text-3xl">
               A la une :
             </h2>
           </div>
 
           {featuredBook && (
-            <div className="flex justify-center">
+            <div className="flex justify-center fade-up">
               <Link href={`/ouvrages/${featuredBook.slug}`} className="group transition-transform duration-500 hover:scale-[1.02]">
                 <div className="border-[10px] border-primary shadow-2xl" style={{ maxWidth: 420 }}>
                   <BookCover
@@ -122,7 +118,7 @@ export default async function Home() {
         {/* ──────────────────────────────────────────────── */}
         {/* OUVRAGES DISPONIBLES                            */}
         {/* ──────────────────────────────────────────────── */}
-        <div className="mb-20">
+        <div className="mb-20 fade-up">
           <h2 className="bg-primary inline-block px-4 py-1 text-2xl font-black uppercase tracking-tight text-black sm:text-3xl">
             Ouvrages disponibles :
           </h2>
@@ -130,18 +126,18 @@ export default async function Home() {
 
         {/* ── ACQUISITION ── */}
         <section className="mb-32">
-          <div className="flex flex-col items-center gap-4 mb-14">
+          <div className="flex flex-col items-center gap-4 mb-14 fade-up">
             <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary shadow-lg">
               <span className="material-symbols-outlined text-4xl text-black">diamond</span>
             </div>
-            <p className="fade-up text-lg text-gray-900">
+            <p className="text-lg text-gray-900">
               Disponible en <span className="font-bold uppercase">Acquisition</span>
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-14 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 books-grid">
+          <div className="books-grid grid grid-cols-1 gap-14 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {books.map((book) => (
-              <div key={book.slug} className="group flex flex-col items-center book-card">
+              <div key={book.slug} className="book-card group flex flex-col items-center">
                 <Link href={`/ouvrages/${book.slug}`} className="block w-full transition-transform duration-300 hover:scale-[1.03]">
                   <div className="border-[8px] border-primary shadow-lg mx-auto" style={{ maxWidth: 280 }}>
                     <BookCover
@@ -153,8 +149,8 @@ export default async function Home() {
                   </div>
                 </Link>
                 <div className="mt-6 flex flex-col items-center gap-3 text-center">
-                  <h4 className="fade-up font-black text-sm uppercase tracking-tight leading-tight">{book.title}</h4>
-                  <p className="fade-up text-xs text-gray-500 italic">{book.subtitle}</p>
+                  <h4 className="font-black text-sm uppercase tracking-tight leading-tight">{book.title}</h4>
+                  <p className="text-xs text-gray-500 italic">{book.subtitle}</p>
                   <AddToCartButton
                     book={{
                       bookId: String((book as any)._id ?? ""),
@@ -165,7 +161,7 @@ export default async function Home() {
                       price: book.price,
                       saleType: book.saleType,
                     }}
-                    className="btn-cta rounded bg-black px-5 py-2 text-[10px] font-black text-white uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
+                    className="anim-button btn-cta rounded bg-black px-5 py-2 text-[10px] font-black text-white uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
                   />
                 </div>
               </div>
@@ -175,18 +171,18 @@ export default async function Home() {
 
         {/* ── PRÉ-COMMANDE ── */}
         <section className="mb-32">
-          <div className="flex flex-col items-center gap-4 mb-14">
+          <div className="flex flex-col items-center gap-4 mb-14 fade-up">
             <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary shadow-lg">
               <span className="material-symbols-outlined text-4xl text-black">hourglass_empty</span>
             </div>
-            <p className="fade-up text-lg text-gray-900">
+            <p className="text-lg text-gray-900">
               Disponible en <span className="font-bold uppercase">Pré-commande</span>
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-14 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto books-grid">
+          <div className="books-grid grid grid-cols-1 gap-14 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
             {preorders.map((book) => (
-              <div key={book.slug} className="group flex flex-col items-center book-card">
+              <div key={book.slug} className="book-card group flex flex-col items-center">
                 <Link href={`/ouvrages/${book.slug}`} className="block w-full transition-transform duration-300 hover:scale-[1.03]">
                   <div className="border-[8px] border-primary shadow-lg mx-auto" style={{ maxWidth: 280 }}>
                     <BookCover
@@ -198,8 +194,8 @@ export default async function Home() {
                   </div>
                 </Link>
                 <div className="mt-6 flex flex-col items-center gap-3 text-center">
-                  <h4 className="fade-up font-black text-sm uppercase tracking-tight leading-tight">{book.title}</h4>
-                  <p className="fade-up text-xs text-gray-500 italic">{book.subtitle}</p>
+                  <h4 className="font-black text-sm uppercase tracking-tight leading-tight">{book.title}</h4>
+                  <p className="text-xs text-gray-500 italic">{book.subtitle}</p>
                   <AddToCartButton
                     book={{
                       bookId: String((book as any)._id ?? ""),
@@ -210,7 +206,7 @@ export default async function Home() {
                       price: book.price,
                       saleType: book.saleType,
                     }}
-                    className="btn-cta rounded bg-black px-5 py-2 text-[10px] font-black text-white uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
+                    className="anim-button btn-cta rounded bg-black px-5 py-2 text-[10px] font-black text-white uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
                   />
                 </div>
               </div>
@@ -220,20 +216,20 @@ export default async function Home() {
 
         {/* ── FINANCEMENT PARTICIPATIF ── */}
         <section className="mb-32">
-          <div className="flex flex-col items-center gap-4 mb-14">
+          <div className="flex flex-col items-center gap-4 mb-14 fade-up">
             <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary shadow-lg">
               <span className="material-symbols-outlined text-4xl text-black">psychology</span>
             </div>
-            <p className="fade-up text-lg text-gray-900">
+            <p className="text-lg text-gray-900">
               Disponible en <span className="font-bold uppercase">financement participatif :</span>
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-14 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 books-grid">
+          <div className="books-grid grid grid-cols-1 gap-14 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {crowdfunding.map((project) => {
               const funding = getFundingProgress(project);
               return (
-                <div key={project.slug} className="group flex flex-col items-center book-card">
+                <div key={project.slug} className="book-card group flex flex-col items-center">
                   <Link href={`/ouvrages/${project.slug}`} className="block w-full transition-transform duration-300 hover:scale-[1.03]">
                     <div className="border-[8px] border-primary shadow-lg mx-auto" style={{ maxWidth: 280 }}>
                       <BookCover
@@ -245,13 +241,13 @@ export default async function Home() {
                     </div>
                   </Link>
                   <div className="mt-6 flex flex-col items-center gap-3 text-center w-full" style={{ maxWidth: 280 }}>
-                    <h4 className="fade-up font-black text-sm uppercase tracking-tight leading-tight">{project.title}</h4>
-                    <p className="fade-up text-xs text-gray-500 italic">{project.subtitle}</p>
-                    <div className="w-full h-2 overflow-hidden rounded-full bg-gray-200 border border-gray-300 funding-bar">
+                    <h4 className="font-black text-sm uppercase tracking-tight leading-tight">{project.title}</h4>
+                    <p className="text-xs text-gray-500 italic">{project.subtitle}</p>
+                    <div className="funding-bar w-full h-2 overflow-hidden rounded-full bg-gray-200 border border-gray-300">
                       <div
-                          className="h-full funding-fill bg-primary rounded-full"
-                          data-width={`${funding.percent}%`}
-                          style={{ width: "0%" }}
+                        className="funding-fill h-full bg-primary rounded-full transition-none"
+                        data-width={funding.percent}
+                        style={{ width: "0%" }}
                       />
                     </div>
                     <p className="text-[10px] font-black uppercase tracking-widest text-gray-600">
@@ -259,7 +255,7 @@ export default async function Home() {
                     </p>
                     <Link
                       href={`/ouvrages/${project.slug}`}
-                      className="btn-cta rounded bg-black px-5 py-2 text-[10px] font-black text-white uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
+                      className="anim-button btn-cta rounded bg-black px-5 py-2 text-[10px] font-black text-white uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
                     >
                       Soutenir le projet
                     </Link>
@@ -269,6 +265,7 @@ export default async function Home() {
             })}
           </div>
         </section>
+
       </main>
 
       <Footer />
