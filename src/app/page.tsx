@@ -48,13 +48,21 @@ export default async function Home() {
               Essais, littérature, arts... <br />
               <span className="text-gray-400">Conférences & cours.</span>
             </h1>
+<<<<<<< Updated upstream
             <p className="anim-hero-sub fade-up max-w-xl text-[clamp(1rem,1.4vw,1.25rem)] leading-relaxed text-[#4b5563]">
+=======
+            <p className="anim-hero-sub max-w-xl text-[clamp(1rem,1.4vw,1.25rem)] leading-relaxed text-[#4b5563]">
+>>>>>>> Stashed changes
               Conçu pour rendre possible le financement, la production et la
               diffusion de chantiers intellectuels de{" "}
               <span className="font-bold border-b-2 border-primary">Seydou Koffi Abodjinou</span>{" "}
               sous toutes formes imprimées ou audiovisuelles.
             </p>
+<<<<<<< Updated upstream
             <p className="anim-hero-sub fade-up max-w-xl text-[clamp(0.9rem,1.1vw,1rem)] leading-relaxed text-[#6b7280]">
+=======
+            <p className="anim-hero-sub max-w-xl text-[clamp(0.9rem,1.1vw,1rem)] leading-relaxed text-[#6b7280]">
+>>>>>>> Stashed changes
               Les gains financent les engagements de l'association L'Africaine d'architecture.
             </p>
             <a href="#ouvrages" className="anim-hero-cta btn-cta flex w-fit items-center gap-3 rounded-full bg-primary px-8 py-4 text-base font-black text-black transition-all hover:shadow-xl hover:scale-105">
@@ -161,7 +169,11 @@ export default async function Home() {
                       price: book.price,
                       saleType: book.saleType,
                     }}
+<<<<<<< Updated upstream
                     className="anim-button btn-cta rounded bg-black px-5 py-2 text-[10px] font-black text-white uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
+=======
+                    className="anim-button rounded bg-black px-5 py-2 text-[10px] font-black text-white uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
+>>>>>>> Stashed changes
                   />
                 </div>
               </div>
@@ -206,7 +218,11 @@ export default async function Home() {
                       price: book.price,
                       saleType: book.saleType,
                     }}
+<<<<<<< Updated upstream
                     className="anim-button btn-cta rounded bg-black px-5 py-2 text-[10px] font-black text-white uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
+=======
+                    className="anim-button rounded bg-black px-5 py-2 text-[10px] font-black text-white uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
+>>>>>>> Stashed changes
                   />
                 </div>
               </div>
@@ -255,7 +271,11 @@ export default async function Home() {
                     </p>
                     <Link
                       href={`/ouvrages/${project.slug}`}
+<<<<<<< Updated upstream
                       className="anim-button btn-cta rounded bg-black px-5 py-2 text-[10px] font-black text-white uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
+=======
+                      className="anim-button rounded bg-black px-5 py-2 text-[10px] font-black text-white uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
+>>>>>>> Stashed changes
                     >
                       Soutenir le projet
                     </Link>

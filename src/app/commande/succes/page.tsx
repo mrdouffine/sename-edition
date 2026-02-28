@@ -12,50 +12,55 @@ function CommandeSuccesContent() {
   const [message, setMessage] = useState("Votre commande est créée avec succès et reste en attente de paiement.");
 
   useEffect(() => {
-    async function finalizeStripePayment() {
+    async function finalizePayment() {
       const sessionId = searchParams.get("session_id");
       const orderId = searchParams.get("orderId");
       const provider = searchParams.get("provider");
       const paid = searchParams.get("paid");
       const dashboardUrl = "/mon-compte?section=orders";
 
-      if (provider === "paypal" && paid === "1") {
+      // 1. Generic Success for non-Stripe providers that marked themselves as paid
+      if (paid === "1" || provider === "paypal" || provider === "fedapay") {
         clearCartItems();
-        router.replace(dashboardUrl);
+        // If we have a message or need to wait, we can stay on page, but usually we redirect to dashboard
+        setTimeout(() => router.replace(dashboardUrl), 3000);
         return;
       }
 
-      if (!orderId) {
-        return;
-      }
-      if (!sessionId) {
-        router.replace(`/commande/annulee?provider=stripe&orderId=${encodeURIComponent(orderId)}`);
-        return;
-      }
+      // 2. Stripe Specific Logic
+      if (provider === "stripe") {
+        if (!orderId) return;
 
-      const response = await fetchWithAuth("/api/payments/stripe/complete", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId, sessionId })
-      });
-      const payload = (await response.json()) as { error?: string };
-      if (!response.ok) {
-        const errorMessage = (payload.error ?? "").toLowerCase();
-        if (errorMessage.includes("not complete") || errorMessage.includes("not completed")) {
-          const reason = encodeURIComponent("Paiement échoué. Merci de réessayer.");
+        if (!sessionId) {
+          router.replace(`/commande/annulee?provider=stripe&orderId=${encodeURIComponent(orderId)}`);
+          return;
+        }
+
+        const response = await fetchWithAuth("/api/payments/stripe/complete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId, sessionId })
+        });
+
+        const payload = (await response.json()) as { error?: string };
+        if (!response.ok) {
+          const errorMessage = (payload.error ?? "").toLowerCase();
+          if (errorMessage.includes("not complete") || errorMessage.includes("not completed")) {
+            const reason = encodeURIComponent("Paiement échoué. Merci de réessayer.");
+            router.replace(`/commande/echec?reason=${reason}&orderId=${encodeURIComponent(orderId)}`);
+            return;
+          }
+          const reason = encodeURIComponent(payload.error ?? "Échec de validation Stripe.");
           router.replace(`/commande/echec?reason=${reason}&orderId=${encodeURIComponent(orderId)}`);
           return;
         }
-        const reason = encodeURIComponent(payload.error ?? "Échec de validation Stripe.");
-        router.replace(`/commande/echec?reason=${reason}&orderId=${encodeURIComponent(orderId)}`);
-        return;
-      }
 
-      clearCartItems();
-      router.replace(dashboardUrl);
+        clearCartItems();
+        router.replace(dashboardUrl);
+      }
     }
 
-    void finalizeStripePayment();
+    void finalizePayment();
   }, [router, searchParams]);
 
   return (
