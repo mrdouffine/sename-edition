@@ -70,43 +70,101 @@ rendre null lenis */
           });
           return;
         }
+
+        //j'ai essayé d'ajouter et d'ameliorer les anciennes anims que javais fait
+        const heroImg = document.querySelector(".hero-image") as HTMLElement | null;
+        if (heroImg instanceof HTMLElement) {
+          gsap.fromTo(heroImg, 
+            { x: 80, opacity: 0 }, 
+            { x: 0, opacity: 1, duration: 1.4, ease: "power4.out", delay: 0.2 }
+          );
+        }
+
+       
         gsap.fromTo(
           ".anim-hero-title",
           { y: 40, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.95, ease: "power4.out" }
+          { y: 0, opacity: 1, duration: 1.1, ease: "expo.out" }
         );
 
+       
         gsap.fromTo(
           ".anim-hero-sub",
           { y: 30, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.8, delay: 0.14, ease: "power3.out" }
+          { y: 0, opacity: 1, duration: 1, delay: 0.15, ease: "power3.out" }
         );
 
+       
         gsap.fromTo(
           ".anim-hero-cta",
-          { y: 8, opacity: 0, scale: 0.98 },
-          { y: 0, opacity: 1, scale: 1, duration: 0.6, delay: 0.28, ease: "power2.out" }
+          { y: 8, opacity: 0, scale: 0.96 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.8, delay: 0.3, ease: "back.out(1.2)" }
         );
 
-        const heroImg = document.querySelector(".hero-image") as HTMLElement | null;
+        // j'ai essayé un Parallaxe  sur l'image du hero
         if (heroImg instanceof HTMLElement) {
           gsap.to(heroImg, {
-            y: 40,
-            ease: "none",
+            y: 60,
+            ease: "power1.out",
             scrollTrigger: {
               trigger: heroImg,
               start: "top top",
               end: "bottom top",
-              scrub: 0.6,
+              scrub: 0.8,
             },
           });
         }
 
+        
+        const featuredTitle = Array.from(document.querySelectorAll("h2.bg-primary"))
+          .find(el => el.textContent?.includes("A la une"));
+        if (featuredTitle) {
+          gsap.fromTo(featuredTitle,
+            { x: -60, opacity: 0 },
+            {
+              x: 0,
+              opacity: 1,
+              duration: 1.2,
+              ease: "power4.out",
+              scrollTrigger: {
+                trigger: featuredTitle,
+                start: "top 90%",
+                toggleActions: "play none none reverse",
+              },
+            }
+          );
+        }
+
+        
+        const featuredSection = featuredTitle?.closest("section");
+        const featuredBookLink = featuredSection?.querySelector("a.group");
+        if (featuredBookLink) {
+          gsap.fromTo(featuredBookLink,
+            { y: 30, opacity: 0, scale: 0.96 },
+            {
+              y: 0,
+              opacity: 1,
+              scale: 1,
+              duration: 1.3,
+              ease: "power4.out",
+              scrollTrigger: {
+                trigger: featuredBookLink,
+                start: "top 85%",
+                toggleActions: "play none none reverse",
+              },
+            }
+          );
+        }
+
+        
         ScrollTrigger.batch(".fade-up", {
-          interval: 0.12,
+          interval: 0.15,
           batchMax: 12,
           onEnter: (batch) =>
-            gsap.fromTo(batch, { y: 28, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.06, duration: 0.8, ease: "power3.out" }),
+            gsap.fromTo(batch, 
+              { y: 28, opacity: 0 }, 
+              { y: 0, opacity: 1, stagger: 0.07, duration: 1, ease: "power4.out" }
+            ),
           start: "top 92%",
           once: false,
         });
@@ -116,17 +174,18 @@ rendre null lenis */
           const cards = Array.from(grid.querySelectorAll(".book-card")) as HTMLElement[];
           if (!cards.length) return;
 
-          gsap.set(cards, { y: 16, opacity: 0, willChange: "transform, opacity" });
+          gsap.set(cards, { y: 20, opacity: 0, scale: 0.95, willChange: "transform, opacity" });
 
           gsap.fromTo(
             cards,
-            { y: 16, opacity: 0 },
+            { y: 20, opacity: 0, scale: 0.95 },
             {
               y: 0,
               opacity: 1,
-              ease: "power3.out",
-              duration: 0.9,
-              stagger: 0.08,
+              scale: 1,
+              ease: "power4.out",
+              duration: 1.2,
+              stagger: 0.1,
               scrollTrigger: {
                 trigger: grid,
                 start: "top 86%",
@@ -149,22 +208,23 @@ rendre null lenis */
             { width: "0%" },
             {
               width: target,
-              duration: 1.3,
-              ease: "power2.out",
+              duration: 1.5,
+              ease: "power4.out",
               scrollTrigger: { trigger: bar, start: "top 92%", toggleActions: "play none none reverse" },
             }
           );
         });
 
+        
         const btns = q(".btn-cta, .anim-button");
         btns.forEach((btn) => {
           const enter = () => {
             gsap.killTweensOf(btn);
-            gsap.to(btn, { scale: 1.03, y: -2, duration: 0.18, ease: "power2.out" });
+            gsap.to(btn, { scale: 1.05, y: -3, duration: 0.2, ease: "power2.out" });
           };
           const leave = () => {
             gsap.killTweensOf(btn);
-            gsap.to(btn, { scale: 1, y: 0, duration: 0.28, ease: "power3.out" });
+            gsap.to(btn, { scale: 1, y: 0, duration: 0.4, ease: "elastic.out(1, 0.3)" });
           };
           btn.addEventListener("mouseenter", enter);
           btn.addEventListener("mouseleave", leave);
@@ -189,7 +249,7 @@ rendre null lenis */
             const rect = targetEl.getBoundingClientRect();
             const destY = window.scrollY + rect.top - headerOffset;
             if (lenis) {
-              lenis.scrollTo(destY, { duration: 1.05, easing: (t: number) => 1 - Math.pow(1 - t, 3) });
+              lenis.scrollTo(destY, { duration: 1.2, easing: (t: number) => 1 - Math.pow(1 - t, 4) });
             } else {
               window.scrollTo({ top: destY, behavior: "smooth" });
             }
