@@ -7,7 +7,7 @@ import { fetchWithAuth } from "@/lib/api/client";
 
 type RetryResponse = {
   data?: {
-    provider: "stripe" | "paypal";
+    provider: "fedapay" | "paypal";
     redirectUrl: string;
   };
   error?: string;

@@ -22,7 +22,7 @@ type MyOrder = {
   total: number;
   status: "pending" | "paid" | "cancelled" | "refunded";
   saleType: "direct" | "preorder";
-  paymentMethod: "stripe" | "paypal" | "mobile_money";
+  paymentMethod: "fedapay" | "paypal" | "mobile_money";
   invoiceNumber: string;
   items: OrderItem[];
 };

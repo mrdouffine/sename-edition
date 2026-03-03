@@ -52,7 +52,7 @@ export default function ContributionForm({ bookId }: { bookId: string }) {
     setIsMethodDialogOpen(true);
   }
 
-  async function submit(paymentMethod: "stripe" | "paypal") {
+  async function submit(paymentMethod: "fedapay" | "paypal") {
     setLoading(true);
     setMessage(null);
     try {
@@ -133,11 +133,11 @@ export default function ContributionForm({ bookId }: { bookId: string }) {
             <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
               <button
                 type="button"
-                onClick={() => void submit("stripe")}
+                onClick={() => void submit("fedapay")}
                 disabled={loading}
                 className="rounded-lg border border-[#d8d7d0] px-4 py-3 text-sm font-bold uppercase hover:bg-[#f8f8f5] disabled:opacity-60"
               >
-                Stripe
+                FedaPay
               </button>
               <button
                 type="button"

@@ -292,3 +292,11 @@ Le projet désactive aussi le cache webpack en dev (`next.config.mjs`) pour limi
 ## Limites actuelles / non inclus
 - Mobile Money: non implémenté.
 - Certaines fonctionnalités du cahier global (ex: affiliation avancée, badges fidélité avancés, app mobile) restent hors scope actuel.
+
+
+
+
+
+curl -X POST http://localhost:3000/api/admin/bootstrap 
+-H "Content-Type: application/json" 
+  -d '{"email":"ab@gmail.com","secret":"hrwXCqpJWz+oCzBhqM1HpYvxDViT8i4gDTiH1bzRzCL4FcpZbh1eqexGQftDoE7J"}'

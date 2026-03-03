@@ -44,7 +44,7 @@ type AdminPaymentTx = {
   id: string;
   orderId: string | null;
   userId: string | null;
-  provider: "stripe" | "paypal";
+  provider: "fedapay" | "paypal";
   kind: "payment" | "refund" | "webhook";
   providerEventId: string | null;
   providerReference: string | null;
@@ -127,6 +127,7 @@ function AdminPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
+  const [creatingBook, setCreatingBook] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
@@ -161,10 +162,17 @@ function AdminPageContent() {
     stock: "",
     fundingGoal: "",
     fundingRaised: "0",
-    staticReviews: [] as Array<{ name: string; role?: string; content: string; rating: number; order: number }>
+    pages: "",
+    staticReviews: [] as Array<{
+      id: string; // Add ID for better list management
+      name: string;
+      role?: string;
+      content: string;
+      rating: number;
+    }>
   });
   const [newBookSlugEdited, setNewBookSlugEdited] = useState(false);
-  const [paymentsProviderFilter, setPaymentsProviderFilter] = useState<"all" | "stripe" | "paypal">("all");
+  const [paymentsProviderFilter, setPaymentsProviderFilter] = useState<"all" | "fedapay" | "paypal">("all");
   const [paymentsStatusFilter, setPaymentsStatusFilter] = useState<"all" | "pending" | "succeeded" | "failed">("all");
 
   const [search, setSearch] = useState({
@@ -641,6 +649,25 @@ function AdminPageContent() {
 
   async function createBook(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (creatingBook) return;
+    setNotice(null);
+    setCreatingBook(true);
+
+    // Filter valid reviews (must have name and content)
+    const validReviews = newBook.staticReviews
+      .filter((r) => r.name.trim().length >= 2 && r.content.trim().length >= 2)
+      .map((r, i) => ({
+        name: r.name.trim(),
+        role: r.role?.trim() || undefined,
+        content: r.content.trim(),
+        rating: r.rating,
+        order: i + 1
+      }));
+
+    if (newBook.staticReviews.length > 0 && validReviews.length < newBook.staticReviews.length) {
+      setNotice("Certains avis sont incomplets (nom et texte obligatoires, min 2 caractères).");
+      return;
+    }
 
     if ((newBook.saleType === "direct" || newBook.saleType === "preorder") && newBook.stock.trim() === "") {
       setNotice("Le stock est obligatoire pour Achat direct / Précommande.");
@@ -652,89 +679,73 @@ function AdminPageContent() {
       return;
     }
 
-    const generatedCover = buildGeneratedCoverDataUrl({
-      title: newBook.title,
-      subtitle: newBook.subtitle,
-      saleType: newBook.saleType,
-      variant: newBook.coverVariant
-    });
+    try {
+      const generatedCover = buildGeneratedCoverDataUrl({
+        title: newBook.title,
+        subtitle: newBook.subtitle,
+        saleType: newBook.saleType,
+        variant: newBook.coverVariant
+      });
 
-    const body: Record<string, unknown> = {
-      title: newBook.title,
-      description: newBook.description,
-      price: Number(newBook.price),
-      saleType: newBook.saleType,
-      coverImage: generatedCover
-    };
+      const body: Record<string, unknown> = {
+        title: newBook.title.trim(),
+        description: newBook.description.trim(),
+        price: Number(newBook.price),
+        saleType: newBook.saleType,
+        coverImage: generatedCover
+      };
 
-    if (newBook.slug.trim()) {
-      body.slug = newBook.slug.trim();
+      if (newBook.slug.trim()) body.slug = newBook.slug.trim();
+      if (newBook.subtitle.trim()) body.subtitle = newBook.subtitle.trim();
+      if (newBook.releaseDate) body.releaseDate = newBook.releaseDate;
+      if (newBook.isbn.trim()) body.isbn = newBook.isbn.trim();
+      if (newBook.coverVariant === "featured") body.tags = ["featured"];
+
+      if (newBook.stock.trim() !== "") body.stock = Number(newBook.stock);
+      if (newBook.fundingGoal.trim() !== "") body.fundingGoal = Number(newBook.fundingGoal);
+      if (newBook.fundingRaised.trim() !== "") body.fundingRaised = Number(newBook.fundingRaised);
+
+      if (newBook.pages.trim()) body.pages = Number(newBook.pages);
+
+      if (validReviews.length > 0) body.staticReviews = validReviews;
+
+      const response = await fetchWithAuth("/api/books", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+
+      const payload = (await response.json()) as ApiResult<unknown>;
+
+      if (!response.ok) {
+        setNotice(payload.error ?? "Impossible de créer l'ouvrage (erreur serveur)");
+        return;
+      }
+
+      setNewBook({
+        title: "",
+        slug: "",
+        subtitle: "",
+        description: "",
+        price: "",
+        saleType: "direct",
+        releaseDate: "",
+        isbn: "",
+        coverVariant: "standard",
+        stock: "",
+        fundingGoal: "",
+        fundingRaised: "0",
+        staticReviews: []
+      });
+      setNewBookSlugEdited(false);
+      setNotice("✅ Ouvrage créé avec succès !");
+      void loadAdminData();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err: any) {
+      setNotice(`Erreur de connexion : ${err.message || "Une erreur est survenue"}`);
+    } finally {
+      setCreatingBook(false);
     }
-
-    if (newBook.subtitle.trim()) {
-      body.subtitle = newBook.subtitle.trim();
-    }
-
-    if (newBook.releaseDate) {
-      body.releaseDate = newBook.releaseDate;
-    }
-
-    if (newBook.isbn.trim()) {
-      body.isbn = newBook.isbn.trim();
-    }
-
-    if (newBook.coverVariant === "featured") {
-      body.tags = ["featured"];
-    }
-
-    if (newBook.stock.trim() !== "") {
-      body.stock = Number(newBook.stock);
-    }
-
-    if (newBook.fundingGoal.trim() !== "") {
-      body.fundingGoal = Number(newBook.fundingGoal);
-    }
-
-    if (newBook.fundingRaised.trim() !== "") {
-      body.fundingRaised = Number(newBook.fundingRaised);
-    }
-
-    if (newBook.staticReviews.length > 0) {
-      body.staticReviews = newBook.staticReviews;
-    }
-
-    const response = await fetchWithAuth("/api/books", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    });
-
-    const payload = (await response.json()) as ApiResult<unknown>;
-
-    if (!response.ok) {
-      setNotice(payload.error ?? "Impossible de créer l'ouvrage");
-      return;
-    }
-
-    setNewBook({
-      title: "",
-      slug: "",
-      subtitle: "",
-      description: "",
-      price: "",
-      saleType: "direct",
-      releaseDate: "",
-      isbn: "",
-      coverVariant: "standard",
-      stock: "",
-      fundingGoal: "",
-      fundingRaised: "0",
-      staticReviews: []
-    });
-    setNewBookSlugEdited(false);
-
-    setNotice("Ouvrage créé");
-    void loadAdminData();
   }
 
   function handleNewBookTitleChange(title: string) {
@@ -954,14 +965,23 @@ function AdminPageContent() {
                     placeholder="Rechercher nom, e-mail, rôle..."
                   />
                   <DataTable
-                    headers={["Nom", "E-mail", "Rôle", "Action"]}
+                    headers={["Utilisateur", "E-mail", "Rôle", "Action"]}
                     rows={pagedUsers.items.map((user) => [
-                      user.name,
-                      user.email,
-                      labelUserRole(user.role),
+                      <div key={user.id} className="flex items-center gap-3">
+                        <div className="size-8 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs font-black ring-1 ring-primary/30">
+                          {user.name.slice(0, 2).toUpperCase()}
+                        </div>
+                        <span className="font-bold text-slate-800">{user.name}</span>
+                      </div>,
+                      <span key={`email-${user.id}`} className="text-slate-500 font-medium">{user.email}</span>,
+                      <div key={`role-${user.id}`} className={`inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-black uppercase tracking-widest ${user.role === 'admin' ? 'bg-indigo-50 text-indigo-600' : 'bg-slate-50 text-slate-500'
+                        }`}>
+                        {labelUserRole(user.role)}
+                      </div>,
                       <select
                         key={user.id}
-                        className="rounded border border-[#d8d7d0] px-2 py-1"
+                        className={`rounded border px-2 py-1 text-xs font-bold transition-all outline-none ${user.role === 'admin' ? 'bg-indigo-50 text-indigo-700 border-indigo-100' : 'bg-slate-50 text-slate-700 border-slate-200'
+                          }`}
                         value={user.role}
                         onChange={(event) => void updateUserRole(user.id, event.target.value as AdminUser["role"])}
                       >
@@ -1005,15 +1025,29 @@ function AdminPageContent() {
                     placeholder="Rechercher id, user, type, statut..."
                   />
                   <DataTable
-                    headers={["Commande", "Utilisateur", "Total", "Type", "Statut"]}
+                    headers={["Commande", "Utilisateur", "Montant", "Type", "Statut"]}
                     rows={pagedOrders.items.map((order) => [
-                      `${order.id.slice(0, 10)}...`,
-                      `${order.userId.slice(0, 10)}...`,
-                      `${order.total.toFixed(2)} €`,
-                      labelSaleType(order.saleType),
+                      <div key={order.id} className="flex flex-col">
+                        <span className="font-bold text-slate-900 leading-none">#{order.id.slice(-8).toUpperCase()}</span>
+                        <span className="text-[10px] text-slate-400 font-medium">ID: {order.id.slice(0, 8)}...</span>
+                      </div>,
+                      <div key={`user-${order.id}`} className="flex items-center gap-2">
+                        <div className="size-6 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500 uppercase">
+                          {order.userId.slice(0, 2)}
+                        </div>
+                        <span className="text-xs text-slate-600 font-medium">{order.userId.slice(0, 10)}...</span>
+                      </div>,
+                      <span key={`total-${order.id}`} className="font-black text-slate-900">{order.total.toFixed(2)} €</span>,
+                      <div key={`type-${order.id}`} className={`inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-black uppercase tracking-widest ${order.saleType === "direct" ? "bg-slate-100 text-slate-600" : "bg-amber-50 text-amber-600"
+                        }`}>
+                        {labelSaleType(order.saleType)}
+                      </div>,
                       <select
                         key={order.id}
-                        className="rounded border border-[#d8d7d0] px-2 py-1"
+                        className={`rounded border border-slate-200 px-2 py-1 text-xs font-bold transition-all focus:ring-2 focus:ring-primary/20 outline-none ${order.status === 'paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' :
+                          order.status === 'cancelled' ? 'bg-red-50 text-red-700 border-red-100' :
+                            'bg-slate-50 text-slate-700'
+                          }`}
                         value={order.status}
                         onChange={(event) => void updateOrderStatus(order.id, event.target.value as AdminOrder["status"])}
                       >
@@ -1056,15 +1090,21 @@ function AdminPageContent() {
                     placeholder="Rechercher id, livre, user, statut..."
                   />
                   <DataTable
-                    headers={["Contribution", "Livre", "Utilisateur", "Montant", "Statut"]}
+                    headers={["Contribution", "Livre", "Auteur", "Don", "Statut"]}
                     rows={pagedContributions.items.map((contribution) => [
-                      `${contribution.id.slice(0, 10)}...`,
-                      `${contribution.bookId.slice(0, 10)}...`,
-                      contribution.userId ? `${contribution.userId.slice(0, 10)}...` : "Anonyme",
-                      `${contribution.amount.toFixed(2)} €`,
+                      <div key={contribution.id} className="flex flex-col">
+                        <span className="font-bold text-slate-900 leading-none">CONTRIB-{contribution.id.slice(-6).toUpperCase()}</span>
+                        <span className="text-[10px] text-slate-400 font-medium">{contribution.id.slice(0, 8)}...</span>
+                      </div>,
+                      <span key={`book-${contribution.id}`} className="font-medium text-slate-700 text-xs truncate max-w-[120px] block">{contribution.bookId.slice(0, 10)}...</span>,
+                      <span key={`user-${contribution.id}`} className="text-xs text-slate-500 font-medium">{contribution.userId ? contribution.userId.slice(0, 10) + '...' : "Anonyme"}</span>,
+                      <span key={`amount-${contribution.id}`} className="font-black text-emerald-600">{contribution.amount.toFixed(2)} €</span>,
                       <select
                         key={contribution.id}
-                        className="rounded border border-[#d8d7d0] px-2 py-1"
+                        className={`rounded border border-slate-200 px-2 py-1 text-xs font-bold transition-all outline-none ${contribution.status === 'paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' :
+                          contribution.status === 'refunded' ? 'bg-slate-50 text-slate-500 border-slate-100' :
+                            'bg-amber-50 text-amber-700 border-amber-100 text-amber-600'
+                          }`}
                         value={contribution.status}
                         onChange={(event) =>
                           void updateContributionStatus(
@@ -1094,7 +1134,7 @@ function AdminPageContent() {
               {(activeSection === "payments") && (
                 <Panel
                   title="Transactions Paiement"
-                  subtitle="Traçabilité Stripe/PayPal, paiements, remboursements, webhooks"
+                  subtitle="Traçabilité FedaPay/PayPal, paiements, remboursements, webhooks"
                 >
                   <SearchBar
                     value={search.payments}
@@ -1113,7 +1153,7 @@ function AdminPageContent() {
                       }
                     >
                       <option value="all">Tous providers</option>
-                      <option value="stripe">Stripe</option>
+                      <option value="fedapay">FedaPay</option>
                       <option value="paypal">PayPal</option>
                     </select>
                     <select
@@ -1130,15 +1170,36 @@ function AdminPageContent() {
                     </select>
                   </div>
                   <DataTable
-                    headers={["Date", "Type", "Provider", "Commande", "Référence", "Montant", "Statut"]}
+                    headers={["Date / Heure", "Type", "Réseau", "Commande", "Montant", "Statut"]}
                     rows={pagedPayments.items.map((tx) => [
-                      tx.createdAt ? new Date(tx.createdAt).toLocaleString("fr-FR") : "-",
-                      tx.kind === "payment" ? "Paiement" : tx.kind === "refund" ? "Remboursement" : "Webhook",
-                      tx.provider.toUpperCase(),
-                      tx.orderId ? `${tx.orderId.slice(0, 10)}...` : "-",
-                      tx.providerReference ?? tx.providerEventId ?? "-",
-                      typeof tx.amount === "number" ? `${tx.amount.toFixed(2)} ${tx.currency ?? "EUR"}` : "-",
-                      tx.status === "succeeded" ? "Succès" : tx.status === "pending" ? "En attente" : "Échec"
+                      <div key={tx.id} className="flex flex-col">
+                        <span className="text-xs font-bold text-slate-700">
+                          {tx.createdAt ? new Date(tx.createdAt).toLocaleDateString("fr-FR") : "-"}
+                        </span>
+                        <span className="text-[10px] text-slate-400">
+                          {tx.createdAt ? new Date(tx.createdAt).toLocaleTimeString("fr-FR", { hour: '2-digit', minute: '2-digit' }) : ""}
+                        </span>
+                      </div>,
+                      <div key={`kind-${tx.id}`} className={`inline-flex items-center rounded px-1.5 py-0.5 text-[9px] font-black uppercase tracking-tighter ${tx.kind === 'payment' ? 'bg-blue-50 text-blue-600' : 'bg-slate-100 text-slate-500'
+                        }`}>
+                        {tx.kind === "payment" ? "Paiement" : tx.kind === "refund" ? "Remboursement" : "Webhook"}
+                      </div>,
+                      <div key={`provider-${tx.id}`} className="flex items-center gap-1.5">
+                        <div className={`size-1.5 rounded-full ${tx.provider === 'fedapay' ? 'bg-[#ff7b00]' : 'bg-[#003087]'}`} />
+                        <span className="text-[10px] font-black uppercase text-slate-600">{tx.provider}</span>
+                      </div>,
+                      <span key={`order-${tx.id}`} className="text-[10px] font-mono font-medium text-slate-400">{tx.orderId ? tx.orderId.slice(-10).toUpperCase() : "-"}</span>,
+                      <span key={`amount-${tx.id}`} className="font-black text-slate-900">
+                        {typeof tx.amount === "number" ? `${tx.amount.toFixed(2)} ${tx.currency ?? "EUR"}` : "-"}
+                      </span>,
+                      <div key={`status-${tx.id}`} className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-widest ${tx.status === "succeeded" ? "bg-emerald-50 text-emerald-700" :
+                        tx.status === "pending" ? "bg-amber-50 text-amber-700" : "bg-red-50 text-red-700"
+                        }`}>
+                        <div className={`size-1 rounded-full ${tx.status === "succeeded" ? "bg-emerald-500" :
+                          tx.status === "pending" ? "bg-amber-500" : "bg-red-500"
+                          }`} />
+                        {tx.status === "succeeded" ? "Succès" : tx.status === "pending" ? "En attente" : "Échec"}
+                      </div>
                     ])}
                   />
                   <PaginationControls
@@ -1184,6 +1245,7 @@ function AdminPageContent() {
                       <input className="rounded border border-[#d8d7d0] px-3 py-2" placeholder="Stock (achat direct/precommande)" type="number" min={0} required={newBook.saleType !== "crowdfunding"} value={newBook.stock} onChange={(event) => setNewBook((prev) => ({ ...prev, stock: event.target.value }))} />
                       <input className="rounded border border-[#d8d7d0] px-3 py-2" placeholder="Objectif financement (crowdfunding)" type="number" min={0} required={newBook.saleType === "crowdfunding"} value={newBook.fundingGoal} onChange={(event) => setNewBook((prev) => ({ ...prev, fundingGoal: event.target.value }))} />
                       <input className="rounded border border-[#d8d7d0] px-3 py-2" placeholder="Montant collecte (suivi)" type="number" min={0} value={newBook.fundingRaised} onChange={(event) => setNewBook((prev) => ({ ...prev, fundingRaised: event.target.value }))} />
+                      <input className="rounded border border-[#d8d7d0] px-3 py-2 md:col-span-2" placeholder="Nombre de pages (optionnel)" type="number" min={1} value={newBook.pages} onChange={(event) => setNewBook((prev) => ({ ...prev, pages: event.target.value }))} />
 
                       <div className="md:col-span-2 space-y-3 rounded-lg border border-[#d8d7d0] bg-[#f8f8f5] p-4">
                         <div className="flex items-center justify-between">
@@ -1196,7 +1258,7 @@ function AdminPageContent() {
                                   ...prev,
                                   staticReviews: [
                                     ...prev.staticReviews,
-                                    { name: "", role: "", content: "", rating: 5, order: prev.staticReviews.length + 1 }
+                                    { id: Math.random().toString(36).slice(2), name: "", role: "", content: "", rating: 5 }
                                   ]
                                 }));
                               }}
@@ -1207,44 +1269,44 @@ function AdminPageContent() {
                           )}
                         </div>
 
-                        {newBook.staticReviews.map((review, idx) => (
-                          <div key={idx} className="bg-white p-3 rounded border border-[#d8d7d0] space-y-2">
+                        {newBook.staticReviews.map((review) => (
+                          <div key={review.id} className="bg-white p-3 rounded border border-[#d8d7d0] space-y-2 shadow-sm">
                             <div className="grid grid-cols-2 gap-2">
                               <input
-                                className="rounded border border-[#d8d7d0] px-2 py-1 text-sm"
+                                className="rounded border border-[#d8d7d0] px-2 py-1 text-sm focus:border-primary outline-none"
                                 placeholder="Nom"
                                 value={review.name}
                                 onChange={(e) => {
                                   setNewBook((prev) => ({
                                     ...prev,
-                                    staticReviews: prev.staticReviews.map((r, i) =>
-                                      i === idx ? { ...r, name: e.target.value } : r
+                                    staticReviews: prev.staticReviews.map((r) =>
+                                      r.id === review.id ? { ...r, name: e.target.value } : r
                                     )
                                   }));
                                 }}
                               />
                               <input
-                                className="rounded border border-[#d8d7d0] px-2 py-1 text-sm"
+                                className="rounded border border-[#d8d7d0] px-2 py-1 text-sm focus:border-primary outline-none"
                                 placeholder="Rôle (optionnel)"
                                 value={review.role || ""}
                                 onChange={(e) => {
                                   setNewBook((prev) => ({
                                     ...prev,
-                                    staticReviews: prev.staticReviews.map((r, i) =>
-                                      i === idx ? { ...r, role: e.target.value } : r
+                                    staticReviews: prev.staticReviews.map((r) =>
+                                      r.id === review.id ? { ...r, role: e.target.value } : r
                                     )
                                   }));
                                 }}
                               />
                             </div>
                             <select
-                              className="rounded border border-[#d8d7d0] px-2 py-1 text-sm w-full"
+                              className="rounded border border-[#d8d7d0] px-2 py-1 text-sm w-full outline-none"
                               value={review.rating}
                               onChange={(e) => {
                                 setNewBook((prev) => ({
                                   ...prev,
-                                  staticReviews: prev.staticReviews.map((r, i) =>
-                                    i === idx ? { ...r, rating: Number(e.target.value) } : r
+                                  staticReviews: prev.staticReviews.map((r) =>
+                                    r.id === review.id ? { ...r, rating: Number(e.target.value) } : r
                                   )
                                 }));
                               }}
@@ -1253,10 +1315,10 @@ function AdminPageContent() {
                               <option value={2}>★★☆☆☆ (2 étoiles)</option>
                               <option value={3}>★★★☆☆ (3 étoiles)</option>
                               <option value={4}>★★★★☆ (4 étoiles)</option>
-                              <option value={5} selected>★★★★★ (5 étoiles)</option>
+                              <option value={5}>★★★★★ (5 étoiles)</option>
                             </select>
                             <textarea
-                              className="rounded border border-[#d8d7d0] px-2 py-1 text-sm w-full"
+                              className="rounded border border-[#d8d7d0] px-2 py-1 text-sm w-full focus:border-primary outline-none"
                               placeholder="Texte de l'avis (min 2, max 1000)"
                               rows={2}
                               maxLength={1000}
@@ -1264,29 +1326,41 @@ function AdminPageContent() {
                               onChange={(e) => {
                                 setNewBook((prev) => ({
                                   ...prev,
-                                  staticReviews: prev.staticReviews.map((r, i) =>
-                                    i === idx ? { ...r, content: e.target.value } : r
+                                  staticReviews: prev.staticReviews.map((r) =>
+                                    r.id === review.id ? { ...r, content: e.target.value } : r
                                   )
                                 }));
                               }}
                             />
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setNewBook((prev) => ({
-                                  ...prev,
-                                  staticReviews: prev.staticReviews.filter((_, i) => i !== idx).map((r, i) => ({ ...r, order: i + 1 }))
-                                }));
-                              }}
-                              className="text-xs text-red-700 font-semibold"
-                            >
-                              Supprimer
-                            </button>
+                            <div className="flex justify-end">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setNewBook((prev) => ({
+                                    ...prev,
+                                    staticReviews: prev.staticReviews.filter((r) => r.id !== review.id)
+                                  }));
+                                }}
+                                className="text-[10px] text-red-500 font-bold uppercase hover:underline"
+                              >
+                                Supprimer
+                              </button>
+                            </div>
                           </div>
                         ))}
                       </div>
 
-                      <button className="rounded-lg bg-primary px-4 py-2 text-sm font-bold uppercase md:col-span-2">Créer ouvrage</button>
+                      <button
+                        disabled={creatingBook}
+                        className={`rounded-lg px-4 py-2 text-sm font-bold uppercase md:col-span-2 transition-all ${creatingBook ? 'bg-slate-300 cursor-not-allowed text-slate-500' : 'bg-primary text-black hover:bg-opacity-90 active:scale-95'}`}
+                      >
+                        {creatingBook ? (
+                          <div className="flex items-center justify-center gap-2">
+                            <span className="size-4 animate-spin rounded-full border-2 border-slate-400 border-t-transparent"></span>
+                            Création en cours...
+                          </div>
+                        ) : "Créer ouvrage"}
+                      </button>
                     </form>
                   </Panel>
 
@@ -1300,30 +1374,60 @@ function AdminPageContent() {
                       placeholder="Rechercher titre, slug, type..."
                     />
                     <DataTable
-                      headers={["Titre", "Slug", "Type", "Prix", "Stock/Objectif", "Collecté", "Actions"]}
+                      headers={["Ouvrage", "Type", "Prix", "Stock/Obj.", "Collecté", "Actions"]}
                       rows={pagedBooks.items.map((book) => [
-                        book.title,
-                        book.slug,
-                        labelSaleType(book.saleType),
-                        `${book.price.toFixed(2)} €`,
-                        book.saleType === "crowdfunding"
-                          ? `${(book.fundingGoal ?? 0).toFixed(0)}`
-                          : `${(book.stock ?? 0).toFixed(0)}`,
-                        `${(book.fundingRaised ?? 0).toFixed(0)}`,
-                        <div key={book.id} className="flex items-center gap-2">
+                        <div key={book.id} className="flex items-center gap-4">
+                          {book.coverImage ? (
+                            <img src={book.coverImage} alt="" className="h-14 w-10 rounded border border-slate-200 bg-white object-cover shadow-sm" />
+                          ) : (
+                            <div className="flex h-14 w-10 items-center justify-center rounded border border-slate-200 bg-slate-50 text-slate-300">
+                              <span className="material-symbols-outlined text-lg">image</span>
+                            </div>
+                          )}
+                          <div className="flex flex-col min-w-0">
+                            <span className="font-bold text-slate-900 text-sm leading-tight truncate">{book.title}</span>
+                            <span className="text-[10px] font-mono font-medium text-slate-400 tracking-tighter truncate">{book.slug}</span>
+                          </div>
+                        </div>,
+                        <div key={`type-${book.id}`} className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest ${book.saleType === "direct" ? "bg-blue-50 text-blue-600 ring-1 ring-inset ring-blue-500/10" :
+                          book.saleType === "preorder" ? "bg-amber-50 text-amber-600 ring-1 ring-inset ring-amber-500/10" :
+                            "bg-emerald-50 text-emerald-600 ring-1 ring-inset ring-emerald-500/10"
+                          }`}>
+                          {labelSaleType(book.saleType)}
+                        </div>,
+                        <span key={`price-${book.id}`} className="font-black text-slate-900">{book.price.toFixed(2)} €</span>,
+                        <div key={`stock-${book.id}`} className="flex flex-col">
+                          <span className="text-sm font-bold text-slate-700">
+                            {book.saleType === "crowdfunding" ? (book.fundingGoal ?? 0).toLocaleString() : (book.stock ?? 0).toLocaleString()}
+                          </span>
+                          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">
+                            {book.saleType === "crowdfunding" ? "Objectif" : "Unités"}
+                          </span>
+                        </div>,
+                        <div key={`raised-${book.id}`} className="flex flex-col">
+                          <span className={`text-sm font-black ${(book.fundingRaised ?? 0) > 0 ? "text-emerald-600" : "text-slate-400"}`}>
+                            {(book.fundingRaised ?? 0).toLocaleString()} €
+                          </span>
+                          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">Collecté</span>
+                        </div>,
+                        <div key={`actions-${book.id}`} className="flex items-center justify-end gap-2">
                           <Link
                             href={`/ouvrages/${book.slug}`}
-                            className="rounded border border-[#d8d7d0] px-2 py-1 text-xs font-semibold"
+                            className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white transition-all hover:bg-slate-50 hover:border-slate-300 shadow-sm"
+                            title="Voir sur le site"
                             target="_blank"
                           >
-                            Voir
+                            <span className="material-symbols-outlined text-sm">visibility</span>
                           </Link>
                           <button
                             type="button"
-                            onClick={() => void deleteBook(book.id)}
-                            className="rounded border border-red-200 px-2 py-1 text-xs font-semibold text-red-700"
+                            onClick={() => {
+                              if (confirm("Supprimer cet ouvrage ?")) void deleteBook(book.id);
+                            }}
+                            className="flex h-8 w-8 items-center justify-center rounded-full border border-red-100 bg-white text-red-500 transition-all hover:bg-red-50 hover:border-red-200 shadow-sm"
+                            title="Supprimer"
                           >
-                            Supprimer
+                            <span className="material-symbols-outlined text-sm">delete</span>
                           </button>
                         </div>
                       ])}
@@ -1431,29 +1535,26 @@ function AdminPageContent() {
                       placeholder="Rechercher code, type, statut..."
                     />
                     <DataTable
-                      headers={[
-                        "Code",
-                        "Type",
-                        "Valeur",
-                        "Usage",
-                        "Minimum",
-                        "Expiration",
-                        "Actif"
-                      ]}
+                      headers={["Code", "Type", "Valeur", "Usage", "Minimum", "Expiration", "Statut"]}
                       rows={pagedPromos.items.map((promo) => [
-                        promo.code,
-                        promo.type === "percent" ? "Pourcentage" : "Fixe",
-                        promo.type === "percent" ? `${promo.value}%` : `${promo.value.toFixed(2)} €`,
-                        `${promo.usedCount}${promo.usageLimit ? ` / ${promo.usageLimit}` : ""}`,
-                        `${promo.minSubtotal.toFixed(2)} €`,
-                        promo.expiresAt ? new Date(promo.expiresAt).toLocaleDateString("fr-FR") : "-",
+                        <span key={promo.id} className="font-mono font-black text-slate-900 bg-slate-100 px-2 py-1 rounded select-all tracking-wider">{promo.code}</span>,
+                        <span key={`type-${promo.id}`} className="text-xs font-bold text-slate-500">{promo.type === "percent" ? "Pourcentage" : "Fixe"}</span>,
+                        <span key={`val-${promo.id}`} className="font-black text-slate-900">{promo.type === "percent" ? `${promo.value}%` : `${promo.value.toFixed(2)} €`}</span>,
+                        <div key={`usage-${promo.id}`} className="flex flex-col">
+                          <span className="font-bold text-slate-700">{promo.usedCount}{promo.usageLimit ? ` / ${promo.usageLimit}` : ""}</span>
+                          <div className="h-1 w-16 bg-slate-100 rounded-full mt-1 overflow-hidden">
+                            <div className="h-full bg-primary" style={{ width: `${promo.usageLimit ? Math.min((promo.usedCount / promo.usageLimit) * 100, 100) : 0}%` }} />
+                          </div>
+                        </div>,
+                        <span key={`min-${promo.id}`} className="font-medium text-slate-500">{promo.minSubtotal.toFixed(2)} €</span>,
+                        <span key={`exp-${promo.id}`} className="text-xs text-slate-400 font-medium">{promo.expiresAt ? new Date(promo.expiresAt).toLocaleDateString("fr-FR") : "-"}</span>,
                         <button
                           key={promo.id}
                           type="button"
                           onClick={() => void togglePromoActive(promo)}
-                          className={`rounded border px-2 py-1 text-xs font-semibold ${promo.active
-                            ? "border-green-200 text-green-700"
-                            : "border-[#d8d7d0] text-[#6b7280]"
+                          className={`rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest transition-all ${promo.active
+                            ? "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-500/20"
+                            : "bg-slate-50 text-slate-400 ring-1 ring-slate-200"
                             }`}
                         >
                           {promo.active ? "Actif" : "Inactif"}
@@ -1718,22 +1819,22 @@ function DataTable({
   rows: Array<Array<React.ReactNode>>;
 }) {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[760px] text-sm">
+    <div className="overflow-x-auto rounded-xl border border-slate-200/50 bg-white shadow-sm">
+      <table className="w-full min-w-[800px] text-sm">
         <thead>
-          <tr className="border-b border-[#eceff2] text-left text-xs uppercase tracking-wider text-[#6b7280]">
-            {headers.map((header) => (
-              <th key={header} className="py-2">
+          <tr className="border-b border-slate-100 bg-slate-50/50 text-left text-[11px] font-black uppercase tracking-widest text-slate-500">
+            {headers.map((header, idx) => (
+              <th key={header} className={`px-4 py-3.5 ${idx === headers.length - 1 ? 'text-right' : ''}`}>
                 {header}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-slate-50">
           {rows.map((row, index) => (
-            <tr key={index} className="border-b border-[#f2f4f7]">
+            <tr key={index} className="transition-colors hover:bg-slate-50/30">
               {row.map((cell, cellIndex) => (
-                <td key={cellIndex} className="py-2">
+                <td key={cellIndex} className={`px-4 py-4 align-middle ${cellIndex === row.length - 1 ? 'text-right' : ''}`}>
                   {cell}
                 </td>
               ))}

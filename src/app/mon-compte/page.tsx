@@ -32,7 +32,7 @@ type MyOrder = {
   total: number;
   status: "pending" | "paid" | "cancelled" | "refunded";
   saleType: "direct" | "preorder";
-  paymentMethod: "stripe" | "paypal" | "mobile_money";
+  paymentMethod: "fedapay" | "paypal" | "mobile_money";
   invoiceNumber: string;
   createdAt?: string | null;
   items: OrderItem[];
@@ -84,7 +84,7 @@ type WishlistResponse = {
 type MyTransaction = {
   id: string;
   orderId: string | null;
-  provider: "stripe" | "paypal";
+  provider: "fedapay" | "paypal";
   kind: "payment" | "refund" | "webhook";
   providerReference: string | null;
   status: "pending" | "succeeded" | "failed";
@@ -144,7 +144,7 @@ function AccountPageContent() {
   const [contributionsError, setContributionsError] = useState("");
   const [transactionsError, setTransactionsError] = useState("");
   const [transactionsQuery, setTransactionsQuery] = useState("");
-  const [transactionsProviderFilter, setTransactionsProviderFilter] = useState<"all" | "stripe" | "paypal">("all");
+  const [transactionsProviderFilter, setTransactionsProviderFilter] = useState<"all" | "fedapay" | "paypal">("all");
   const [transactionsStatusFilter, setTransactionsStatusFilter] = useState<"all" | "pending" | "succeeded" | "failed">("all");
   const [wishlist, setWishlist] = useState<any[]>([]);
   const [wishlistError, setWishlistError] = useState("");
@@ -1091,7 +1091,7 @@ function AccountPageContent() {
                           onChange={(event) => setTransactionsProviderFilter(event.target.value as typeof transactionsProviderFilter)}
                         >
                           <option value="all">Tous providers</option>
-                          <option value="stripe">Stripe</option>
+                          <option value="fedapay">FedaPay</option>
                           <option value="paypal">PayPal</option>
                         </select>
                         <select
