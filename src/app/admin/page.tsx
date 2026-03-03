@@ -735,6 +735,7 @@ function AdminPageContent() {
         stock: "",
         fundingGoal: "",
         fundingRaised: "0",
+        pages: "",
         staticReviews: []
       });
       setNewBookSlugEdited(false);

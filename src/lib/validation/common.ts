@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import { ApiError } from "@/lib/api";
 
 export function asObject(input: unknown) {
@@ -58,7 +57,7 @@ export function asNumber(value: unknown, field: string, { min, max }: { min?: nu
 
 export function asObjectId(value: unknown, field: string) {
   const id = asString(value, field, { min: 1, max: 64 });
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+  if (!/^[a-fA-F0-9]{24}$/.test(id)) {
     throw new ApiError(`${field} must be a valid ObjectId`, 400);
   }
 
