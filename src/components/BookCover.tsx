@@ -77,11 +77,7 @@ export default function BookCover({
                     <div className="flex flex-col items-center gap-1 pb-2">
                         <span className="uppercase font-bold" style={{ fontSize: "0.5rem", color: "#888", letterSpacing: "0.15em" }}>poésie</span>
                         <span className="font-medium" style={{ fontSize: "0.45rem", color: "#888", letterSpacing: "0.05em" }}>L'Africaine</span>
-                        <div className="grid grid-cols-3 gap-[2px] mt-2" style={{ width: 14 }}>
-                            {[...Array(9)].map((_, i) => (
-                                <div key={i} className="aspect-square bg-black" style={{ width: 3, height: 3, opacity: [0, 2, 4].includes(i) ? 0 : 1 }} />
-                            ))}
-                        </div>
+                        <AfrLogoBadge size={14} />
                     </div>
                 </div>
             </div>
@@ -102,11 +98,7 @@ export default function BookCover({
                 <div className="flex flex-col items-center gap-1 pb-2">
                     <span className="uppercase font-bold" style={{ fontSize: "0.5rem", color: "#333", letterSpacing: "0.15em" }}>essai</span>
                     <span className="font-medium" style={{ fontSize: "0.45rem", color: "#666", letterSpacing: "0.05em" }}>L'Africaine</span>
-                    <div className="grid grid-cols-3 gap-[3px] mt-2 mb-1" style={{ width: 18 }}>
-                        {[...Array(9)].map((_, i) => (
-                            <div key={i} className="aspect-square bg-black rounded-[1px]" style={{ width: 4, height: 4 }} />
-                        ))}
-                    </div>
+                    <AfrLogoBadge size={14} />
                 </div>
             </div>
         );
