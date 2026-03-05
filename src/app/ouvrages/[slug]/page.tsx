@@ -6,6 +6,7 @@ import ContributionForm from "@/components/ContributionForm";
 import CrowdfundingLivePanel from "@/components/CrowdfundingLivePanel";
 import WishlistButton from "@/components/WishlistButton";
 import SocialShareButtons from "@/components/SocialShareButtons";
+import MarketingReviews from "@/components/MarketingReviews";
 import UserMenu from "@/components/UserMenu";
 import { getBookBySlug } from "@/lib/services/bookService";
 import { getFundingProgress, getSaleStatus, isOutOfStock } from "@/lib/domain/book";
@@ -69,11 +70,13 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
           <div className="flex flex-col gap-4">
             <div className="flex w-full items-center justify-center border border-[#e5e5e0] p-4 shadow-sm bg-white sm:p-12">
               <BookCover
+                slug={book.slug}
                 title={book.title}
                 subtitle={book.subtitle}
                 authorName={book.authorName}
                 variant={(book as any).coverVariant === "dark" ? "dark" : "light"}
-                className="w-full shadow-md"
+                titleColor={(book as any).titleColor}
+                className="w-full shadow-md border-[6px] border-[#FFF100] p-1"
               />
             </div>
           </div>
@@ -193,6 +196,8 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
 
         <BookDetailTabs description={book.description ?? ""} bookId={bookId} staticReviews={book.staticReviews} />
       </main>
+
+      <MarketingReviews slug={slug} />
 
       <Footer />
     </div>

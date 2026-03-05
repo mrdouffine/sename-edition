@@ -1026,6 +1026,8 @@ function AdminPageContent() {
                     placeholder="Rechercher id, user, type, statut..."
                   />
                   <DataTable
+Ils sont situés stratégiquement : juste au dessus de la vraie grande section complète avec le détail du livre (Description / Avis). Ainsi, cela montre d'emblée à vos visiteurs les retours exceptionnels sur l'ouvrage pour les inciter au premier regard avant même de fouiller l'onglet Description, et pour ceux qui veulent y laisser un authentique avis client, l'onglet Avis reste toujours présent et 100% fonctionnel en bas.
+
                     headers={["Commande", "Utilisateur", "Montant", "Type", "Statut"]}
                     rows={pagedOrders.items.map((order) => [
                       <div key={order.id} className="flex flex-col">
@@ -1694,7 +1696,7 @@ function buildGeneratedCoverDataUrl({
   </defs>
   <rect x="0" y="0" width="900" height="1350" fill="#ececec"/>
   <rect x="12" y="12" width="876" height="1326" fill="none" stroke="#ced70d" stroke-width="8"/>
-  <text x="280" y="92" class="brand-small">${escapeSvg("SEYDOU KOFFI ABODJINOU")}</text>
+  <text x="280" y="92" class="brand-small">${escapeSvg("SÉNAMÉ KOFFI AGBODJINOU")}</text>
   <text x="548" y="92" class="brand-small">${escapeSvg("Sename d'Afrique")}</text>
   <text x="512" y="248" class="brand-small" style="font-size:56px;font-weight:700;fill:#6b7280;">sename</text>
   <foreignObject x="140" y="350" width="620" height="340">

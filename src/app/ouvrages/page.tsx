@@ -1,5 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import Link from "next/link";
+import BookCover from "@/components/BookCover";
 import Footer from "@/components/Footer";
 import UserMenu from "@/components/UserMenu";
 import CartNavButton from "@/components/CartNavButton";
@@ -9,12 +10,13 @@ import { getFundingProgress } from "@/lib/domain/book";
 import { getHomeFeaturedBook, listBooksByType } from "@/lib/services/bookService";
 
 export default async function OuvragesPage() {
-    const [books, preorders, crowdfunding, featuredBook] = await Promise.all([
+    const [books, originalPreorders, crowdfunding, featuredBook] = await Promise.all([
         listBooksByType("direct"),
         listBooksByType("preorder"),
         listBooksByType("crowdfunding"),
         getHomeFeaturedBook()
     ]);
+    const preorders = [...originalPreorders];
 
     return (
         <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-white">
@@ -36,6 +38,13 @@ export default async function OuvragesPage() {
             </header>
 
             <main className="mx-auto w-full max-w-[1440px] flex-1 px-4 pb-28 pt-24 sm:px-6 sm:pb-32 sm:pt-32 md:px-10 lg:px-20">
+                <div className="mb-8">
+                    <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-gray-500 hover:text-black transition-colors">
+                        <span className="material-symbols-outlined text-lg">arrow_back</span>
+                        Retourner à l'accueil
+                    </Link>
+                </div>
+
                 {/* Header section *OUVRAGES */}
                 <div className="mb-16">
                     <h1 className="text-xl font-black uppercase tracking-[0.2em] text-gray-800 flex items-center gap-4">
@@ -46,19 +55,20 @@ export default async function OuvragesPage() {
                 {/* Section A la une */}
                 <section className="mb-24">
                     <div className="mb-8">
-                        <h2 className="bg-yellow-400 inline-block px-4 py-1 text-2xl font-black uppercase tracking-tight text-black sm:text-3xl">
-                            A la une :
-                        </h2>
+                        <h2 className="bg-[#FFF100] inline-block px-3 py-1 text-xl font-medium tracking-wide text-black sm:text-2xl">A la une :</h2>
                     </div>
 
                     {featuredBook && (
                         <div className="flex justify-center">
                             <Link href={`/ouvrages/${featuredBook.slug}`} className="group relative transition-all duration-500 hover:scale-[1.02]">
-                                <div className="border-[12px] border-yellow-400 shadow-2xl">
-                                    <img
-                                        alt={featuredBook.title}
-                                        className="max-h-[70vh] w-auto object-contain"
-                                        src={featuredBook.coverImage}
+                                <div className="border-[4px] border-[#FFF100] p-1 shadow-xl" style={{ width: 240 }}>
+                                    <BookCover
+                                        slug={featuredBook.slug}
+                                        title={featuredBook.title}
+                                        subtitle={featuredBook.subtitle}
+                                        authorName={featuredBook.authorName}
+                                        variant={(featuredBook as any).coverVariant === "dark" ? "dark" : "light"}
+                                        titleColor={(featuredBook as any).titleColor}
                                     />
                                 </div>
                             </Link>
@@ -70,33 +80,82 @@ export default async function OuvragesPage() {
                     </div>
                 </section>
 
+                {/* Section Options d'achat */}
+                <section className="mb-24">
+                    <div className="mb-12 text-center sm:text-left">
+                        <h2 className="bg-[#FFF100] inline-block px-3 py-1 text-xl font-medium tracking-wide text-black sm:text-2xl">Plusieurs options d'achat :</h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-[1000px] mx-auto">
+                        {/* Option 1: Acquisition */}
+                        <div className="flex flex-col items-center text-center p-8 border-[3px] border-[#FFF100] rounded-xl bg-white transition-transform hover:-translate-y-1">
+                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF100] mb-6">
+                                <span className="material-symbols-outlined text-3xl text-black">hourglass_empty</span>
+                            </div>
+                            <h3 className="text-[1.15rem] font-bold text-black mb-4 uppercase leading-tight">
+                                Achat-<br />Acquisition
+                            </h3>
+                            <p className="text-[0.7rem] sm:text-xs text-gray-700 leading-relaxed max-w-[240px]">
+                                L'ouvrage est sorti et disponible. Vous serez livré dans la semaine dans le point de distribution de votre ville.
+                            </p>
+                        </div>
+
+                        {/* Option 2: Pre-commande */}
+                        <div className="flex flex-col items-center text-center p-8 border-[3px] border-[#FFF100] rounded-xl bg-white transition-transform hover:-translate-y-1">
+                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF100] mb-6">
+                                <span className="material-symbols-outlined text-3xl text-black">psychology</span>
+                            </div>
+                            <h3 className="text-[1.15rem] font-bold text-black mb-4 uppercase leading-tight">
+                                achat-<br />Pré-commande
+                            </h3>
+                            <p className="text-[0.7rem] sm:text-xs text-gray-700 leading-relaxed max-w-[240px]">
+                                L'ouvrage est prêt. Supportez la fabrication de votre exemplaire. Vous serez livré dans le mois dans le point de distribution de votre ville. Une dédicace personnalisée vous attend.
+                            </p>
+                        </div>
+
+                        {/* Option 3: Financement Participatif */}
+                        <div className="flex flex-col items-center text-center p-8 border-[3px] border-[#FFF100] rounded-xl bg-white transition-transform hover:-translate-y-1">
+                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF100] mb-6">
+                                <span className="material-symbols-outlined text-3xl text-black">diamond</span>
+                            </div>
+                            <h3 className="text-[1.15rem] font-bold text-black mb-4 uppercase leading-tight">
+                                achat- financement<br />participatif
+                            </h3>
+                            <p className="text-[0.7rem] sm:text-xs text-gray-700 leading-relaxed max-w-[260px]">
+                                Supportez le chantier d'écriture. Vous serez régulièrement avertis de l'avancement et je répondrai personnellement à toutes vos questions sur le contenu. Vous recevrez en exclusivité votre exemplaire avec une dédicace dès la sortie. Vous serez cité dans les remerciements.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
                 {/* Section Ouvrages disponibles */}
                 <section className="mb-24">
                     <div className="mb-12">
-                        <h2 className="bg-yellow-400 inline-block px-4 py-1 text-2xl font-black uppercase tracking-tight text-black sm:text-3xl">
-                            Ouvrages disponibles :
-                        </h2>
+                        <h2 className="bg-[#FFF100] inline-block px-3 py-1 text-xl font-medium tracking-wide text-black sm:text-2xl">Ouvrages disponibles :</h2>
                     </div>
 
                     {/* Direct Acquisition */}
                     <div className="space-y-16">
-                        <div className="flex flex-col items-center gap-4">
-                            <div className="flex h-24 w-24 items-center justify-center rounded-full bg-yellow-400 shadow-lg">
-                                <span className="material-symbols-outlined text-5xl text-black">diamond</span>
+                        <div className="flex flex-row items-center gap-6 ml-4 sm:ml-12">
+                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF100]">
+                                <span className="material-symbols-outlined text-3xl text-black">hourglass_empty</span>
                             </div>
-                            <p className="text-lg font-medium text-gray-900">
+                            <p className="text-sm font-medium text-gray-900">
                                 Disponible en <span className="font-bold">Acquisition</span>
                             </p>
                         </div>
 
                         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                            {books.map((book) => (
-                                <div key={book.slug} className="group flex flex-col items-center">
-                                    <Link href={`/ouvrages/${book.slug}`} className="relative border-2 border-yellow-400 p-1 mb-4 transition-transform hover:scale-105">
-                                        <img
-                                            alt={book.title}
-                                            className="h-72 w-52 object-cover shadow-md"
-                                            src={book.coverImage}
+                            {books.map((book, idx) => (
+                                <div key={`${book.slug}-${idx}`} className="group flex flex-col items-center">
+                                    <Link href={`/ouvrages/${book.slug}`} className="relative border-[4px] border-[#FFF100] p-1 mb-4 transition-transform hover:scale-105" style={{ width: 240 }}>
+                                        <BookCover
+                                            slug={book.slug}
+                                            title={book.title}
+                                            subtitle={book.subtitle}
+                                            authorName={book.authorName}
+                                            variant={(book as any).coverVariant === "dark" ? "dark" : "light"}
+                                            titleColor={(book as any).titleColor}
                                         />
                                     </Link>
                                     <h3 className="text-center font-bold text-gray-800">{book.title}</h3>
@@ -124,27 +183,44 @@ export default async function OuvragesPage() {
                 {/* Section Pre-commande */}
                 <section className="mb-24">
                     <div className="space-y-16">
-                        <div className="flex flex-col items-center gap-4">
-                            <div className="flex h-24 w-24 items-center justify-center rounded-full bg-yellow-400 shadow-lg">
-                                <span className="material-symbols-outlined text-5xl text-black">hourglass_empty</span>
+                        <div className="flex flex-row items-center gap-6 ml-4 sm:ml-12">
+                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF100]">
+                                <span className="material-symbols-outlined text-3xl text-black">psychology</span>
                             </div>
-                            <p className="text-lg font-medium text-gray-900">
+                            <p className="text-sm font-medium text-gray-900">
                                 Disponible en <span className="font-bold">Pré-commande</span>
                             </p>
                         </div>
 
                         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                            {preorders.map((book) => (
-                                <div key={book.slug} className="group flex flex-col items-center">
-                                    <Link href={`/ouvrages/${book.slug}`} className="relative border-2 border-yellow-400 p-1 mb-4 transition-transform hover:scale-105">
-                                        <img
-                                            alt={book.title}
-                                            className="h-72 w-52 object-cover shadow-md"
-                                            src={book.coverImage}
+                            {preorders.map((book, idx) => (
+                                <div key={`${book.slug}-${idx}`} className="group flex flex-col items-center">
+                                    <Link href={`/ouvrages/${book.slug}`} className="relative border-[4px] border-[#FFF100] p-1 mb-4 transition-transform hover:scale-105" style={{ width: 240 }}>
+                                        <BookCover
+                                            slug={book.slug}
+                                            title={book.title}
+                                            subtitle={book.subtitle}
+                                            authorName={book.authorName}
+                                            variant={(book as any).coverVariant === "dark" ? "dark" : "light"}
+                                            titleColor={(book as any).titleColor}
                                         />
                                     </Link>
                                     <h3 className="text-center font-bold text-gray-800">{book.title}</h3>
                                     <p className="text-center text-xs text-gray-500 italic mt-1">{book.subtitle}</p>
+                                    <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <AddToCartButton
+                                            book={{
+                                                bookId: String((book as any)._id ?? ""),
+                                                slug: book.slug,
+                                                title: book.title,
+                                                authorName: book.authorName,
+                                                coverImage: book.coverImage,
+                                                price: book.price,
+                                                saleType: book.saleType
+                                            }}
+                                            className="rounded bg-black px-6 py-2 text-xs font-bold text-white uppercase tracking-widest hover:bg-yellow-500 hover:text-black transition-colors"
+                                        />
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -154,11 +230,11 @@ export default async function OuvragesPage() {
                 {/* Section Crowdfunding */}
                 <section className="mb-24">
                     <div className="space-y-16">
-                        <div className="flex flex-col items-center gap-4">
-                            <div className="flex h-24 w-24 items-center justify-center rounded-full bg-yellow-400 shadow-lg">
-                                <span className="material-symbols-outlined text-5xl text-black">psychology</span>
+                        <div className="flex flex-row items-center gap-6 ml-4 sm:ml-12">
+                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF100]">
+                                <span className="material-symbols-outlined text-3xl text-black">diamond</span>
                             </div>
-                            <p className="text-lg font-medium text-gray-900">
+                            <p className="text-sm font-medium text-gray-900">
                                 Disponible en <span className="font-bold">financement participatif :</span>
                             </p>
                         </div>
@@ -168,11 +244,14 @@ export default async function OuvragesPage() {
                                 const funding = getFundingProgress(project);
                                 return (
                                     <div key={project.slug} className="group flex flex-col items-center">
-                                        <Link href={`/ouvrages/${project.slug}`} className="relative border-2 border-yellow-400 p-1 mb-4 transition-transform hover:scale-105">
-                                            <img
-                                                alt={project.title}
-                                                className="h-72 w-52 object-cover shadow-md"
-                                                src={project.coverImage}
+                                        <Link href={`/ouvrages/${project.slug}`} className="relative border-[4px] border-[#FFF100] p-1 mb-4 transition-transform hover:scale-105" style={{ width: 240 }}>
+                                            <BookCover
+                                                slug={project.slug}
+                                                title={project.title}
+                                                subtitle={project.subtitle}
+                                                authorName={project.authorName}
+                                                variant={(project as any).coverVariant === "dark" ? "dark" : "light"}
+                                                titleColor={(project as any).titleColor}
                                             />
                                         </Link>
                                         <h3 className="text-center font-bold text-gray-800">{project.title}</h3>
@@ -181,11 +260,11 @@ export default async function OuvragesPage() {
                                         <div className="w-48">
                                             <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100 border border-gray-200">
                                                 <div
-                                                    className="h-full bg-yellow-400"
+                                                    className="h-full bg-[#FFF100]"
                                                     style={{ width: `${funding.percent}%` }}
                                                 ></div>
                                             </div>
-                                            <p className="mt-1 text-center text-[10px] font-black uppercase tracking-tighter">
+                                            <p className="mt-1 text-center text-[10px] font-black tracking-tighter">
                                                 {funding.percent}% financé
                                             </p>
                                         </div>

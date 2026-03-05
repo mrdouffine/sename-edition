@@ -2,22 +2,10 @@
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import UserMenu from "@/components/UserMenu";
-import AddToCartButton from "@/components/AddToCartButton";
-import WishlistButton from "@/components/WishlistButton";
 import CartNavButton from "@/components/CartNavButton";
-import BookCover from "@/components/BookCover";
 import ScrollAnimations from "@/components/ScrollAnimations";
-import { getFundingProgress } from "@/lib/domain/book";
-import { getHomeFeaturedBook, listBooksByType } from "@/lib/services/bookService";
 
-export default async function Home() {
-  const [books, preorders, crowdfunding, featuredBook] = await Promise.all([
-    listBooksByType("direct"),
-    listBooksByType("preorder"),
-    listBooksByType("crowdfunding"),
-    getHomeFeaturedBook(),
-  ]);
-
+export default function Home() {
   return (
     <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-[#f5f5f0]">
       <ScrollAnimations />
@@ -51,218 +39,29 @@ export default async function Home() {
             <p className="anim-hero-sub fade-up max-w-xl text-[clamp(1rem,1.4vw,1.25rem)] leading-relaxed text-[#4b5563]">
               Conçu pour rendre possible le financement, la production et la
               diffusion de chantiers intellectuels de{" "}
-              <span className="font-bold border-b-2 border-primary">Seydou Koffi Abodjinou</span>{" "}
+              <span className="font-bold border-b-2 border-primary">Sénamé Koffi Agbodjinou</span>{" "}
               sous toutes formes imprimées ou audiovisuelles.
             </p>
             <p className="anim-hero-sub fade-up max-w-xl text-[clamp(0.9rem,1.1vw,1rem)] leading-relaxed text-[#6b7280]">
               Les gains financent les engagements de l'association L'Africaine d'architecture.
             </p>
-            <a href="#ouvrages" className="anim-hero-cta btn-cta flex w-fit items-center gap-3 rounded-full bg-primary px-8 py-4 text-base font-black text-black transition-all hover:shadow-xl hover:scale-105">
-              Catalogue d'ouvrages + Enseignements
-            </a>
+            <div className="anim-hero-cta flex flex-wrap gap-4">
+              <Link href="/ouvrages" className="btn-cta flex w-fit items-center gap-3 rounded-full bg-primary px-8 py-4 text-sm sm:text-base font-black text-black transition-all hover:shadow-xl hover:scale-105 uppercase">
+                Catalogue d'ouvrages
+              </Link>
+              <Link href="/enseignements" className="btn-cta flex w-fit items-center gap-3 rounded-full bg-black px-8 py-4 text-sm sm:text-base font-black text-white hover:bg-gray-800 transition-all hover:shadow-xl hover:scale-105 uppercase">
+                Enseignements
+              </Link>
+            </div>
           </div>
 
           {/* Hero right — image already contains circle + decorations */}
           <div className="flex items-center justify-center">
             <img
-              alt="Portrait de Seydou Koffi Abodjinou"
+              alt="Portrait de Sénamé Koffi Agbodjinou"
               className="hero-image w-full max-w-[520px] h-auto object-contain"
               src="/images/image.png"
             />
-          </div>
-        </section>
-
-        {/* ──────────────────────────────────────────────── */}
-        {/* *OUVRAGES SEPARATOR                             */}
-        {/* ──────────────────────────────────────────────── */}
-        <div id="ouvrages" className="mb-14 fade-up">
-          <h2 className="text-xl font-black uppercase tracking-[0.2em] text-gray-800 flex items-center gap-4">
-            *OUVRAGES{" "}
-            <span className="text-gray-300 flex-1 overflow-hidden whitespace-nowrap tracking-[0.3em]">
-              ................................................................................................................................................................................................
-            </span>
-          </h2>
-        </div>
-
-        {/* ──────────────────────────────────────────────── */}
-        {/* A LA UNE                                        */}
-        {/* ──────────────────────────────────────────────── */}
-        <section className="mb-28">
-          <div className="mb-10 fade-up">
-            <h2 className="bg-primary inline-block px-4 py-1 text-2xl font-black uppercase tracking-tight text-black sm:text-3xl">
-              A la une :
-            </h2>
-          </div>
-
-          {featuredBook && (
-            <div className="flex justify-center fade-up">
-              <Link href={`/ouvrages/${featuredBook.slug}`} className="group transition-transform duration-500 hover:scale-[1.02]">
-                <div className="border-[10px] border-primary shadow-2xl" style={{ maxWidth: 420 }}>
-                  <BookCover
-                    title={featuredBook.title}
-                    subtitle={featuredBook.subtitle}
-                    authorName={featuredBook.authorName}
-                    variant={(featuredBook as any).coverVariant === "dark" ? "dark" : "light"}
-                    className="w-full"
-                  />
-                </div>
-              </Link>
-            </div>
-          )}
-
-          <div className="mt-16 flex justify-center">
-            <div className="h-[2px] w-48 bg-black opacity-30" />
-          </div>
-        </section>
-
-        {/* ──────────────────────────────────────────────── */}
-        {/* OUVRAGES DISPONIBLES                            */}
-        {/* ──────────────────────────────────────────────── */}
-        <div className="mb-20 fade-up">
-          <h2 className="bg-primary inline-block px-4 py-1 text-2xl font-black uppercase tracking-tight text-black sm:text-3xl">
-            Ouvrages disponibles :
-          </h2>
-        </div>
-
-        {/* ── ACQUISITION ── */}
-        <section className="mb-32">
-          <div className="flex flex-col items-center gap-4 mb-14 fade-up">
-            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary shadow-lg">
-              <span className="material-symbols-outlined text-4xl text-black">diamond</span>
-            </div>
-            <p className="text-lg text-gray-900">
-              Disponible en <span className="font-bold uppercase">Acquisition</span>
-            </p>
-          </div>
-
-          <div className="books-grid grid grid-cols-1 gap-14 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {books.map((book) => (
-              <div key={book.slug} className="book-card group flex flex-col items-center">
-                <Link href={`/ouvrages/${book.slug}`} className="block w-full transition-transform duration-300 hover:scale-[1.03]">
-                  <div className="border-[8px] border-primary shadow-lg mx-auto" style={{ maxWidth: 280 }}>
-                    <BookCover
-                      title={book.title}
-                      subtitle={book.subtitle}
-                      authorName={book.authorName}
-                      variant={(book as any).coverVariant === "dark" ? "dark" : "light"}
-                    />
-                  </div>
-                </Link>
-                <div className="mt-6 flex flex-col items-center gap-3 text-center">
-                  <h4 className="font-black text-sm uppercase tracking-tight leading-tight">{book.title}</h4>
-                  <p className="text-xs text-gray-500 italic">{book.subtitle}</p>
-                  <AddToCartButton
-                    book={{
-                      bookId: String((book as any)._id ?? ""),
-                      slug: book.slug,
-                      title: book.title,
-                      authorName: book.authorName,
-                      coverImage: book.coverImage,
-                      price: book.price,
-                      saleType: book.saleType,
-                    }}
-                    className="anim-button btn-cta rounded bg-black px-5 py-2 text-[10px] font-black text-white uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ── PRÉ-COMMANDE ── */}
-        <section className="mb-32">
-          <div className="flex flex-col items-center gap-4 mb-14 fade-up">
-            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary shadow-lg">
-              <span className="material-symbols-outlined text-4xl text-black">hourglass_empty</span>
-            </div>
-            <p className="text-lg text-gray-900">
-              Disponible en <span className="font-bold uppercase">Pré-commande</span>
-            </p>
-          </div>
-
-          <div className="books-grid grid grid-cols-1 gap-14 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
-            {preorders.map((book) => (
-              <div key={book.slug} className="book-card group flex flex-col items-center">
-                <Link href={`/ouvrages/${book.slug}`} className="block w-full transition-transform duration-300 hover:scale-[1.03]">
-                  <div className="border-[8px] border-primary shadow-lg mx-auto" style={{ maxWidth: 280 }}>
-                    <BookCover
-                      title={book.title}
-                      subtitle={book.subtitle}
-                      authorName={book.authorName}
-                      variant={(book as any).coverVariant === "dark" ? "dark" : "light"}
-                    />
-                  </div>
-                </Link>
-                <div className="mt-6 flex flex-col items-center gap-3 text-center">
-                  <h4 className="font-black text-sm uppercase tracking-tight leading-tight">{book.title}</h4>
-                  <p className="text-xs text-gray-500 italic">{book.subtitle}</p>
-                  <AddToCartButton
-                    book={{
-                      bookId: String((book as any)._id ?? ""),
-                      slug: book.slug,
-                      title: book.title,
-                      authorName: book.authorName,
-                      coverImage: book.coverImage,
-                      price: book.price,
-                      saleType: book.saleType,
-                    }}
-                    className="anim-button btn-cta rounded bg-black px-5 py-2 text-[10px] font-black text-white uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ── FINANCEMENT PARTICIPATIF ── */}
-        <section className="mb-32">
-          <div className="flex flex-col items-center gap-4 mb-14 fade-up">
-            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary shadow-lg">
-              <span className="material-symbols-outlined text-4xl text-black">psychology</span>
-            </div>
-            <p className="text-lg text-gray-900">
-              Disponible en <span className="font-bold uppercase">financement participatif :</span>
-            </p>
-          </div>
-
-          <div className="books-grid grid grid-cols-1 gap-14 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {crowdfunding.map((project) => {
-              const funding = getFundingProgress(project);
-              return (
-                <div key={project.slug} className="book-card group flex flex-col items-center">
-                  <Link href={`/ouvrages/${project.slug}`} className="block w-full transition-transform duration-300 hover:scale-[1.03]">
-                    <div className="border-[8px] border-primary shadow-lg mx-auto" style={{ maxWidth: 280 }}>
-                      <BookCover
-                        title={project.title}
-                        subtitle={project.subtitle}
-                        authorName={project.authorName}
-                        variant={(project as any).coverVariant === "dark" ? "dark" : "light"}
-                      />
-                    </div>
-                  </Link>
-                  <div className="mt-6 flex flex-col items-center gap-3 text-center w-full" style={{ maxWidth: 280 }}>
-                    <h4 className="font-black text-sm uppercase tracking-tight leading-tight">{project.title}</h4>
-                    <p className="text-xs text-gray-500 italic">{project.subtitle}</p>
-                    <div className="funding-bar w-full h-2 overflow-hidden rounded-full bg-gray-200 border border-gray-300">
-                      <div
-                        className="funding-fill h-full bg-primary rounded-full transition-none"
-                        data-width={funding.percent}
-                        style={{ width: "0%" }}
-                      />
-                    </div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-600">
-                      {funding.percent}% financé
-                    </p>
-                    <Link
-                      href={`/ouvrages/${project.slug}`}
-                      className="anim-button btn-cta rounded bg-black px-5 py-2 text-[10px] font-black text-white uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
-                    >
-                      Soutenir le projet
-                    </Link>
-                  </div>
-                </div>
-              );
-            })}
           </div>
         </section>
 
