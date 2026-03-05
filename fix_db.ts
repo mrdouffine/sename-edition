@@ -10,7 +10,7 @@ async function fixDb() {
   for (const b of mockBooks) {
     const doc = { ...b };
     if (doc._id) {
-      doc._id = new mongoose.Types.ObjectId(doc._id as string);
+      (doc as any)._id = new mongoose.Types.ObjectId(String(doc._id));
     }
 
     await BookModel.updateOne(
