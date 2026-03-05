@@ -1026,8 +1026,6 @@ function AdminPageContent() {
                     placeholder="Rechercher id, user, type, statut..."
                   />
                   <DataTable
-Ils sont situés stratégiquement : juste au dessus de la vraie grande section complète avec le détail du livre (Description / Avis). Ainsi, cela montre d'emblée à vos visiteurs les retours exceptionnels sur l'ouvrage pour les inciter au premier regard avant même de fouiller l'onglet Description, et pour ceux qui veulent y laisser un authentique avis client, l'onglet Avis reste toujours présent et 100% fonctionnel en bas.
-
                     headers={["Commande", "Utilisateur", "Montant", "Type", "Statut"]}
                     rows={pagedOrders.items.map((order) => [
                       <div key={order.id} className="flex flex-col">
