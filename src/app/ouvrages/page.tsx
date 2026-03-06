@@ -52,7 +52,7 @@ export default async function OuvragesPage() {
                 {/* Section A la une */}
                 <section className="mb-24">
                     <div className="mb-10 text-center lg:text-left">
-                        <h2 className="text-xs font-bold lowercase tracking-[0.2em] text-[#8d895e]">à la une :</h2>
+                        <h2 className="text-xs font-bold lowercase tracking-[0.2em] text-gray-400">à la une :</h2>
                     </div>
 
                     {featuredBook && (
@@ -76,7 +76,7 @@ export default async function OuvragesPage() {
                                     {featuredBook.title}
                                 </h1>
                                 {featuredBook.subtitle && (
-                                    <p className="mb-8 text-base font-medium text-[#8d895e] lowercase tracking-[0.2em] italic">
+                                    <p className="mb-8 text-base font-medium text-gray-400 lowercase tracking-[0.2em] italic">
                                         {featuredBook.subtitle}
                                     </p>
                                 )}
@@ -123,7 +123,7 @@ export default async function OuvragesPage() {
                 {/* Section Options d'achat */}
                 <section className="mb-24">
                     <div className="mb-16 text-center">
-                        <h2 className="text-xs font-bold lowercase tracking-[0.2em] text-[#8d895e]">plusieurs options d'achat :</h2>
+                        <h2 className="text-xs font-bold lowercase tracking-[0.2em] text-gray-500">plusieurs options d'achat :</h2>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-[1000px] mx-auto">
@@ -171,7 +171,7 @@ export default async function OuvragesPage() {
                 {/* Section Ouvrages disponibles */}
                 <section className="mb-24">
                     <div className="mb-16 pt-10 border-t border-gray-50 text-center">
-                        <h2 className="text-xs font-bold lowercase tracking-[0.2em] text-[#8d895e]">ouvrages disponibles :</h2>
+                        <h2 className="text-xs font-bold lowercase tracking-[0.2em] text-gray-400">ouvrages disponibles :</h2>
                     </div>
 
                     {/* Direct Acquisition */}
@@ -199,7 +199,7 @@ export default async function OuvragesPage() {
                                         />
                                     </Link>
                                     <h3 className="text-center font-bold text-[#FFEA00] lowercase leading-tight">{book.title}</h3>
-                                    <p className="text-center text-[10px] text-[#8d895e] lowercase italic mt-2 tracking-wide">{book.subtitle}</p>
+                                    <p className="text-center text-[10px] text-gray-400 lowercase italic mt-2 tracking-wide">{book.subtitle}</p>
                                     <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
                                         <AddToCartButton
                                             book={{
@@ -246,7 +246,7 @@ export default async function OuvragesPage() {
                                         />
                                     </Link>
                                     <h3 className="text-center font-bold text-[#FFEA00] lowercase leading-tight">{book.title}</h3>
-                                    <p className="text-center text-[10px] text-[#8d895e] lowercase italic mt-2 tracking-wide">{book.subtitle}</p>
+                                    <p className="text-center text-[10px] text-gray-400 lowercase italic mt-2 tracking-wide">{book.subtitle}</p>
                                     <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
                                         <AddToCartButton
                                             book={{
@@ -295,7 +295,7 @@ export default async function OuvragesPage() {
                                             />
                                         </Link>
                                         <h3 className="text-center font-bold text-[#FFEA00] lowercase leading-tight">{project.title}</h3>
-                                        <p className="text-center text-[10px] text-[#8d895e] lowercase italic mt-1 mb-3">{project.subtitle}</p>
+                                        <p className="text-center text-[10px] text-gray-400 lowercase italic mt-1 mb-3">{project.subtitle}</p>
 
                                         <div className="w-48">
                                             <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100 border border-gray-200">

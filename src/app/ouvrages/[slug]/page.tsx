@@ -63,25 +63,19 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
       </header>
 
       <div className="mx-auto flex w-full max-w-[1200px] flex-col px-4 pt-24 sm:px-6 sm:pt-28 md:px-10">
-        <div className="mb-6">
-          <Link href="/ouvrages" className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#8d895e] hover:text-[#181810] transition-colors">
-            <span className="material-symbols-outlined text-lg">arrow_back</span>
-            Retourner aux ouvrages
-          </Link>
-        </div>
         <div className="flex items-center gap-2 text-xs font-medium sm:text-sm md:text-base">
-          <Link className="text-[#8d895e] hover:text-[#181810]" href="/">
+          <Link className="text-gray-400 hover:text-[#181810]" href="/">
             Accueil
           </Link>
-          <span className="text-[#8d895e]">/</span>
-          <Link className="text-[#8d895e] hover:text-[#181810]" href="/ouvrages">
+          <span className="text-gray-400">/</span>
+          <Link className="text-gray-400 hover:text-[#181810]" href="/ouvrages">
             Ouvrages
           </Link>
-          <span className="text-[#8d895e]">/</span>
+          <span className="text-gray-400">/</span>
           <span className="max-w-[40vw] truncate text-[#181810] sm:max-w-none">{book.title}</span>
           <div className="hidden flex-1 border-b-2 border-dotted border-[#d1d1cf] opacity-30 md:block"></div>
           {book.isbn ? (
-            <div className="hidden pl-4 text-xs uppercase tracking-widest text-[#8d895e] lg:block">
+            <div className="hidden pl-4 text-xs uppercase tracking-widest text-gray-400 lg:block">
               ISBN: {book.isbn}
             </div>
           ) : null}
@@ -109,7 +103,7 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
               {book.title}
             </h1>
             {book.subtitle ? (
-              <p className="mb-4 text-base font-medium text-[#8d895e] lowercase tracking-wide italic leading-relaxed">
+              <p className="mb-4 text-base font-medium text-gray-400 lowercase tracking-wide italic leading-relaxed">
                 {book.subtitle}
               </p>
             ) : null}
@@ -154,7 +148,7 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
 
             {book.saleType === "crowdfunding" ? (
               <div className="mb-3">
-                <div className="mb-2 flex items-center justify-between text-xs font-bold uppercase text-[#8d895e]">
+                <div className="mb-2 flex items-center justify-between text-xs font-bold uppercase text-gray-400">
                   <span>{funding.percent}% financé</span>
                   <span>Reste {funding.remaining.toFixed(0)}€</span>
                 </div>

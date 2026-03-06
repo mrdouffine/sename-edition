@@ -29,15 +29,15 @@ export default function BookCover({
     const bgColor = variant === "dark" ? "#e8e8e0" : "#ffffff";
 
     const imageMap: Record<string, string> = {
-        "decoloniser-le-futur": "decoloniser-le-futur.png",
-        "le-centre-de-flammes": "le-centre-des-flammes.png",
-        "ce-qui-demeure": "ce-qui-demeure.png",
-        "a-l-endroit": "a-lendroit.png",
-        "cosmo-architecture": "principe-cosmo-architecture.jpeg",
-        "comprendre-architecture-afrique": "comprendre-architecture-afrique-noire.jpeg",
-        "esthetiques-du-feminin": "esthetique-du-feminin.jpeg",
-        "girations": "girations.png",
-        "rencontres": "rencontres.jpeg"
+        // "decoloniser-le-futur": "decoloniser-le-futur.png",
+        // "le-centre-de-flammes": "le-centre-des-flammes.png",
+        // "ce-qui-demeure": "ce-qui-demeure.png",
+        // "a-l-endroit": "a-lendroit.png",
+        // "cosmo-architecture": "principe-cosmo-architecture.jpeg",
+        // "comprendre-architecture-afrique": "comprendre-architecture-afrique-noire.jpeg",
+        // "esthetiques-du-feminin": "esthetique-du-feminin.jpeg",
+        // "girations": "girations.png",
+        // "rencontres": "rencontres.jpeg"
     };
 
     const imageFile = slug ? imageMap[slug] : undefined;
@@ -63,16 +63,16 @@ export default function BookCover({
             ) : (
                 <div style={{ padding: "12% 8%", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%", backgroundColor: bgColor }}>
                     <div style={{ marginTop: "0.5rem" }}>
-                        <span className="text-[#8d895e] lowercase" style={{ fontSize: "0.9rem", letterSpacing: "0.15em", fontWeight: 500 }}>{authorName}</span>
+                        <span className="text-gray-900/60 lowercase" style={{ fontSize: "0.9rem", letterSpacing: "0.15em", fontWeight: 500 }}>{authorName}</span>
                     </div>
                     <div className="flex flex-col items-center justify-center flex-1">
                         <h3 className="lowercase" style={{ fontSize: "clamp(1.8rem, 3vw, 2.5rem)", lineHeight: "1", fontWeight: 700, color: "#FFEA00", letterSpacing: "-0.02em" }}>{title}</h3>
-                        {subtitle && <p className={`mt-3 lowercase italic ${title === "le centre de flammes" || title === "girations" || title === "décoloniser le futur" ? "text-[#FFEA00]" : "text-gray-400"}`} style={{ fontSize: "0.65rem", letterSpacing: "0.05em", fontWeight: title === "le centre de flammes" ? 700 : 400 }}>{subtitle}</p>}
+                        {subtitle && <p className="mt-3 lowercase italic text-gray-800" style={{ fontSize: "0.65rem", letterSpacing: "0.05em", fontWeight: 400 }}>{subtitle}</p>}
                     </div>
                     <div className="flex flex-col items-center gap-2">
                         <div className="flex flex-col items-center">
                             <span className="text-[0.6rem] font-bold uppercase tracking-[0.3em] text-black">
-                                {title.includes("flammes") || title.includes("girations") ? "POESIE" : title.includes("rencontres") ? "NOUVELLES" : "ESSAI"}
+                                {title.toLowerCase().includes("flammes") || title.toLowerCase().includes("girations") ? "POESIE" : title.toLowerCase().includes("rencontres") ? "NOUVELLES" : (title.toLowerCase().includes("architecture") || title.toLowerCase().includes("esthetiques") || title.toLowerCase().includes("esthétiques")) ? "ARTS" : "ESSAI"}
                             </span>
                             <span className="mt-1 text-[0.6rem] font-medium text-black">L'Africaine</span>
                         </div>
