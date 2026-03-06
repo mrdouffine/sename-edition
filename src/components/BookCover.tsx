@@ -67,14 +67,13 @@ export default function BookCover({
                     </div>
                     <div className="flex flex-col items-center justify-center flex-1 px-1">
                         <h3 style={{
-                            fontSize: title.length > 30 ? "clamp(1rem, 2vw, 1.3rem)" :
-                                title.length > 25 ? "clamp(1.2rem, 2.2vw, 1.5rem)" :
-                                    title.length > 15 ? "clamp(1.4rem, 2.6vw, 1.8rem)" :
-                                        "clamp(1.75rem, 3.2vw, 2.3rem)",
-                            lineHeight: "1.05",
+                            fontSize: title.length > 30 ? "clamp(1.1rem, 2.2vw, 1.5rem)" :
+                                title.length > 20 ? "clamp(1.4rem, 2.6vw, 2rem)" :
+                                    "clamp(1.8rem, 3vw, 2.5rem)",
+                            lineHeight: "1.1",
                             fontWeight: 700,
                             color: "#FFEA00",
-                            letterSpacing: "-0.01em",
+                            letterSpacing: "-0.02em",
                             wordBreak: "keep-all",
                             overflowWrap: "normal",
                             whiteSpace: "pre-line",
