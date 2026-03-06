@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
-import BookModel from "./src/models/Book";
+import BookModel from "./src/models/Book.ts";
 
 const mockBooksRaw = [
     {
         _id: "653e8f1b9a1d4b001a2b3c4d",
-        title: "décoloniser le Futur",
+        title: "décoloniser le futur",
         subtitle: "CARNETS DE CONFINEMENT",
         slug: "decoloniser-le-futur",
         description: "« Décoloniser le Futur » est un essai dense et visionnaire. Face aux crises contemporaines, l'auteur nous invite à repenser notre rapport au temps, à la terre et à l'identité.\n\nCe carnet de confinement, rédigé dans l'urgence d'un monde en pause, explore avec acuité les dynamiques de domination qui continuent de façonner notre modernité.\n\nÀ travers des réflexions incisives et une plume poétique, c'est un véritable appel à la réinvention et à la liberté qui est lancé. Une lecture indispensable pour quiconque souhaite comprendre les futurs possibles au-delà des récits hégémoniques.",
@@ -17,7 +17,7 @@ const mockBooksRaw = [
     },
     {
         _id: "653e8f1b9a1d4b001a2b3c4e",
-        title: "le Centre de Flammes",
+        title: "le centre de flammes",
         subtitle: "Livre d'une sortie au jour",
         slug: "le-centre-de-flammes",
         description: "« Le Centre de Flammes » est un recueil poétique puissant. Telle une sortie au jour, il éclaire les parts obscures de notre existence et ravive le feu intérieur qui anime la quête de sens.\n\nComposé de vers à la fois brûlants et méditatifs, ce livre interroge la mémoire, la spiritualité et les cicatrices de l'history. C'est un retour incantatoire à la source.\n\nEmpreint d'une intense chaleur cosmique, ce recueil se lit comme un voyage d'initiation guidant l'âme vers sa propre lumière incandescente.",
@@ -46,7 +46,7 @@ const mockBooksRaw = [
     },
     {
         _id: "653e8f1b9a1d4b001a2b3c4f",
-        title: "Girations",
+        title: "girations",
         subtitle: "chantiers poétiques",
         slug: "girations",
         description: "« Fameux coup de fouet d’un magistère ! Qu’on juge par ceci en particulier, que mon cas est bien sérieux. »\n\nRecueil rigoureusement haché d’une anthologie de circonstance, Girations (refusé partout) est une somme poétique sur le mode de l'Odyssée : Une traversée particulière des toutes premières années du millénaire.\n\nL’auteur, immigré en France à 20 ans, restitue pour en vrac : des études en design industriel, histoire de l’art, architecture et anthropologie, avec ses prises de consciences esthétiques et politiques sur fond de désargentement et d’errance de l’exil parisien.",
@@ -59,7 +59,7 @@ const mockBooksRaw = [
     },
     {
         _id: "653e8f1b9a1d4b001a2b3c50",
-        title: "principes d'une cosmo architecture",
+        title: "principes d'une COSMO architecture",
         subtitle: "Architecture et Univers",
         slug: "cosmo-architecture",
         description: "Cet essai fondateur pose les bases d'une nouvelle discipline : la Cosmo-Architecture. En dépassant le simple cadre bâtisseur, l'auteur relie l'espace humain aux dimensions astrologiques, mythologiques et écologiques.\n\nÀ la croisée des sciences traditionnelles de l'espace et de la physique moderne, cet ouvrage redéfinit notre manière de concevoir l'habitat pour qu'il soit en pleine résonance avec les vibrations de l'univers.\n\nUn manifeste théorique accompagné de schémas inédits, démontrant que construire, c'est avant tout dialoguer avec l'infini spatial.",

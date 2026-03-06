@@ -5,7 +5,7 @@ import type { BookDocument } from "@/models/Book";
 export const mockBooks = [
   {
     _id: "653e8f1b9a1d4b001a2b3c4d",
-    title: "décoloniser le Futur",
+    title: "décoloniser le futur",
     subtitle: "CARNETS DE CONFINEMENT",
     slug: "decoloniser-le-futur",
     description:
@@ -28,7 +28,7 @@ export const mockBooks = [
   },
   {
     _id: "653e8f1b9a1d4b001a2b3c4e",
-    title: "le Centre de Flammes",
+    title: "le centre de flammes",
     subtitle: "Livre d'une sortie au jour",
     slug: "le-centre-de-flammes",
     description:
@@ -50,7 +50,7 @@ export const mockBooks = [
   },
   {
     _id: "653e8f1b9a1d4b001a2b3c4f",
-    title: "Girations",
+    title: "girations",
     subtitle: "chantiers poétiques",
     slug: "girations",
     description:
@@ -72,7 +72,7 @@ export const mockBooks = [
   },
   {
     _id: "653e8f1b9a1d4b001a2b3c50",
-    title: "principes d'une cosmo architecture",
+    title: "principes d'une COSMO architecture",
     subtitle: "Architecture et Univers",
     slug: "cosmo-architecture",
     description:
