@@ -185,7 +185,7 @@ export default function BookCommentsSection({
             return (
               <article key={review.id} className="flex flex-col">
                 <div className="relative rounded-xl bg-primary p-6">
-                  <p className="font-medium leading-relaxed text-[#181810]">
+                  <p className="whitespace-pre-wrap font-medium leading-relaxed text-[#181810]">
                     &ldquo;{review.content}&rdquo;
                   </p>
                   <div className="absolute -bottom-4 left-6 h-0 w-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-t-[20px] border-t-primary"></div>
@@ -205,9 +205,8 @@ export default function BookCommentsSection({
                       {Array.from({ length: 5 }).map((_, index) => (
                         <span
                           key={`${review.id}-star-${index}`}
-                          className={`material-symbols-outlined text-xs ${
-                            index < review.rating ? "fill-1" : ""
-                          }`}
+                          className={`material-symbols-outlined text-xs ${index < review.rating ? "fill-1" : ""
+                            }`}
                         >
                           star
                         </span>
@@ -261,11 +260,9 @@ export default function BookCommentsSection({
                       type="button"
                       onClick={() => setRating(value)}
                       disabled={role === "admin"}
-                      className={`material-symbols-outlined transition-colors ${
-                        role === "admin" ? "opacity-50 cursor-not-allowed" : ""
-                      } ${
-                        value <= rating ? "fill-1 text-primary" : "text-[#181810]"
-                      }`}
+                      className={`material-symbols-outlined transition-colors ${role === "admin" ? "opacity-50 cursor-not-allowed" : ""
+                        } ${value <= rating ? "fill-1 text-primary" : "text-[#181810]"
+                        }`}
                     >
                       star
                     </button>

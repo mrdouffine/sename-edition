@@ -8,12 +8,30 @@ import WishlistButton from "@/components/WishlistButton";
 import SocialShareButtons from "@/components/SocialShareButtons";
 import MarketingReviews from "@/components/MarketingReviews";
 import UserMenu from "@/components/UserMenu";
+import Logo from "@/components/Logo";
 import { getBookBySlug } from "@/lib/services/bookService";
 import { getFundingProgress, getSaleStatus, isOutOfStock } from "@/lib/domain/book";
 import { notFound } from "next/navigation";
 import BookDetailTabs from "@/components/BookDetailTabs";
 import BookCover from "@/components/BookCover";
 import { Suspense } from "react";
+
+const CENTER_OF_FLAMES_REVIEWS = [
+  {
+    name: "Follashade Ogunde",
+    role: "Avis Lecture",
+    content: "14 années après avoir finalisé la rédaction de son livre de sortie au jour, Sename décide de le faire découvrir. Pourquoi avoir attendu si longtemps ?\nDans ce livre où il semble s’adresser à la fois à « Neuf mois », sa mère et au lecteur par défaut, on lit les péripéties d’un jeune homme, qui après avoir rêvé à la poésie, de bat dans un monde qui n’est pas le sien, afin de faire accepter son bouquin par des maisons d’éditions. Un jeune homme noir, affamé, dans les rues d’une France qui ne l’a nullement vu naître. Il frappe aux portes des maisons mais aucune ne semble valoriser le tas de papiers qu’il tient en main. Il raconte au lecteur sa rage, avoir subi rejets après rejets sans jamais avoir la chance d’être ne serait-ce que considéré ou lu.\nSename parle à sa mère de ce par quoi il passe dans cette France où il est allé poursuivre ses études et où il a voulu embrasser la vocation de poète. Neuf années depuis son arrivée en France jusqu’à la rédaction de ce livre, il lui est arrivé de repenser à son retour au pays natal, d’aimer , de travailler, d’étudier, …\nRejeté à maintes reprises par les maisons d’édition, aussi bien françaises que « africaines », il décide de devenir lui même « Maison ». Ainsi, ce livre, « Le centre de flammes », vous le lirez sans retouche, sans relecture, sans corrections, sans polissure …\nViendront des parties que vous ne comprendrez peut-être pas, des parties que vous n’accepterez peut-être pas, … il laisse à chaque lecteur le soin d’avoir un avis, de le finir ou pas, de l’aimer ou de le désapprouver, de le recommander ou pas…",
+    rating: 5,
+    order: 1
+  },
+  {
+    name: "Kodjo Casimir Atoukouvi",
+    role: "Lecteur",
+    content: "Le Centre de Flammes, c'est une poésie d'une force remarquable. C'est le délire lyrique d'un homme racontant son expérience de l'occident, l'intensité de sa vie intellectuelle et sa bohème.\nJe ne peux vraiment pas décrire ce qui m'est resté comme impression après l'avoir lu. On suit l'auteur dans un voyage très intense et extrêmement dense, et on effectue nous aussi cette navigation à la recherche de \"quelquechose\". On virevolte entre négritude, esthétique, illusions et autres sujets.\nL' écriture? D'une violence inouïe, d'une rapidité et d'une impatience sensationnelles: \"Vite, vite que l'écrive\". Le flux de conscience libre, le trouble mais surtout l'inspiration débordante que l'auteur ne pouvait, apparemment,plus contenir. Il s'agit d'une torture indicible. Il en résulte pourtant une force extraordinaire.\nPlusieurs parties du texte m'on fait penser aux expériences des situationnistes, notamment à Guy Debord. Le projet est bien évidemment la liberté.\nCertains ne peuvent assurément pas supporter cette folie et remarqueront que l'œuvre n'est pas pour eux. Je l'ai justement adorée pour cela... Car elle vient de la profondeur de l'âme du poète.",
+    rating: 5,
+    order: 2
+  }
+];
 
 export default async function BookDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -32,14 +50,9 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
     <div className="flex min-h-screen flex-col bg-background-light text-[#181810]">
       <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between border-b border-solid border-[#e5e5e0] bg-white px-3 py-3 sm:px-6 sm:py-4 md:px-10 lg:px-20">
         <div className="flex items-center gap-4 sm:gap-8">
-          <div className="flex items-center gap-3">
-            <div className="flex size-8 items-center justify-center rounded-full bg-black text-primary">
-              <span className="material-symbols-outlined text-xl">menu_book</span>
-            </div>
-            <h2 className="max-w-[38vw] truncate text-sm font-extrabold uppercase leading-tight tracking-tight text-[#181810] sm:max-w-none sm:text-lg">
-              SENAME EDITION’S
-            </h2>
-          </div>
+          <Link href="/" className="flex items-center gap-3 sm:gap-4">
+            <Logo />
+          </Link>
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-3">
@@ -49,13 +62,23 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
         </div>
       </header>
 
-      <div className="mx-auto flex w-full max-w-[1200px] items-center px-4 pt-24 sm:px-6 sm:pt-28 md:px-10">
+      <div className="mx-auto flex w-full max-w-[1200px] flex-col px-4 pt-24 sm:px-6 sm:pt-28 md:px-10">
+        <div className="mb-6">
+          <Link href="/ouvrages" className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#8d895e] hover:text-[#181810] transition-colors">
+            <span className="material-symbols-outlined text-lg">arrow_back</span>
+            Retourner aux ouvrages
+          </Link>
+        </div>
         <div className="flex items-center gap-2 text-xs font-medium sm:text-sm md:text-base">
           <Link className="text-[#8d895e] hover:text-[#181810]" href="/">
             Accueil
           </Link>
           <span className="text-[#8d895e]">/</span>
-          <span className="max-w-[52vw] truncate text-[#181810] sm:max-w-none">{book.title}</span>
+          <Link className="text-[#8d895e] hover:text-[#181810]" href="/ouvrages">
+            Ouvrages
+          </Link>
+          <span className="text-[#8d895e]">/</span>
+          <span className="max-w-[40vw] truncate text-[#181810] sm:max-w-none">{book.title}</span>
           <div className="hidden flex-1 border-b-2 border-dotted border-[#d1d1cf] opacity-30 md:block"></div>
           {book.isbn ? (
             <div className="hidden pl-4 text-xs uppercase tracking-widest text-[#8d895e] lg:block">
@@ -76,7 +99,7 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
                 authorName={book.authorName}
                 variant={(book as any).coverVariant === "dark" ? "dark" : "light"}
                 titleColor={(book as any).titleColor}
-                className="w-full shadow-md border-[6px] border-[#FFF100] p-1"
+                className="w-full border-[6px] border-[#FFF100]"
               />
             </div>
           </div>
@@ -106,11 +129,6 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
               <span className="text-sm font-medium">
                 Statut : disponible en: <span className="font-normal">{saleStatus}</span>
               </span>
-              <div className="ml-auto mr-12 -translate-y-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#FFEA00]">
-                <span className="material-symbols-outlined text-[1.2rem] text-black">
-                  hourglass_empty
-                </span>
-              </div>
             </div>
 
             {book.releaseDate ? (
@@ -194,7 +212,7 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
           </div>
         </div>
 
-        <BookDetailTabs description={book.description ?? ""} bookId={bookId} staticReviews={book.staticReviews} />
+        <BookDetailTabs description={book.description ?? ""} bookId={bookId} staticReviews={slug === "le-centre-de-flammes" ? CENTER_OF_FLAMES_REVIEWS : []} />
       </main>
 
       <MarketingReviews slug={slug} />

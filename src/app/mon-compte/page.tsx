@@ -6,6 +6,7 @@ import { clearAuthToken } from "@/lib/auth/client";
 import { fetchWithAuth } from "@/lib/api/client";
 import { useSearchParams } from "next/navigation";
 import { useRequireAuth } from "@/lib/auth/useRequireAuth";
+import Logo from "@/components/Logo";
 
 type MeResponse = {
   data?: {
@@ -544,17 +545,10 @@ function AccountPageContent() {
     <main className="min-h-screen bg-[#f8f8f5] md:h-screen md:overflow-hidden">
       <div className="flex min-h-screen w-full flex-col md:h-screen md:flex-row">
         <nav className="hidden w-64 flex-col gap-4 bg-white p-5 shadow-sm md:flex md:h-screen md:shrink-0 md:overflow-y-auto">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-8">
-              <div className="flex items-center gap-3">
-                <div className="flex size-8 items-center justify-center rounded-full bg-black text-primary">
-                  <span className="material-symbols-outlined text-xl">menu_book</span>
-                </div>
-                <h2 className="text-lg font-extrabold uppercase leading-tight tracking-tight text-[#181810]">
-                  SENAME EDITION’S
-                </h2>
-              </div>
-            </div>
+          <div className="flex items-center gap-3 mb-6">
+            <Link href="/" className="flex items-center gap-3">
+              <Logo />
+            </Link>
           </div>
 
           <div className="mt-6 flex flex-col gap-1 text-sm">

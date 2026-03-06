@@ -1,3 +1,5 @@
+import Logo from "@/components/Logo";
+
 const socials = [
   {
     label: "Facebook",
@@ -44,19 +46,17 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-6 py-7 md:px-8 md:py-8">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3 md:items-start">
           <div className="flex items-center gap-3 sm:gap-4">
-            <div className="flex size-8 items-center justify-center rounded-full bg-black text-primary">
-              <span className="material-symbols-outlined text-xl">menu_book</span>
-            </div>
+            <Logo />
             <h2 className="text-base font-extrabold uppercase leading-tight tracking-tight text-[#181810] sm:text-lg">
-              SENAME EDITION’S
+              édition
             </h2>
           </div>
-          <p className="text-[13px] font-bold md:text-center">info@artforintrovert.com</p>
+          <p className="text-[13px] font-bold md:text-center">contact@lafricainedarchitecture.com</p>
           <div className="space-y-2 text-[13px] font-bold md:text-right">
             <p>
-              Suite 4022, 43 Bedford Street,
+              L&apos;AFRICAINE D&apos;ARCHITECTURE
               <br />
-              London, United Kingdom, WC2E 9HA
+              2 bis Rue Dupont de l’Eure, 75020 Paris
             </p>
           </div>
         </div>

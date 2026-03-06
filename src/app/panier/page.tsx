@@ -4,6 +4,7 @@ import Link from "next/link";
 import Footer from "@/components/Footer";
 import UserMenu from "@/components/UserMenu";
 import CartNavButton from "@/components/CartNavButton";
+import Logo from "@/components/Logo";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -261,12 +262,9 @@ export default function PanierPage() {
     <div className="flex min-h-screen flex-col bg-background-light text-[#181810]">
       <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between border-b border-solid border-[#e5e4e0] bg-white px-3 py-3 sm:px-6 sm:py-4 md:px-10 lg:px-20">
         <div className="flex items-center gap-3 sm:gap-4">
-          <div className="flex size-8 items-center justify-center rounded-full bg-black text-primary">
-            <span className="material-symbols-outlined text-xl">menu_book</span>
-          </div>
-          <h2 className="max-w-[38vw] truncate text-sm font-extrabold uppercase leading-tight tracking-tight text-[#181810] sm:max-w-none sm:text-lg">
-            SENAME EDITION’S
-          </h2>
+          <Link href="/" className="flex items-center gap-3 sm:gap-4">
+            <Logo />
+          </Link>
         </div>
         <div className="flex items-center gap-2 sm:gap-4">
           <UserMenu showAuthLinks />

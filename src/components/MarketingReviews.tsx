@@ -35,31 +35,17 @@ const BUBBLE_REVIEWS: Record<string, { text: string; name: string; date: string;
     ],
     "le-centre-de-flammes": [
         {
-            boldPart: "Une résonance poétique exceptionnelle qui vous transporte.",
-            text: " La façon dont l'auteur manie les mots pour invoquer l'éveil spirituel est magnifique. Chaque lecture révèle de nouveaux aspects et sensations. C'est une œuvre majeure de poésie !",
-            name: "Léa M.",
-            date: "10/06/2024",
+            boldPart: "Avis Lecture : Centre de Flammes",
+            text: "\n\n14 années après avoir finalisé la rédaction de son livre de sortie au jour, Sename décide de le faire découvrir. Pourquoi avoir attendu si longtemps ?\nDans ce livre où il semble s’adresser à la fois à « Neuf mois », sa mère et au lecteur par défaut, on lit les péripéties d’un jeune homme, qui après avoir rêvé à la poésie, de bat dans un monde qui n’est pas le sien, afin de faire accepter son bouquin par des maisons d’éditions. Un jeune homme noir, affamé, dans les rues d’une France qui ne l’a nullement vu naître. Il frappe aux portes des maisons mais aucune ne semble valoriser le tas de papiers qu’il tient en main. Il raconte au lecteur sa rage, avoir subi rejets après rejets sans jamais avoir la chance d’être ne serait-ce que considéré ou lu.\nSename parle à sa mère de ce par quoi il passe dans cette France où il est allé poursuivre ses études et où il a voulu embrasser la vocation de poète. Neuf années depuis son arrivée en France jusqu’à la rédaction de ce livre, il lui est arrivé de repenser à son retour au pays natal, d’aimer , de travailler, d’étudier, …\nRejeté à maintes reprises par les maisons d’édition, aussi bien françaises que « africaines », il décide de devenir lui même « Maison ». Ainsi, ce livre, « Le centre de flammes », vous le lirez sans retouche, sans relecture, sans corrections, sans polissure …\nViendront des parties que vous ne comprendrez peut-être pas, des parties que vous n’accepterez peut-être pas, … il laisse à chaque lecteur le soin d’avoir un avis, de le finir ou pas, de l’aimer ou de le désapprouver, de le recommander ou pas…",
+            name: "Follashade Ogunde",
+            date: "Mai 2023",
             stars: 5
         },
         {
-            boldPart: "Mon recueil de chevet. Impossible de ne pas s'y replonger.",
-            text: " Une très belle interprétation des traditions africaines avec une vraie sincérité lyrique.",
-            name: "Koffi A.",
-            date: "19/09/2024",
-            stars: 5
-        },
-        {
-            boldPart: "Puissant, intime, ciselé. On en sort profondément changé.",
-            text: " L'agencement des mots et du sens crée une véritable expérience, une sortie vers la lumière de l'âme.",
-            name: "Claire L.",
-            date: "05/12/2024",
-            stars: 4
-        },
-        {
-            boldPart: "Un verbe incarné, digne des grands poètes de notre histoire.",
-            text: " Ce recueil ne se lit pas, il se vit, il s'écoute. C'est l'un des ouvrages les plus forts que j'aie acheté récemment.",
-            name: "Marc E.",
-            date: "12/01/2025",
+            boldPart: "Le Centre de Flammes , c'est une poésie d'une force remarquable.",
+            text: " C'est le délire lyrique d'un homme racontant son expérience de l'occident, l'intensité de sa vie intellectuelle et sa bohème.\nJe ne peux vraiment pas décrire ce qui m'est resté comme impression après l'avoir lu. On suit l'auteur dans un voyage très intense et extrêmement dense, et on effectue nous aussi cette navigation à la recherche de \"quelquechose\". On virevolte entre négritude, esthétique, illusions et autres sujets.\nL' écriture? D'une violence inouïe, d'une rapidité et d'une impatience sensationnelles: \"Vite, vite que l'écrive\". Le flux de conscience libre, le trouble mais surtout l'inspiration débordante que l'auteur ne pouvait, apparemment,plus contenir. Il s'agit d'une torture indicible. Il en résulte pourtant une force extraordinaire.\nPlusieurs parties du texte m'on fait penser aux expériences des situationnistes, notamment à Guy Debord. Le projet est bien évidemment la liberté.\nCertains ne peuvent assurément pas supporter cette folie et remarqueront que l'œuvre n'est pas pour eux.Je l'ai justement adorée pour cela... Car elle vient de la profondeur de l'âme du poète.",
+            name: "Kodjo Casimir Atoukouvi",
+            date: "mar. 20 juin 2023 23:56",
             stars: 5
         }
     ],
@@ -302,6 +288,9 @@ const BUBBLE_REVIEWS: Record<string, { text: string; name: string; date: string;
 };
 
 export default function MarketingReviews({ slug }: { slug?: string }) {
+    if (slug !== "le-centre-de-flammes") {
+        return null;
+    }
     const reviews = slug && BUBBLE_REVIEWS[slug] ? BUBBLE_REVIEWS[slug] : BUBBLE_REVIEWS["default"];
 
     return (
@@ -323,7 +312,7 @@ export default function MarketingReviews({ slug }: { slug?: string }) {
                                 style={{ borderRadius: "2px" }}
                             >
                                 <span className="font-extrabold">{review.boldPart}</span>
-                                <span className="font-medium text-gray-800">{review.text}</span>
+                                <span className="font-medium text-gray-800 whitespace-pre-wrap">{review.text}</span>
 
                                 {/* Triangle bulle chat en bas à gauche */}
                                 <div
@@ -355,7 +344,6 @@ export default function MarketingReviews({ slug }: { slug?: string }) {
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     ))}
                 </div>

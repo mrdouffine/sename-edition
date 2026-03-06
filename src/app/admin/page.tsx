@@ -8,6 +8,7 @@ import { fetchWithAuth } from "@/lib/api/client";
 import { clearAuthToken, getSessionFromToken } from "@/lib/auth/client";
 import { normalizeNextPath } from "@/lib/auth/redirect";
 import { slugify } from "@/lib/text/slugify";
+import Logo from "@/components/Logo";
 
 type ApiResult<T> = { data?: T; error?: string };
 
@@ -767,14 +768,11 @@ function AdminPageContent() {
       <div className="flex min-h-screen flex-col md:h-screen md:flex-row">
         <aside className="w-full border-b border-[#e5e7eb] bg-white p-4 sm:p-5 md:w-72 md:border-b-0 md:border-r md:h-screen md:shrink-0 md:overflow-y-auto">
           <div className="flex items-center gap-3">
-            <div className="flex size-8 items-center justify-center rounded-full bg-black text-primary">
-              <span className="material-symbols-outlined text-xl">menu_book</span>
-            </div>
+            <Link href="/" className="flex items-center gap-3">
+              <Logo />
+            </Link>
             <div>
-              <h2 className="text-base font-extrabold uppercase leading-tight tracking-tight text-[#181810] sm:text-lg">
-                SENAME EDITION’S
-              </h2>
-              <p className="text-xs font-semibold text-[#6b7280] uppercase tracking-wide mt-1">administration</p>
+              <p className="text-xs font-semibold text-[#6b7280] uppercase tracking-wide mt-1 underline decoration-primary underline-offset-4">administration</p>
             </div>
           </div>
 

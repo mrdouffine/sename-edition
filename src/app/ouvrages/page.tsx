@@ -4,9 +4,11 @@ import BookCover from "@/components/BookCover";
 import Footer from "@/components/Footer";
 import UserMenu from "@/components/UserMenu";
 import CartNavButton from "@/components/CartNavButton";
+import Logo from "@/components/Logo";
 import AddToCartButton from "@/components/AddToCartButton";
 import WishlistButton from "@/components/WishlistButton";
-import { getFundingProgress } from "@/lib/domain/book";
+import BookPurchaseControls from "@/components/BookPurchaseControls";
+import { getFundingProgress, getSaleStatus } from "@/lib/domain/book";
 import { getHomeFeaturedBook, listBooksByType } from "@/lib/services/bookService";
 
 export default async function OuvragesPage() {
@@ -23,12 +25,7 @@ export default async function OuvragesPage() {
             <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between border-b border-solid border-[#e5e4e0] bg-white px-3 py-3 sm:px-6 sm:py-4 md:px-10 lg:px-20">
                 <div className="flex items-center gap-3 sm:gap-4">
                     <Link href="/" className="flex items-center gap-3 sm:gap-4">
-                        <div className="flex size-8 items-center justify-center rounded-full bg-black text-primary">
-                            <span className="material-symbols-outlined text-xl text-[#FACC15]">menu_book</span>
-                        </div>
-                        <h2 className="max-w-[38vw] truncate text-sm font-extrabold uppercase leading-tight tracking-tight text-[#181810] sm:max-w-none sm:text-lg">
-                            SENAME EDITION’S
-                        </h2>
+                        <Logo />
                     </Link>
                 </div>
                 <div className="flex items-center gap-2 sm:gap-4">
@@ -59,9 +56,9 @@ export default async function OuvragesPage() {
                     </div>
 
                     {featuredBook && (
-                        <div className="flex justify-center">
-                            <Link href={`/ouvrages/${featuredBook.slug}`} className="group relative transition-all duration-500 hover:scale-[1.02]">
-                                <div className="border-[4px] border-[#FFF100] p-1 shadow-xl" style={{ width: 240 }}>
+                        <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 items-start mb-16">
+                            <div className="flex-shrink-0 w-full max-w-[320px] sm:w-[400px] lg:w-[460px] mx-auto lg:mx-0">
+                                <Link href={`/ouvrages/${featuredBook.slug}`} className="group relative block transition-all duration-500 hover:scale-[1.01]">
                                     <BookCover
                                         slug={featuredBook.slug}
                                         title={featuredBook.title}
@@ -69,9 +66,52 @@ export default async function OuvragesPage() {
                                         authorName={featuredBook.authorName}
                                         variant={(featuredBook as any).coverVariant === "dark" ? "dark" : "light"}
                                         titleColor={(featuredBook as any).titleColor}
+                                        className="border-[6px] border-[#FFF100]"
                                     />
+                                </Link>
+                            </div>
+
+                            <div className="flex flex-col flex-1 w-full mt-4 lg:mt-0">
+                                <h1 className="mb-2 text-4xl sm:text-5xl lg:text-6xl font-black uppercase text-black leading-tight">
+                                    {featuredBook.title}
+                                </h1>
+                                {featuredBook.subtitle && (
+                                    <p className="mb-6 text-[1.1rem] sm:text-[1.3rem] font-medium text-[#444] uppercase tracking-widest">
+                                        {featuredBook.subtitle}
+                                    </p>
+                                )}
+                                <p className="mb-8 text-4xl font-black text-[#FFE600]">
+                                    {featuredBook.price.toFixed(2).replace('.', ',')}€
+                                </p>
+
+                                {featuredBook.description && (
+                                    <div className="mb-10 text-[0.9rem] sm:text-sm leading-relaxed text-[#2a2a2a] max-w-2xl">
+                                        {featuredBook.description.split('\n').filter(l => l.trim().length > 0).map((line, i) => (
+                                            <p key={i} className="mb-3">{line}</p>
+                                        ))}
+                                    </div>
+                                )}
+
+                                <div className="mb-6 flex items-center relative">
+                                    <span className="text-sm font-medium text-gray-800">
+                                        Statut : disponible en: <span className="font-normal">{getSaleStatus(featuredBook as any)}</span>
+                                    </span>
                                 </div>
-                            </Link>
+
+                                <hr className="border-black mb-8" />
+
+                                <BookPurchaseControls
+                                    book={{
+                                        bookId: String((featuredBook as any)._id ?? ""),
+                                        slug: featuredBook.slug,
+                                        title: featuredBook.title,
+                                        authorName: featuredBook.authorName,
+                                        coverImage: featuredBook.coverImage,
+                                        price: featuredBook.price,
+                                        saleType: featuredBook.saleType
+                                    }}
+                                />
+                            </div>
                         </div>
                     )}
 
@@ -90,7 +130,7 @@ export default async function OuvragesPage() {
                         {/* Option 1: Acquisition */}
                         <div className="flex flex-col items-center text-center p-8 border-[3px] border-[#FFF100] rounded-xl bg-white transition-transform hover:-translate-y-1">
                             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF100] mb-6">
-                                <span className="material-symbols-outlined text-3xl text-black">hourglass_empty</span>
+                                <span className="material-symbols-outlined text-3xl text-black">diamond</span>
                             </div>
                             <h3 className="text-[1.15rem] font-bold text-black mb-4 uppercase leading-tight">
                                 Achat-<br />Acquisition
@@ -103,7 +143,7 @@ export default async function OuvragesPage() {
                         {/* Option 2: Pre-commande */}
                         <div className="flex flex-col items-center text-center p-8 border-[3px] border-[#FFF100] rounded-xl bg-white transition-transform hover:-translate-y-1">
                             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF100] mb-6">
-                                <span className="material-symbols-outlined text-3xl text-black">psychology</span>
+                                <span className="material-symbols-outlined text-3xl text-black">hourglass_empty</span>
                             </div>
                             <h3 className="text-[1.15rem] font-bold text-black mb-4 uppercase leading-tight">
                                 achat-<br />Pré-commande
@@ -116,7 +156,7 @@ export default async function OuvragesPage() {
                         {/* Option 3: Financement Participatif */}
                         <div className="flex flex-col items-center text-center p-8 border-[3px] border-[#FFF100] rounded-xl bg-white transition-transform hover:-translate-y-1">
                             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF100] mb-6">
-                                <span className="material-symbols-outlined text-3xl text-black">diamond</span>
+                                <span className="material-symbols-outlined text-3xl text-black">psychology</span>
                             </div>
                             <h3 className="text-[1.15rem] font-bold text-black mb-4 uppercase leading-tight">
                                 achat- financement<br />participatif
@@ -138,7 +178,7 @@ export default async function OuvragesPage() {
                     <div className="space-y-16">
                         <div className="flex flex-row items-center gap-6 ml-4 sm:ml-12">
                             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF100]">
-                                <span className="material-symbols-outlined text-3xl text-black">hourglass_empty</span>
+                                <span className="material-symbols-outlined text-3xl text-black">diamond</span>
                             </div>
                             <p className="text-sm font-medium text-gray-900">
                                 Disponible en <span className="font-bold">Acquisition</span>
@@ -148,7 +188,7 @@ export default async function OuvragesPage() {
                         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                             {books.map((book, idx) => (
                                 <div key={`${book.slug}-${idx}`} className="group flex flex-col items-center">
-                                    <Link href={`/ouvrages/${book.slug}`} className="relative border-[4px] border-[#FFF100] p-1 mb-4 transition-transform hover:scale-105" style={{ width: 240 }}>
+                                    <Link href={`/ouvrages/${book.slug}`} className="relative border-[4px] border-[#FFF100] mb-4 transition-transform hover:scale-105" style={{ width: 240 }}>
                                         <BookCover
                                             slug={book.slug}
                                             title={book.title}
@@ -185,7 +225,7 @@ export default async function OuvragesPage() {
                     <div className="space-y-16">
                         <div className="flex flex-row items-center gap-6 ml-4 sm:ml-12">
                             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF100]">
-                                <span className="material-symbols-outlined text-3xl text-black">psychology</span>
+                                <span className="material-symbols-outlined text-3xl text-black">hourglass_empty</span>
                             </div>
                             <p className="text-sm font-medium text-gray-900">
                                 Disponible en <span className="font-bold">Pré-commande</span>
@@ -195,7 +235,7 @@ export default async function OuvragesPage() {
                         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                             {preorders.map((book, idx) => (
                                 <div key={`${book.slug}-${idx}`} className="group flex flex-col items-center">
-                                    <Link href={`/ouvrages/${book.slug}`} className="relative border-[4px] border-[#FFF100] p-1 mb-4 transition-transform hover:scale-105" style={{ width: 240 }}>
+                                    <Link href={`/ouvrages/${book.slug}`} className="relative border-[4px] border-[#FFF100] mb-4 transition-transform hover:scale-105" style={{ width: 240 }}>
                                         <BookCover
                                             slug={book.slug}
                                             title={book.title}
@@ -232,7 +272,7 @@ export default async function OuvragesPage() {
                     <div className="space-y-16">
                         <div className="flex flex-row items-center gap-6 ml-4 sm:ml-12">
                             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF100]">
-                                <span className="material-symbols-outlined text-3xl text-black">diamond</span>
+                                <span className="material-symbols-outlined text-3xl text-black">psychology</span>
                             </div>
                             <p className="text-sm font-medium text-gray-900">
                                 Disponible en <span className="font-bold">financement participatif :</span>
@@ -244,7 +284,7 @@ export default async function OuvragesPage() {
                                 const funding = getFundingProgress(project);
                                 return (
                                     <div key={project.slug} className="group flex flex-col items-center">
-                                        <Link href={`/ouvrages/${project.slug}`} className="relative border-[4px] border-[#FFF100] p-1 mb-4 transition-transform hover:scale-105" style={{ width: 240 }}>
+                                        <Link href={`/ouvrages/${project.slug}`} className="relative border-[4px] border-[#FFF100] mb-4 transition-transform hover:scale-105" style={{ width: 240 }}>
                                             <BookCover
                                                 slug={project.slug}
                                                 title={project.title}

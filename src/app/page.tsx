@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import UserMenu from "@/components/UserMenu";
 import CartNavButton from "@/components/CartNavButton";
 import ScrollAnimations from "@/components/ScrollAnimations";
+import Logo from "@/components/Logo";
 
 export default function Home() {
   return (
@@ -12,12 +13,9 @@ export default function Home() {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between border-b border-[#e5e4e0] bg-white px-4 py-3 sm:px-6 sm:py-4 md:px-10 lg:px-20">
         <div className="flex items-center gap-3 sm:gap-4">
-          <div className="flex size-8 items-center justify-center rounded-full bg-black">
-            <span className="material-symbols-outlined text-xl text-[#FACC15]">menu_book</span>
-          </div>
-          <h2 className="text-sm font-extrabold uppercase tracking-tight text-[#181810] sm:text-lg">
-            SENAME EDITION'S
-          </h2>
+          <Link href="/" className="flex items-center gap-3 sm:gap-4">
+            <Logo />
+          </Link>
         </div>
         <div className="flex items-center gap-3 sm:gap-4">
           <UserMenu showAuthLinks />
@@ -39,7 +37,7 @@ export default function Home() {
             <p className="anim-hero-sub fade-up max-w-xl text-[clamp(1rem,1.4vw,1.25rem)] leading-relaxed text-[#4b5563]">
               Conçu pour rendre possible le financement, la production et la
               diffusion de chantiers intellectuels de{" "}
-              <span className="font-bold border-b-2 border-primary">Sénamé Koffi Agbodjinou</span>{" "}
+              <span className="font-bold border-b-2 border-primary whitespace-nowrap">Sénamé Koffi Agbodjinou</span>{" "}
               sous toutes formes imprimées ou audiovisuelles.
             </p>
             <p className="anim-hero-sub fade-up max-w-xl text-[clamp(0.9rem,1.1vw,1rem)] leading-relaxed text-[#6b7280]">
@@ -49,7 +47,7 @@ export default function Home() {
               <Link href="/ouvrages" className="btn-cta flex w-fit items-center gap-3 rounded-full bg-primary px-8 py-4 text-sm sm:text-base font-black text-black transition-all hover:shadow-xl hover:scale-105 uppercase">
                 Catalogue d'ouvrages
               </Link>
-              <Link href="/enseignements" className="btn-cta flex w-fit items-center gap-3 rounded-full bg-black px-8 py-4 text-sm sm:text-base font-black text-white hover:bg-gray-800 transition-all hover:shadow-xl hover:scale-105 uppercase">
+              <Link href="/enseignements" className="btn-cta flex w-fit items-center gap-3 rounded-full bg-primary px-8 py-4 text-sm sm:text-base font-black text-black transition-all hover:shadow-xl hover:scale-105 uppercase">
                 Enseignements
               </Link>
             </div>
@@ -59,7 +57,7 @@ export default function Home() {
           <div className="flex items-center justify-center">
             <img
               alt="Portrait de Sénamé Koffi Agbodjinou"
-              className="hero-image w-full max-w-[520px] h-auto object-contain"
+              className="hero-image w-full max-w-[520px] h-auto object-contain mix-blend-multiply"
               src="/images/image.png"
             />
           </div>

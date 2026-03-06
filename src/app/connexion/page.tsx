@@ -6,6 +6,7 @@ import { FormEvent, useState } from "react";
 import { saveAuthToken } from "@/lib/auth/client";
 import { normalizeNextPath } from "@/lib/auth/redirect";
 import { syncCartWithBackend } from "@/lib/cart/client";
+import Logo from "@/components/Logo";
 
 type LoginResponse = {
   data?: {
@@ -84,15 +85,10 @@ function LoginForm() {
     <main className="flex min-h-screen items-center justify-center bg-background-light px-4 py-10 sm:px-6 sm:py-12">
       <div className="w-full max-w-md rounded-2xl border border-[#e5e5e0] bg-white p-6 shadow-sm sm:p-8">
         <div className="mb-6">
-          <div className="flex items-center gap-3 justify-center">
-            <div className="flex size-8 items-center justify-center rounded-full bg-black text-primary">
-              <span className="material-symbols-outlined text-xl">menu_book</span>
-            </div>
-            <div>
-              <h1 className="text-base font-extrabold uppercase leading-tight tracking-tight text-[#181810] sm:text-lg">
-                SENAME EDITION’S
-              </h1>
-            </div>
+          <div className="flex items-center gap-3 justify-center mb-6">
+            <Link href="/" className="flex items-center gap-3">
+              <Logo />
+            </Link>
           </div>
           <br />
           <h2 className="text-[clamp(1.6rem,2.6vw,2.2rem)] font-black text-[#181810]">Connexion</h2>
