@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import BookModel from "./src/models/Book.ts";
+import BookModel from "./src/models/Book";
 
 const mockBooksRaw = [
     {
