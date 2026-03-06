@@ -211,7 +211,7 @@ export default async function OuvragesPage() {
                                                 price: book.price,
                                                 saleType: book.saleType
                                             }}
-                                            className="rounded bg-black px-6 py-2 text-xs font-bold text-white uppercase tracking-widest hover:bg-yellow-500 hover:text-black transition-colors"
+                                            className="rounded bg-primary px-6 py-2 text-xs font-bold text-[#181810] uppercase tracking-widest hover:brightness-95 transition-all"
                                         />
                                     </div>
                                 </div>
@@ -258,7 +258,7 @@ export default async function OuvragesPage() {
                                                 price: book.price,
                                                 saleType: book.saleType
                                             }}
-                                            className="rounded bg-black px-6 py-2 text-xs font-bold text-white uppercase tracking-widest hover:bg-yellow-500 hover:text-black transition-colors"
+                                            className="rounded bg-primary px-6 py-2 text-xs font-bold text-[#181810] uppercase tracking-widest hover:brightness-95 transition-all"
                                         />
                                     </div>
                                 </div>

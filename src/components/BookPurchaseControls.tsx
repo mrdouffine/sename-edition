@@ -54,7 +54,7 @@ export default function BookPurchaseControls({ book, disabled }: Props) {
       <AddToCartButton
         book={book}
         quantity={quantity}
-        className="h-12 flex-1 max-w-[280px] bg-[#EE7455] text-xs font-bold tracking-widest text-white transition-opacity hover:opacity-90 disabled:opacity-50 sm:h-14 sm:text-[0.65rem] uppercase"
+        className="h-12 flex-1 max-w-[280px] bg-primary text-xs font-bold tracking-widest text-[#181810] transition-opacity hover:opacity-90 disabled:opacity-50 sm:h-14 sm:text-[0.65rem] uppercase"
         disabled={disabled}
       />
     </div>

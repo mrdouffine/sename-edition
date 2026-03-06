@@ -14,7 +14,7 @@ export default function BookDetailTabs({ description, bookId, staticReviews = []
   const [tab, setTab] = useState<"description" | "avis">("avis");
 
   const baseClass = "relative pt-4 text-[0.65rem] font-bold uppercase tracking-widest transition-all";
-  const activeClass = "text-[#181810] before:absolute before:top-0 before:left-1/4 before:w-1/2 before:h-[2px] before:bg-[#EE7455]";
+  const activeClass = "text-[#181810] before:absolute before:top-0 before:left-1/4 before:w-1/2 before:h-[2px] before:bg-primary";
   const inactiveClass = "text-[#a3a3a3] hover:text-[#666]";
 
   return (
