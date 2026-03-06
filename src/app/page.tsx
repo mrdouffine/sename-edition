@@ -11,15 +11,17 @@ export default function Home() {
     <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-[#f5f5f0]">
       <ScrollAnimations />
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between border-b border-[#e5e4e0] bg-white px-4 py-3 sm:px-6 sm:py-4 md:px-10 lg:px-20">
-        <div className="flex items-center gap-3 sm:gap-4">
-          <Link href="/" className="flex items-center gap-3 sm:gap-4">
-            <Logo />
-          </Link>
-        </div>
-        <div className="flex items-center gap-3 sm:gap-4">
-          <UserMenu showAuthLinks />
-          <CartNavButton />
+      <header className="fixed top-0 left-0 right-0 z-50 border-b border-solid border-[#e5e4e0] bg-white">
+        <div className="mx-auto flex max-w-[1440px] items-center justify-between px-3 py-3 sm:px-6 sm:py-4 md:px-10 lg:px-16">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <Link href="/" className="flex items-center gap-3 sm:gap-4">
+              <Logo />
+            </Link>
+          </div>
+          <div className="flex items-center gap-2 sm:gap-4">
+            <UserMenu showAuthLinks />
+            <CartNavButton />
+          </div>
         </div>
       </header>
 
