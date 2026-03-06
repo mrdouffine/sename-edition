@@ -198,7 +198,7 @@ export default async function OuvragesPage() {
                                             titleColor={(book as any).titleColor}
                                         />
                                     </Link>
-                                    <h3 className="text-center font-bold text-black lowercase leading-tight">{book.title}</h3>
+                                    <h3 className="text-center font-bold text-[#FFEA00] lowercase leading-tight">{book.title}</h3>
                                     <p className="text-center text-[10px] text-[#8d895e] lowercase italic mt-2 tracking-wide">{book.subtitle}</p>
                                     <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
                                         <AddToCartButton
@@ -245,8 +245,8 @@ export default async function OuvragesPage() {
                                             titleColor={(book as any).titleColor}
                                         />
                                     </Link>
-                                    <h3 className="text-center font-bold text-gray-800">{book.title}</h3>
-                                    <p className="text-center text-xs text-gray-500 italic mt-1">{book.subtitle}</p>
+                                    <h3 className="text-center font-bold text-[#FFEA00] lowercase leading-tight">{book.title}</h3>
+                                    <p className="text-center text-[10px] text-[#8d895e] lowercase italic mt-2 tracking-wide">{book.subtitle}</p>
                                     <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
                                         <AddToCartButton
                                             book={{
@@ -294,8 +294,8 @@ export default async function OuvragesPage() {
                                                 titleColor={(project as any).titleColor}
                                             />
                                         </Link>
-                                        <h3 className="text-center font-bold text-gray-800">{project.title}</h3>
-                                        <p className="text-center text-xs text-gray-500 italic mt-1 mb-3">{project.subtitle}</p>
+                                        <h3 className="text-center font-bold text-[#FFEA00] lowercase leading-tight">{project.title}</h3>
+                                        <p className="text-center text-[10px] text-[#8d895e] lowercase italic mt-1 mb-3">{project.subtitle}</p>
 
                                         <div className="w-48">
                                             <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100 border border-gray-200">
