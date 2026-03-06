@@ -61,16 +61,23 @@ export default function BookCover({
                     unoptimized
                 />
             ) : (
-                <div style={{ padding: "16% 8%", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
-                    <div style={{ marginTop: "1rem" }}>
-                        <span className="font-semibold text-gray-500" style={{ fontSize: "0.8rem", letterSpacing: "0.05em" }}>{authorName}</span>
+                <div style={{ padding: "12% 8%", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%", backgroundColor: bgColor }}>
+                    <div style={{ marginTop: "0.5rem" }}>
+                        <span className="text-[#8d895e] lowercase" style={{ fontSize: "0.9rem", letterSpacing: "0.15em", fontWeight: 500 }}>{authorName}</span>
                     </div>
-                    <div>
-                        <h3 className="font-bold text-black" style={{ fontSize: "clamp(1.6rem, 2.8vw, 2.2rem)", lineHeight: "1.1" }}>{title}</h3>
-                        {subtitle && <p className="mt-2 text-gray-500" style={{ fontSize: "0.6rem" }}>{subtitle}</p>}
+                    <div className="flex flex-col items-center justify-center flex-1">
+                        <h3 className="lowercase" style={{ fontSize: "clamp(1.8rem, 3vw, 2.5rem)", lineHeight: "1", fontWeight: 700, color: "#FFEA00", letterSpacing: "-0.02em" }}>{title}</h3>
+                        {subtitle && <p className={`mt-3 lowercase italic ${title === "le centre de flammes" || title === "girations" || title === "décoloniser le futur" ? "text-[#FFEA00]" : "text-gray-400"}`} style={{ fontSize: "0.65rem", letterSpacing: "0.05em", fontWeight: title === "le centre de flammes" ? 700 : 400 }}>{subtitle}</p>}
                     </div>
-                    <div className="flex flex-col items-center gap-1 pb-2">
-                        <AfrLogoBadge size={14} />
+                    <div className="flex flex-col items-center gap-2">
+                        <div className="flex flex-col items-center">
+                            <span className="text-[0.6rem] font-bold uppercase tracking-[0.3em] text-black">
+                                {title.includes("flammes") || title.includes("girations") ? "POESIE" : title.includes("rencontres") ? "NOUVELLES" : "ESSAI"}
+                            </span>
+                            <span className="mt-1 text-[0.6rem] font-medium text-black">L'Africaine</span>
+                        </div>
+                        <div className="w-[1px] h-3 bg-black opacity-10"></div>
+                        <AfrLogoBadge size={16} />
                     </div>
                 </div>
             )}

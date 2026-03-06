@@ -43,16 +43,16 @@ export default async function OuvragesPage() {
                 </div>
 
                 {/* Header section *OUVRAGES */}
-                <div className="mb-16">
-                    <h1 className="text-xl font-black uppercase tracking-[0.2em] text-gray-800 flex items-center gap-4">
-                        *OUVRAGES <span className="text-gray-200 flex-1 overflow-hidden whitespace-nowrap">................................................................................................................................................................</span>
+                <div className="mb-20">
+                    <h1 className="text-sm font-bold lowercase tracking-[0.4em] text-gray-400 flex items-center gap-6">
+                        ouvrages <span className="h-[1px] bg-gray-100 flex-1"></span>
                     </h1>
                 </div>
 
                 {/* Section A la une */}
                 <section className="mb-24">
-                    <div className="mb-8">
-                        <h2 className="bg-[#FFF100] inline-block px-3 py-1 text-xl font-medium tracking-wide text-black sm:text-2xl">A la une :</h2>
+                    <div className="mb-10 text-center lg:text-left">
+                        <h2 className="text-xs font-bold lowercase tracking-[0.2em] text-[#8d895e]">à la une :</h2>
                     </div>
 
                     {featuredBook && (
@@ -72,15 +72,15 @@ export default async function OuvragesPage() {
                             </div>
 
                             <div className="flex flex-col flex-1 w-full mt-4 lg:mt-0">
-                                <h1 className="mb-2 text-4xl sm:text-5xl lg:text-6xl font-black uppercase text-black leading-tight">
+                                <h1 className="mb-4 text-5xl sm:text-6xl lg:text-7xl font-black lowercase text-[#FFEA00] leading-[0.9] tracking-tighter">
                                     {featuredBook.title}
                                 </h1>
                                 {featuredBook.subtitle && (
-                                    <p className="mb-6 text-[1.1rem] sm:text-[1.3rem] font-medium text-[#444] uppercase tracking-widest">
+                                    <p className="mb-8 text-base font-medium text-[#8d895e] lowercase tracking-[0.2em] italic">
                                         {featuredBook.subtitle}
                                     </p>
                                 )}
-                                <p className="mb-8 text-4xl font-black text-[#FFE600]">
+                                <p className="mb-10 text-3xl font-black text-black opacity-80">
                                     {featuredBook.price.toFixed(2).replace('.', ',')}€
                                 </p>
 
@@ -122,8 +122,8 @@ export default async function OuvragesPage() {
 
                 {/* Section Options d'achat */}
                 <section className="mb-24">
-                    <div className="mb-12 text-center sm:text-left">
-                        <h2 className="bg-[#FFF100] inline-block px-3 py-1 text-xl font-medium tracking-wide text-black sm:text-2xl">Plusieurs options d'achat :</h2>
+                    <div className="mb-16 text-center">
+                        <h2 className="text-xs font-bold lowercase tracking-[0.2em] text-[#8d895e]">plusieurs options d'achat :</h2>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-[1000px] mx-auto">
@@ -170,8 +170,8 @@ export default async function OuvragesPage() {
 
                 {/* Section Ouvrages disponibles */}
                 <section className="mb-24">
-                    <div className="mb-12">
-                        <h2 className="bg-[#FFF100] inline-block px-3 py-1 text-xl font-medium tracking-wide text-black sm:text-2xl">Ouvrages disponibles :</h2>
+                    <div className="mb-16 pt-10 border-t border-gray-50 text-center">
+                        <h2 className="text-xs font-bold lowercase tracking-[0.2em] text-[#8d895e]">ouvrages disponibles :</h2>
                     </div>
 
                     {/* Direct Acquisition */}
@@ -198,8 +198,8 @@ export default async function OuvragesPage() {
                                             titleColor={(book as any).titleColor}
                                         />
                                     </Link>
-                                    <h3 className="text-center font-bold text-gray-800">{book.title}</h3>
-                                    <p className="text-center text-xs text-gray-500 italic mt-1">{book.subtitle}</p>
+                                    <h3 className="text-center font-bold text-black lowercase leading-tight">{book.title}</h3>
+                                    <p className="text-center text-[10px] text-[#8d895e] lowercase italic mt-2 tracking-wide">{book.subtitle}</p>
                                     <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
                                         <AddToCartButton
                                             book={{

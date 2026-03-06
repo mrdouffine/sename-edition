@@ -105,15 +105,15 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
           </div>
 
           <div className="flex flex-col">
-            <h1 className="mb-2 text-4xl sm:text-5xl font-black uppercase text-black">
+            <h1 className="mb-2 text-4xl sm:text-5xl font-black lowercase text-[#FFEA00] leading-none tracking-tight">
               {book.title}
             </h1>
             {book.subtitle ? (
-              <p className="mb-3 text-[1.2rem] font-semibold text-[#4a4a40]">
+              <p className="mb-4 text-base font-medium text-[#8d895e] lowercase tracking-wide italic leading-relaxed">
                 {book.subtitle}
               </p>
             ) : null}
-            <p className="mb-8 text-3xl font-black text-[#FFEA00]">
+            <p className="mb-8 text-2xl font-black text-black opacity-80">
               {book.price.toFixed(2).replace('.', ',')}€
             </p>
 
