@@ -65,8 +65,28 @@ export default function BookCover({
                     <div style={{ marginTop: "0.5rem" }}>
                         <span className="text-gray-900/60 lowercase" style={{ fontSize: "0.9rem", letterSpacing: "0.15em", fontWeight: 500 }}>{authorName}</span>
                     </div>
-                    <div className="flex flex-col items-center justify-center flex-1">
-                        <h3 style={{ fontSize: "clamp(1.8rem, 3vw, 2.5rem)", lineHeight: "1", fontWeight: 700, color: "#FFEA00", letterSpacing: "-0.02em" }}>{title}</h3>
+                    <div className="flex flex-col items-center justify-center flex-1 px-1">
+                        <h3 style={{
+                            fontSize: title.length > 30 ? "clamp(1.1rem, 2.2vw, 1.4rem)" :
+                                title.length > 20 ? "clamp(1.3rem, 2.4vw, 1.8rem)" :
+                                    "clamp(1.8rem, 3vw, 2.5rem)",
+                            lineHeight: "1",
+                            fontWeight: 700,
+                            color: "#FFEA00",
+                            letterSpacing: "-0.02em",
+                            wordBreak: "keep-all",
+                            overflowWrap: "normal",
+                            whiteSpace: "pre-line",
+                            textAlign: "center"
+                        }}>
+                            {title.toLowerCase() === "à l'endroit !" ? (
+                                <>à<br />l'endroit !</>
+                            ) : title.toLowerCase() === "décoloniser le futur" ? (
+                                <>décoloniser<br />le futur</>
+                            ) : title.toLowerCase().includes("comprendre l'architecture") ? (
+                                <>comprendre<br />l'architecture<br />en afrique<br />noire</>
+                            ) : title}
+                        </h3>
                         {subtitle && <p className="mt-3 lowercase italic text-gray-800" style={{ fontSize: "0.65rem", letterSpacing: "0.05em", fontWeight: 400 }}>{subtitle}</p>}
                     </div>
                     <div className="flex flex-col items-center gap-2">
