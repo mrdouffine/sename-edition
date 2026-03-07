@@ -9,6 +9,7 @@ import { clearAuthToken, getSessionFromToken } from "@/lib/auth/client";
 import { normalizeNextPath } from "@/lib/auth/redirect";
 import { slugify } from "@/lib/text/slugify";
 import Logo from "@/components/Logo";
+import BookCover from "@/components/BookCover";
 
 type ApiResult<T> = { data?: T; error?: string };
 
@@ -1376,8 +1377,15 @@ function AdminPageContent() {
                       headers={["Ouvrage", "Type", "Prix", "Stock/Obj.", "Collecté", "Actions"]}
                       rows={pagedBooks.items.map((book) => [
                         <div key={book.id} className="flex items-center gap-4">
-                          {book.coverImage ? (
-                            <img src={book.coverImage} alt="" className="h-14 w-10 rounded border border-slate-200 bg-white object-cover shadow-sm" />
+                          {book.slug ? (
+                            <div className="h-14 w-10 shrink-0 border border-primary">
+                              <BookCover
+                                slug={book.slug}
+                                title={book.title}
+                                authorName="sename"
+                                variant="light"
+                              />
+                            </div>
                           ) : (
                             <div className="flex h-14 w-10 items-center justify-center rounded border border-slate-200 bg-slate-50 text-slate-300">
                               <span className="material-symbols-outlined text-lg">image</span>

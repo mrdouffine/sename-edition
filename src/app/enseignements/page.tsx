@@ -22,29 +22,10 @@ export default function EnseignementsPage() {
             </header>
 
             <main className="mx-auto flex w-full max-w-[1440px] flex-1 flex-col px-4 pb-28 pt-32 sm:px-6 sm:pb-32 sm:pt-32 md:px-10 lg:px-20">
-                <div className="w-full mb-16">
-                    <h1 className="text-xl font-black uppercase tracking-[0.2em] text-black/80 flex items-center gap-4">
-                        *ENSEIGNEMENTS{" "}
-                        <span className="text-black/10 flex-1 overflow-hidden whitespace-nowrap">
-                            ................................................................................................................................................................
-                        </span>
-                    </h1>
-                </div>
-                <div className="flex flex-col items-center justify-center py-20">
+                <div className="flex flex-col flex-1 items-center justify-center pb-20">
                     <h2 className="text-sm font-black uppercase tracking-[0.2em] text-[#181810]">
                         En chantier
                     </h2>
-                    <p className="mt-4 text-[0.65rem] text-black/60 italic lowercase tracking-wider">
-                        Cette section sera bientôt disponible.
-                    </p>
-                </div>
-                <div className="flex justify-center">
-                    <Link
-                        href="/"
-                        className="mt-8 rounded-full border border-black/10 bg-white/20 px-8 py-3 font-black text-black hover:bg-white/40 transition-colors"
-                    >
-                        Retour à l'accueil
-                    </Link>
                 </div>
             </main>
 
