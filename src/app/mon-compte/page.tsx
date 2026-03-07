@@ -7,6 +7,7 @@ import { fetchWithAuth } from "@/lib/api/client";
 import { useSearchParams } from "next/navigation";
 import { useRequireAuth } from "@/lib/auth/useRequireAuth";
 import Logo from "@/components/Logo";
+import BookCover from "@/components/BookCover";
 
 type MeResponse = {
   data?: {
@@ -738,11 +739,12 @@ function AccountPageContent() {
                           {contributions.length ? (
                             <div className="flex flex-col sm:flex-row gap-6 items-center">
                               <div className="w-24 h-36 bg-gray-100 flex-shrink-0 shadow-md overflow-hidden">
-                                {contributions[0]?.book?.coverImage ? (
-                                  <img
-                                    src={contributions[0].book.coverImage}
-                                    alt={contributions[0].book?.title ?? "Contribution"}
-                                    className="w-full h-full object-cover"
+                                {contributions[0]?.book?.slug ? (
+                                  <BookCover
+                                    slug={contributions[0].book.slug}
+                                    title={contributions[0].book.title ?? "Projet"}
+                                    authorName="sename"
+                                    variant="light"
                                   />
                                 ) : null}
                               </div>
@@ -1254,12 +1256,20 @@ function AccountPageContent() {
                           className="bg-white border border-[#e7e6da] rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow"
                         >
                           <div className="flex flex-wrap md:flex-nowrap gap-6 items-start">
-                            <div
-                              className="w-full md:w-48 h-32 rounded-lg bg-cover bg-center shrink-0"
-                              style={{
-                                backgroundImage: `url('${contribution.book?.coverImage ?? ""}')`
-                              }}
-                            ></div>
+                            <div className="w-full md:w-28 shrink-0">
+                              {contribution.book?.slug ? (
+                                <div className="border border-primary shadow-sm aspect-[3/4]">
+                                  <BookCover
+                                    slug={contribution.book.slug}
+                                    title={contribution.book.title ?? "Contribution"}
+                                    authorName="sename"
+                                    variant="light"
+                                  />
+                                </div>
+                              ) : (
+                                <div className="w-full aspect-[3/4] bg-gray-100 rounded-lg"></div>
+                              )}
+                            </div>
                             <div className="flex-1 flex flex-col justify-between h-auto md:h-32">
                               <div className="flex justify-between items-start">
                                 <div className="flex flex-col gap-1">
@@ -1362,12 +1372,16 @@ function AccountPageContent() {
                           className="group bg-white rounded-xl border border-[#e5e5df] overflow-hidden flex flex-col shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
                         >
                           <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
-                            {book.coverImage ? (
-                              <img
-                                src={book.coverImage}
-                                alt={book.title ?? "Ouvrage"}
-                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                              />
+                            {book.slug ? (
+                              <div className="w-full h-full border border-primary">
+                                <BookCover
+                                  slug={book.slug}
+                                  title={book.title ?? "Ouvrage"}
+                                  subtitle={book.subtitle}
+                                  authorName={book.authorName}
+                                  variant={book.coverVariant === "dark" ? "dark" : "light"}
+                                />
+                              </div>
                             ) : null}
                             <button
                               type="button"

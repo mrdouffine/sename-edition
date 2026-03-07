@@ -29,15 +29,16 @@ export default function BookCover({
     const bgColor = variant === "dark" ? "#e8e8e0" : "#ffffff";
 
     const imageMap: Record<string, string> = {
-        // "decoloniser-le-futur": "decoloniser-le-futur.png",
-        // "le-centre-de-flammes": "le-centre-des-flammes.png",
-        // "ce-qui-demeure": "ce-qui-demeure.png",
-        // "a-l-endroit": "a-lendroit.png",
-        // "cosmo-architecture": "principe-cosmo-architecture.jpeg",
-        // "comprendre-architecture-afrique": "comprendre-architecture-afrique-noire.jpeg",
-        // "esthetiques-du-feminin": "esthetique-du-feminin.jpeg",
-        // "girations": "girations.png",
-        // "rencontres": "rencontres.jpeg"
+        "decoloniser-le-futur": "decoloniserlefutur.jpg",
+        "le-centre-de-flammes": "centredeflammes.jpg",
+        "ce-qui-demeure": "cequidemeure.jpg",
+        "a-l-endroit": "a-lendroit.jpg",
+        "cosmo-architecture": "principe-dune-cosmos-architecture.jpg",
+        "comprendre-architecture-afrique": "comprendre-architecture-en-afrique-noir.jpg",
+        "esthetiques-du-feminin": "esthetiquedufeminin.jpg",
+        "girations": "girations.jpg",
+        "rencontres": "rencntres.jpg",
+        "etats-du-lieu": "etatdulieu.jpg"
     };
 
     const imageFile = slug ? imageMap[slug] : undefined;
@@ -46,19 +47,12 @@ export default function BookCover({
         <div className={`relative flex flex-col justify-between overflow-hidden ${className}`} style={{ backgroundColor: bgColor, aspectRatio: "3 / 4", width: "100%", position: "relative" }}>
             {imageFile ? (
                 <Image
-                    src={`/articles/${imageFile}`}
-                    alt={title || "Cover image"}
+                    src={`/article/${imageFile}`}
+                    alt={title || "Description"}
                     fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover contrast-[1.02] brightness-[1.01]"
-                    style={{
-                        imageRendering: "auto",
-                        WebkitBackfaceVisibility: "hidden",
-                        backfaceVisibility: "hidden"
-                    }}
+                    className="object-contain"
                     quality={100}
                     priority
-                    unoptimized
                 />
             ) : (
                 <div style={{ padding: "12% 8%", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%", backgroundColor: bgColor }}>

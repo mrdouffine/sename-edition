@@ -1,0 +1,66 @@
+
+> livreo@0.1.0 dev
+> next dev
+
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /home/vladmir/package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * /home/vladmir/Documents/SENAME'EDITION/package-lock.json
+
+   ▲ Next.js 15.5.12
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.65:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 7.4s
+ ○ Compiling / ...
+ ✓ Compiled / in 6.1s (630 modules)
+ GET / 200 in 6867ms
+ ✓ Compiled in 778ms (250 modules)
+ ○ Compiling /ouvrages ...
+ ✓ Compiled /ouvrages in 958ms (676 modules)
+ GET /ouvrages 200 in 1308ms
+ GET /ouvrages 200 in 5905ms
+ GET / 200 in 330ms
+ GET /ouvrages 200 in 85ms
+ GET /ouvrages 200 in 545ms
+ GET /ouvrages 200 in 154ms
+ GET /ouvrages 200 in 270ms
+ GET /ouvrages 200 in 380ms
+ GET /ouvrages 200 in 230ms
+ GET /ouvrages 200 in 156ms
+ GET /ouvrages 200 in 808ms
+ GET /ouvrages 200 in 189ms
+Image with src "/article/decoloniserlefutur.jpg" is using quality "100" which is not configured in images.qualities. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/article/girations.jpg" is using quality "100" which is not configured in images.qualities. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/article/centredeflammes.jpg" is using quality "100" which is not configured in images.qualities. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/article/a-lendroit.jpg" is using quality "100" which is not configured in images.qualities. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/article/cequidemeure.jpg" is using quality "100" which is not configured in images.qualities. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/article/comprendre-architecture-en-afrique-noir.jpg" is using quality "100" which is not configured in images.qualities. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/article/esthetiquedufeminin.jpg" is using quality "100" which is not configured in images.qualities. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/article/principe-dune-cosmos-architecture.jpg" is using quality "100" which is not configured in images.qualities. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/article/rencntres.jpg" is using quality "100" which is not configured in images.qualities. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+ GET /ouvrages 200 in 8093ms
+ GET / 200 in 45ms
+ ✓ Compiled /enseignements in 448ms (681 modules)
+ GET /enseignements 200 in 559ms
+ ✓ Compiled in 512ms (695 modules)
+ GET /enseignements 200 in 163ms
+ GET /enseignements 200 in 138ms
+ ✓ Compiled in 464ms (695 modules)
+ GET /enseignements 200 in 121ms
+ GET / 200 in 44ms
+ GET /ouvrages 200 in 330ms
+ GET / 200 in 39ms

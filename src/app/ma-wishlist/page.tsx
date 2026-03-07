@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { clearAuthToken } from "@/lib/auth/client";
 import { fetchWithAuth } from "@/lib/api/client";
 import { useRequireAuth } from "@/lib/auth/useRequireAuth";
+import BookCover from "@/components/BookCover";
 
 type WishlistBook = {
   id: string;
@@ -14,6 +15,8 @@ type WishlistBook = {
   price?: number;
   saleType?: string;
   authorName?: string;
+  subtitle?: string;
+  coverVariant?: string;
 };
 
 type ApiResult<T> = { data?: T; error?: string };
@@ -171,8 +174,16 @@ export default function WishlistPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {books.map((book) => (
           <article key={book.id} className="rounded-xl border border-[#e5e5e0] bg-white p-4">
-            {book.coverImage ? (
-              <img src={book.coverImage} alt={book.title ?? "Ouvrage"} className="mb-3 h-52 w-full rounded object-cover" />
+            {book.slug ? (
+              <div className="mb-4 aspect-[3/4] w-full border-[3px] border-primary">
+                <BookCover
+                  slug={book.slug}
+                  title={book.title ?? "Ouvrage"}
+                  subtitle={book.subtitle} // Note: WishlistBook doesn't have subtitle, but maybe we should add it?
+                  authorName={book.authorName}
+                  variant={book.coverVariant === "dark" ? "dark" : "light"}
+                />
+              </div>
             ) : null}
             <h2 className="text-lg font-black">{book.title ?? "Ouvrage"}</h2>
             <p className="text-sm text-[#6b6959]">{book.authorName ?? "Auteur"}</p>
