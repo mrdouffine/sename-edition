@@ -3,8 +3,30 @@ import { connectToDatabase } from "@/lib/mongodb";
 import { mockBooks } from "@/lib/data/mockBooks";
 import { slugify } from "@/lib/text/slugify";
 
+const customSlugOrder = [
+  "decoloniser-le-futur",
+  "a-l-endroit",
+  "etats-du-lieu",
+  "ce-qui-demeure",
+  "le-centre-de-flammes",
+  "girations",
+  "cosmo-architecture",
+  "comprendre-architecture-afrique",
+  "esthetiques-du-feminin",
+  "rencontres"
+];
+
 function sortBooks(books: BookDocument[]) {
-  return books.sort((a, b) => a.title.localeCompare(b.title));
+  return books.sort((a, b) => {
+    const indexA = customSlugOrder.indexOf(a.slug);
+    const indexB = customSlugOrder.indexOf(b.slug);
+
+    if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+    if (indexA !== -1) return -1;
+    if (indexB !== -1) return 1;
+
+    return a.title.localeCompare(b.title);
+  });
 }
 
 export async function listBooksByType(type: SaleType) {
