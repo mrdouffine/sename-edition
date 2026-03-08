@@ -37,12 +37,6 @@ export default async function OuvragesPage() {
             </header>
 
             <main className="mx-auto w-full max-w-[1440px] flex-1 px-4 pb-28 pt-24 sm:px-6 sm:pb-32 sm:pt-32 md:px-10 lg:px-20">
-                <div className="mb-8">
-                    <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-gray-500 hover:text-black transition-colors">
-                        <span className="material-symbols-outlined text-lg">arrow_back</span>
-                        Retourner à l'accueil
-                    </Link>
-                </div>
 
                 {/* Header section *OUVRAGES */}
                 <div className="mb-20">
