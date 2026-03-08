@@ -130,7 +130,7 @@ export default async function OuvragesPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-[1000px] mx-auto">
                         {/* Option 1: Acquisition */}
-                        <div className="flex flex-col items-center text-center p-8 border-[3px] border-[#FFF100] rounded-xl bg-white transition-transform hover:-translate-y-1">
+                        <div className="flex flex-col items-center text-center p-8 border-[3px] border-black rounded-xl bg-white transition-transform hover:-translate-y-1">
                             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF100] mb-6">
                                 <span className="material-symbols-outlined text-3xl text-black">diamond</span>
                             </div>
@@ -143,7 +143,7 @@ export default async function OuvragesPage() {
                         </div>
 
                         {/* Option 2: Pre-commande */}
-                        <div className="flex flex-col items-center text-center p-8 border-[3px] border-[#FFF100] rounded-xl bg-white transition-transform hover:-translate-y-1">
+                        <div className="flex flex-col items-center text-center p-8 border-[3px] border-black rounded-xl bg-white transition-transform hover:-translate-y-1">
                             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF100] mb-6">
                                 <span className="material-symbols-outlined text-3xl text-black">hourglass_empty</span>
                             </div>
@@ -156,7 +156,7 @@ export default async function OuvragesPage() {
                         </div>
 
                         {/* Option 3: Financement Participatif */}
-                        <div className="flex flex-col items-center text-center p-8 border-[3px] border-[#FFF100] rounded-xl bg-white transition-transform hover:-translate-y-1">
+                        <div className="flex flex-col items-center text-center p-8 border-[3px] border-black rounded-xl bg-white transition-transform hover:-translate-y-1">
                             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF100] mb-6">
                                 <span className="material-symbols-outlined text-3xl text-black">psychology</span>
                             </div>

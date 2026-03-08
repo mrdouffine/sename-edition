@@ -51,7 +51,7 @@ export async function POST(request: Request) {
       amount: order.total,
       currency: "XOF",
       description: `Commande ${order.invoiceNumber}`,
-      callbackUrl: `${origin}/api/payments/fedapay/webhook`,
+      callbackUrl: `https://multivariate-todd-playful.ngrok-free.dev/api/payments/fedapay/webhook`,
       returnUrl: successUrl
     });
 
