@@ -1,0 +1,23 @@
+# Root relative paths
+node_modules
+.next
+.git
+.gitignore
+.dockerignore
+Dockerfile
+docker-compose.yml
+README.md
+LICENSE
+.env*
+!.env.example
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.swc
+infrastructure
+fix_*.js
+fix_*.ts
+seed-books.ts
+jest.config.ts
+jest.setup.ts
+# package-lock.json is needed for npm ci, so keep it
