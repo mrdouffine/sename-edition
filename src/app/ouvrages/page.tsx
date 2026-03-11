@@ -1,4 +1,4 @@
-/* eslint-disable react/no-unescaped-entities */
+1/* eslint-disable react/no-unescaped-entities */
 import Link from "next/link";
 import BookCover from "@/components/BookCover";
 import Footer from "@/components/Footer";
