@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import React, { useState, useEffect, useMemo, useCallback, type FormEvent, type ChangeEvent, Suspense } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { fetchWithAuth } from "@/lib/api/client";
 import { clearAuthToken, getSessionFromToken } from "@/lib/auth/client";
@@ -46,6 +46,10 @@ type AdminPaymentTx = {
   id: string;
   orderId: string | null;
   userId: string | null;
+  user?: {
+    name: string;
+    email: string;
+  } | null;
   provider: "fedapay" | "paypal";
   kind: "payment" | "refund" | "webhook";
   providerEventId: string | null;
@@ -160,7 +164,6 @@ function AdminPageContent() {
     saleType: "direct" as "direct" | "preorder" | "crowdfunding",
     releaseDate: "",
     isbn: "",
-    coverVariant: "standard" as "featured" | "standard",
     stock: "",
     fundingGoal: "",
     fundingRaised: "0",
@@ -173,6 +176,8 @@ function AdminPageContent() {
       rating: number;
     }>
   });
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const [newBookSlugEdited, setNewBookSlugEdited] = useState(false);
   const [paymentsProviderFilter, setPaymentsProviderFilter] = useState<"all" | "fedapay" | "paypal">("all");
   const [paymentsStatusFilter, setPaymentsStatusFilter] = useState<"all" | "pending" | "succeeded" | "failed">("all");
@@ -682,26 +687,38 @@ function AdminPageContent() {
     }
 
     try {
-      const generatedCover = buildGeneratedCoverDataUrl({
-        title: newBook.title,
-        subtitle: newBook.subtitle,
-        saleType: newBook.saleType,
-        variant: newBook.coverVariant
-      });
+      let coverImageUrl = "";
+
+      if (coverPreview) {
+        setNotice("Téléchargement de la couverture...");
+        const uploadRes = await fetchWithAuth("/api/upload/image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            image: coverPreview,
+            folder: "livreo/covers"
+          })
+        });
+
+        const uploadData = await uploadRes.json();
+        if (!uploadRes.ok) {
+          throw new Error(uploadData.error || "Échec de l'upload de l'image");
+        }
+        coverImageUrl = uploadData.url;
+      }
 
       const body: Record<string, unknown> = {
         title: newBook.title.trim(),
         description: newBook.description.trim(),
         price: Number(newBook.price),
         saleType: newBook.saleType,
-        coverImage: generatedCover
+        coverImage: coverImageUrl
       };
 
       if (newBook.slug.trim()) body.slug = newBook.slug.trim();
       if (newBook.subtitle.trim()) body.subtitle = newBook.subtitle.trim();
       if (newBook.releaseDate) body.releaseDate = newBook.releaseDate;
       if (newBook.isbn.trim()) body.isbn = newBook.isbn.trim();
-      if (newBook.coverVariant === "featured") body.tags = ["featured"];
 
       if (newBook.stock.trim() !== "") body.stock = Number(newBook.stock);
       if (newBook.fundingGoal.trim() !== "") body.fundingGoal = Number(newBook.fundingGoal);
@@ -733,19 +750,20 @@ function AdminPageContent() {
         saleType: "direct",
         releaseDate: "",
         isbn: "",
-        coverVariant: "standard",
         stock: "",
         fundingGoal: "",
         fundingRaised: "0",
         pages: "",
         staticReviews: []
       });
+      setCoverFile(null);
+      setCoverPreview(null);
       setNewBookSlugEdited(false);
       setNotice("✅ Ouvrage créé avec succès !");
       void loadAdminData();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err: any) {
-      setNotice(`Erreur de connexion : ${err.message || "Une erreur est survenue"}`);
+      setNotice(`Erreur : ${err.message || "Une erreur est survenue"}`);
     } finally {
       setCreatingBook(false);
     }
@@ -762,6 +780,18 @@ function AdminPageContent() {
   function handleNewBookSlugChange(slug: string) {
     setNewBookSlugEdited(true);
     setNewBook((prev) => ({ ...prev, slug: slugify(slug) }));
+  }
+
+  function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (file) {
+      setCoverFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCoverPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   return (
@@ -1170,7 +1200,7 @@ function AdminPageContent() {
                     </select>
                   </div>
                   <DataTable
-                    headers={["Date / Heure", "Type", "Réseau", "Commande", "Montant", "Statut"]}
+                    headers={["Date / Heure", "Type", "Réseau", "Utilisateur", "Commande", "Montant", "Statut"]}
                     rows={pagedPayments.items.map((tx) => [
                       <div key={tx.id} className="flex flex-col">
                         <span className="text-xs font-bold text-slate-700">
@@ -1187,6 +1217,10 @@ function AdminPageContent() {
                       <div key={`provider-${tx.id}`} className="flex items-center gap-1.5">
                         <div className={`size-1.5 rounded-full ${tx.provider === 'fedapay' ? 'bg-[#ff7b00]' : 'bg-[#003087]'}`} />
                         <span className="text-[10px] font-black uppercase text-slate-600">{tx.provider}</span>
+                      </div>,
+                      <div key={`user-${tx.id}`} className="flex flex-col">
+                        <span className="text-[10px] font-bold text-slate-700">{tx.user?.name || "Anonyme"}</span>
+                        <span className="text-[9px] text-slate-400">{tx.user?.email || (tx.userId ? tx.userId.slice(0, 8) : "-")}</span>
                       </div>,
                       <span key={`order-${tx.id}`} className="text-[10px] font-mono font-medium text-slate-400">{tx.orderId ? tx.orderId.slice(-10).toUpperCase() : "-"}</span>,
                       <span key={`amount-${tx.id}`} className="font-black text-slate-900">
@@ -1224,22 +1258,27 @@ function AdminPageContent() {
                         <option value="crowdfunding">Financement participatif</option>
                       </select>
                       <input className="rounded border border-[#d8d7d0] px-3 py-2" placeholder="Date de sortie (YYYY-MM-DD)" type="date" value={newBook.releaseDate} onChange={(event) => setNewBook((prev) => ({ ...prev, releaseDate: event.target.value }))} />
-                      <select
-                        className="rounded border border-[#d8d7d0] px-3 py-2"
-                        value={newBook.coverVariant}
-                        onChange={(event) =>
-                          setNewBook((prev) => ({
-                            ...prev,
-                            coverVariant: event.target.value as "featured" | "standard"
-                          }))
-                        }
-                      >
-                        <option value="featured">Style couverture: Vedette</option>
-                        <option value="standard">Style couverture: Standard</option>
-                      </select>
-                      <p className="rounded border border-[#d8d7d0] bg-[#f8f8f5] px-3 py-2 text-xs text-[#6b7280] md:col-span-2">
-                        La couverture est générée automatiquement selon le style choisi.
-                      </p>
+                      <div className="md:col-span-2 space-y-2">
+                        <label className="text-xs font-bold uppercase text-slate-500">Couverture de l'ouvrage</label>
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                          <div className="relative size-32 shrink-0 overflow-hidden rounded-lg border-2 border-dashed border-slate-200 bg-slate-50 flex items-center justify-center">
+                            {coverPreview ? (
+                              <img src={coverPreview} alt="Preview" className="h-full w-full object-cover" />
+                            ) : (
+                              <span className="material-symbols-outlined text-slate-300 text-3xl">image</span>
+                            )}
+                          </div>
+                          <div className="flex-1 space-y-2">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={handleFileChange}
+                              className="w-full text-xs text-slate-500 file:mr-4 file:rounded-full file:border-0 file:bg-primary file:px-4 file:py-2 file:text-xs file:font-bold file:text-black hover:file:bg-primary/80"
+                            />
+                            <p className="text-[10px] text-slate-400">PNG, JPG ou WEBP. Taille conseillée: 900x1350px.</p>
+                          </div>
+                        </div>
+                      </div>
                       <textarea className="rounded border border-[#d8d7d0] px-3 py-2 md:col-span-2" placeholder="Description" value={newBook.description} onChange={(event) => setNewBook((prev) => ({ ...prev, description: event.target.value }))} required />
                       <input className="rounded border border-[#d8d7d0] px-3 py-2" placeholder="ISBN (optionnel)" value={newBook.isbn} onChange={(event) => setNewBook((prev) => ({ ...prev, isbn: event.target.value }))} />
                       <input className="rounded border border-[#d8d7d0] px-3 py-2" placeholder="Stock (achat direct/precommande)" type="number" min={0} required={newBook.saleType !== "crowdfunding"} value={newBook.stock} onChange={(event) => setNewBook((prev) => ({ ...prev, stock: event.target.value }))} />
@@ -1381,9 +1420,8 @@ function AdminPageContent() {
                             <div className="h-14 w-10 shrink-0 border border-primary">
                               <BookCover
                                 slug={book.slug}
+                                coverImage={book.coverImage}
                                 title={book.title}
-                                authorName="sename"
-                                variant="light"
                               />
                             </div>
                           ) : (
@@ -1667,99 +1705,6 @@ function labelSaleType(type: "direct" | "preorder" | "crowdfunding") {
   if (type === "direct") return "Achat direct";
   if (type === "preorder") return "Précommande";
   return "Financement participatif";
-}
-
-function buildGeneratedCoverDataUrl({
-  title,
-  subtitle,
-  saleType,
-  variant
-}: {
-  title: string;
-  subtitle?: string;
-  saleType: "direct" | "preorder" | "crowdfunding";
-  variant: "featured" | "standard";
-}) {
-  const cleanTitle = title.trim() || "Nouvel ouvrage";
-  const cleanSubtitle = (subtitle ?? "").trim();
-  const typeLabel = labelSaleType(saleType);
-  const titleLines = cleanTitle.split(/\s+/).slice(0, 6);
-  const firstLine = titleLines.slice(0, Math.ceil(titleLines.length / 2)).join(" ");
-  const secondLine = titleLines.slice(Math.ceil(titleLines.length / 2)).join(" ");
-
-  if (variant === "featured") {
-    const svg = `
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1350" viewBox="0 0 900 1350">
-  <defs>
-    <style>
-      .brand-small { font: 500 16px Manrope, Arial, sans-serif; fill: #6b7280; letter-spacing: 1px; }
-      .brand-main { font: 800 58px Manrope, Arial, sans-serif; fill: #111111; }
-      .meta { font: 700 22px Manrope, Arial, sans-serif; fill: #4b5563; letter-spacing: 2px; }
-      .footer { font: 700 12px Manrope, Arial, sans-serif; fill: #111111; letter-spacing: 3px; }
-    </style>
-  </defs>
-  <rect x="0" y="0" width="900" height="1350" fill="#ececec"/>
-  <rect x="12" y="12" width="876" height="1326" fill="none" stroke="#ced70d" stroke-width="8"/>
-  <text x="280" y="92" class="brand-small">${escapeSvg("SÉNAMÉ KOFFI AGBODJINOU")}</text>
-  <text x="548" y="92" class="brand-small">${escapeSvg("Sename d'Afrique")}</text>
-  <text x="512" y="248" class="brand-small" style="font-size:56px;font-weight:700;fill:#6b7280;">sename</text>
-  <foreignObject x="140" y="350" width="620" height="340">
-    <div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;flex-direction:column;gap:6px;">
-      <div style="font:700 72px Manrope, Arial, sans-serif;line-height:1.02;color:#111111;">${escapeSvg(firstLine)}</div>
-      <div style="font:800 88px Manrope, Arial, sans-serif;line-height:1.02;color:#111111;">${escapeSvg(secondLine || cleanTitle)}</div>
-      <div style="margin-top:14px;font:600 50px Manrope, Arial, sans-serif;color:#b7b7b7;letter-spacing:2px;">${escapeSvg(cleanSubtitle || "CARNETS DE CONFINEMENT")}</div>
-    </div>
-  </foreignObject>
-  <text x="190" y="760" class="meta">#1. RESTAURER LE RÉEL   #2. DYSTOPIE CONCRÈTE</text>
-  <text x="450" y="1140" class="footer" text-anchor="middle">${escapeSvg(typeLabel.toUpperCase())}</text>
-  <text x="450" y="1166" class="footer" text-anchor="middle">ESSAI</text>
-  <text x="450" y="1192" class="footer" text-anchor="middle">LITTÉRAIRE</text>
-  <rect x="430" y="1225" width="40" height="40" fill="#111"/>
-  <text x="800" y="1295" class="brand-small">51</text>
-</svg>`;
-    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-  }
-
-  const svg = `
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1350" viewBox="0 0 900 1350">
-  <defs>
-    <style>
-      .brand-small { font: 700 34px Manrope, Arial, sans-serif; fill: #111111; letter-spacing: 1px; }
-      .title { font: 800 84px Manrope, Arial, sans-serif; fill: #3f3f46; }
-      .subtitle { font: 600 30px Manrope, Arial, sans-serif; fill: #444; }
-      .meta { font: 700 14px Manrope, Arial, sans-serif; fill: #4b5563; letter-spacing: 3px; }
-    </style>
-  </defs>
-  <rect x="0" y="0" width="900" height="1350" fill="#ececec"/>
-  <rect x="0" y="0" width="900" height="18" fill="#ced70d"/>
-  <text x="450" y="96" class="brand-small" text-anchor="middle">sename</text>
-  <foreignObject x="140" y="360" width="620" height="360">
-    <div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center;">
-      <div style="font:800 84px Manrope, Arial, sans-serif;line-height:1.1;color:#3f3f46;word-wrap:break-word;">
-        ${escapeSvg(firstLine)}
-      </div>
-      <div style="font:800 84px Manrope, Arial, sans-serif;line-height:1.1;color:#3f3f46;word-wrap:break-word;">
-        ${escapeSvg(secondLine)}
-      </div>
-      <div style="font:600 30px Manrope, Arial, sans-serif;line-height:1.3;color:#444;">${escapeSvg(cleanSubtitle || "Livre d'une sortie au jour")}</div>
-    </div>
-  </foreignObject>
-  <text x="450" y="860" class="meta" text-anchor="middle">${escapeSvg(typeLabel.toUpperCase())}</text>
-  <text x="450" y="886" class="meta" text-anchor="middle">ESSAI</text>
-  <text x="450" y="912" class="meta" text-anchor="middle">LITTÉRAIRE</text>
-  <rect x="430" y="960" width="40" height="40" fill="#111"/>
-  <text x="850" y="1310" class="meta">1</text>
-</svg>`;
-  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-}
-
-function escapeSvg(text: string) {
-  return text
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
 }
 
 function labelOrderStatus(status: AdminOrder["status"]) {

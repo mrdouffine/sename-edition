@@ -15,6 +15,7 @@ interface BookCoverProps {
     variant?: "light" | "dark";
     className?: string;
     titleColor?: string;
+    coverImage?: string; // KEEP THIS PROP
 }
 
 export default function BookCover({
@@ -25,6 +26,7 @@ export default function BookCover({
     variant = "light",
     className = "",
     titleColor,
+    coverImage, // KEEP THIS PROP
 }: BookCoverProps) {
     const bgColor = variant === "dark" ? "#e8e8e0" : "#ffffff";
 
@@ -40,6 +42,19 @@ export default function BookCover({
         "rencontres": "rencntres.jpg",
         "etats-du-lieu": "etatdulieu.jpg"
     };
+
+    // If an uploaded cover image exists, prioritize it, but fall back to imageMap and then SVG
+    if (coverImage) {
+        return (
+            <div className={`relative flex flex-col justify-between overflow-hidden ${className}`} style={{ width: "100%", height: "100%", position: "relative" }}>
+                <img
+                    src={coverImage}
+                    alt={title || "Couverture de l'ouvrage"}
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                />
+            </div>
+        );
+    }
 
     const imageFile = slug ? imageMap[slug] : undefined;
 
@@ -68,7 +83,7 @@ export default function BookCover({
                                 "clamp(1.8rem, 3.2vw, 2.6rem)",
                         lineHeight: "0.95",
                         fontWeight: 700,
-                        color: "#FFEA00",
+                        color: titleColor || "#FFEA00", // Restore titleColor support
                         letterSpacing: "-0.03em",
                         wordBreak: "keep-all",
                         overflowWrap: "normal",

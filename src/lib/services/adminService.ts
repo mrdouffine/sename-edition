@@ -42,14 +42,19 @@ export async function listAdminPaymentTransactions() {
       createdAt: 1
     }
   )
+    .populate("userId", "name email")
     .sort({ _id: -1 })
     .limit(500)
     .lean();
 
-  return transactions.map((tx) => ({
+  return transactions.map((tx: any) => ({
     id: tx._id.toString(),
     orderId: tx.orderId ? tx.orderId.toString() : null,
-    userId: tx.userId ? tx.userId.toString() : null,
+    userId: tx.userId ? (tx.userId._id ? tx.userId._id.toString() : tx.userId.toString()) : null,
+    user: tx.userId && tx.userId.email ? {
+      name: tx.userId.name,
+      email: tx.userId.email
+    } : null,
     provider: tx.provider,
     kind: tx.kind,
     providerEventId: tx.providerEventId ?? null,
@@ -473,6 +478,26 @@ export async function listAdminBooks() {
 
 export async function deleteBookById(bookId: string) {
   await connectToDatabase();
+
+  // On vérifie si l'ouvrage a déjà été vendu (commandes payées)
+  const paidOrder = await OrderModel.findOne({
+    status: "paid",
+    "items.book": bookId
+  }).lean();
+
+  if (paidOrder) {
+    throw new ApiError("Cet ouvrage a déjà été vendu et ne peut plus être supprimé.", 403);
+  }
+
+  // On vérifie aussi les contributions payées (crowdfunding)
+  const paidContribution = await ContributionModel.findOne({
+    status: "paid",
+    book: bookId
+  }).lean();
+
+  if (paidContribution) {
+    throw new ApiError("Cet ouvrage possède des contributions payées et ne peut plus être supprimé.", 403);
+  }
 
   const deleted = await BookModel.findByIdAndDelete(bookId).lean();
   if (!deleted) {
