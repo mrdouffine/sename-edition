@@ -1,35 +1,36 @@
 import Logo from "@/components/Logo";
+import Image from "next/image";
 
 const socials = [
   {
     label: "Facebook",
     href: "https://www.facebook.com/senamekoffia",
-    icon: "https://sename.lafricaine.org/wp-content/uploads/elementor/thumbs/2986087_facebook_media_social_icon-r1xe2u0ulrkh0aoxm9zd7tnspll95507u1f9oqdnzg.png"
+    icon: "/icons/facebook.jpg"
   },
   {
     label: "Instagram",
     href: "https://www.instagram.com/sename__/?hl=fr",
-    icon: "https://sename.lafricaine.org/wp-content/uploads/elementor/thumbs/2986059_instagram_media_social_icon-r1xe2r7c19gm1gt12qrhicdexfz5i1p0tngt8whui4.png"
+    icon: "/icons/instagram.jpg"
   },
   {
     label: "YouTube",
     href: "https://www.youtube.com/channel/UCQF4sKBKsFnwGWHvjrIaQTA/videos",
-    icon: "https://sename.lafricaine.org/wp-content/uploads/elementor/thumbs/2986075_logo_media_social_icon-r1xe2yq1jxqwmci3uu0i2ah3oiy37mivioop346p4c.png"
+    icon: "/icons/youtube.jpg"
   },
   {
     label: "Medium",
     href: "https://sename.medium.com/",
-    icon: "https://sename.lafricaine.org/wp-content/uploads/elementor/thumbs/2986059_medium_media_social_icon-r1xe32heb9w1wscn8vn0c9iy22fk2exsv7an0814fg.png"
+    icon: "/icons/medium.jpg"
   },
   {
     label: "Plus",
     href: "https://play.google.com/store/apps/details?id=com.woelabo.lomeplus",
-    icon: "https://sename.lafricaine.org/wp-content/uploads/elementor/thumbs/Plus-r1xe3ctmega7ghxmki3wlox0lb0lf32ukmgza9lsj0.png"
+    icon: "/icons/plus.jpg"
   },
   {
     label: "LinkedIn",
     href: "https://www.linkedin.com/in/sename-koffi-a-2a5432242/",
-    icon: null,
+    icon: "/icons/linkedlin.jpg",
     text: "in"
   },
   {
@@ -74,7 +75,7 @@ export default function Footer() {
                 className="inline-flex h-6 w-6 items-center justify-center"
               >
                 {social.icon ? (
-                  <img src={social.icon} alt={social.label} className="h-7 w-7 object-contain" />
+                  <Image src={social.icon} alt={social.label} width={28} height={28} className="object-contain" />
                 ) : (
                   <span className="text-lg font-black uppercase">{social.text}</span>
                 )}
