@@ -58,12 +58,6 @@ export default function AuthNav() {
       >
         connexion
       </Link>
-      <Link
-        href={`/inscription?next=${next}&from=home`}
-        className="text-xs font-semibold uppercase tracking-wider text-[#181810] transition-colors hover:text-primary sm:text-sm"
-      >
-        inscription
-      </Link>
     </div>
   );
 }

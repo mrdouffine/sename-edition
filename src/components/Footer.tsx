@@ -49,7 +49,7 @@ export default function Footer() {
           <div className="flex items-center gap-3 sm:gap-4">
             <Logo />
             <h2 className="text-base font-extrabold uppercase leading-tight tracking-tight text-[#181810] sm:text-lg">
-              édition
+              laa édition
             </h2>
           </div>
           <p className="text-[13px] font-bold md:text-center">contact@lafricainedarchitecture.com</p>
@@ -75,7 +75,7 @@ export default function Footer() {
                 className="inline-flex h-6 w-6 items-center justify-center"
               >
                 {social.icon ? (
-                  <Image src={social.icon} alt={social.label} width={28} height={28} className="object-contain" />
+                  <Image src={social.icon} alt={social.label} width={28} height={28} className="object-contain mix-blend-multiply" />
                 ) : (
                   <span className="text-lg font-black uppercase">{social.text}</span>
                 )}

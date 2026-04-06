@@ -55,12 +55,6 @@ export default function UserMenu({ showAuthLinks = false }: Props) {
         >
           connexion
         </Link>
-        <Link
-          href={`/inscription?next=${next}&from=home`}
-          className="text-xs font-semibold uppercase tracking-wider text-[#181810] transition-colors hover:text-primary sm:text-sm"
-        >
-          inscription
-        </Link>
       </div>
     );
   }
@@ -74,12 +68,6 @@ export default function UserMenu({ showAuthLinks = false }: Props) {
           className="text-xs font-semibold uppercase tracking-wider text-[#181810] transition-colors hover:text-primary sm:text-sm"
         >
           connexion
-        </Link>
-        <Link
-          href={`/inscription?next=${next}&from=home`}
-          className="text-xs font-semibold uppercase tracking-wider text-[#181810] transition-colors hover:text-primary sm:text-sm"
-        >
-          inscription
         </Link>
       </div>
     );
