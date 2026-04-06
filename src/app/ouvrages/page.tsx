@@ -60,8 +60,8 @@ export default async function OuvragesPage() {
                                         title={featuredBook.title}
                                         subtitle={featuredBook.subtitle}
                                         authorName={featuredBook.authorName}
-                                        variant={(featuredBook as any).coverVariant === "dark" ? "dark" : "light"}
                                         titleColor={(featuredBook as any).titleColor}
+                                        coverImage={(featuredBook as any).coverImage}
                                         className="border-[6px] border-[#FFF100]"
                                     />
                                 </Link>
@@ -192,6 +192,7 @@ export default async function OuvragesPage() {
                                             authorName={book.authorName}
                                             variant={(book as any).coverVariant === "dark" ? "dark" : "light"}
                                             titleColor={(book as any).titleColor}
+                                            coverImage={(book as any).coverImage}
                                         />
                                     </Link>
                                     <h3 className="text-center font-bold text-[#FFEA00] lowercase leading-tight">{book.title}</h3>
@@ -239,6 +240,7 @@ export default async function OuvragesPage() {
                                             authorName={book.authorName}
                                             variant={(book as any).coverVariant === "dark" ? "dark" : "light"}
                                             titleColor={(book as any).titleColor}
+                                            coverImage={(book as any).coverImage}
                                         />
                                     </Link>
                                     <h3 className="text-center font-bold text-[#FFEA00] lowercase leading-tight">{book.title}</h3>
@@ -275,38 +277,44 @@ export default async function OuvragesPage() {
                             </p>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                            {crowdfunding.map((project) => {
-                                const funding = getFundingProgress(project);
-                                return (
-                                    <div key={project.slug} className="group flex flex-col items-center">
-                                        <Link href={`/ouvrages/${project.slug}`} className="relative border-[4px] border-[#FFF100] mb-4 transition-transform hover:scale-105" style={{ width: 240 }}>
-                                            <BookCover
-                                                slug={project.slug}
-                                                title={project.title}
-                                                subtitle={project.subtitle}
-                                                authorName={project.authorName}
-                                                variant={(project as any).coverVariant === "dark" ? "dark" : "light"}
-                                                titleColor={(project as any).titleColor}
-                                            />
-                                        </Link>
-                                        <h3 className="text-center font-bold text-[#FFEA00] lowercase leading-tight">{project.title}</h3>
-                                        <p className="text-center text-[10px] text-gray-400 lowercase italic mt-1 mb-3">{project.subtitle}</p>
+                        <div className="relative w-full overflow-hidden pb-4">
+                            <div className="flex w-max animate-marquee hover:[animation-play-state:paused]">
+                                {[0, 1, 2].map((loopIdx) => (
+                                    <div key={loopIdx} className="flex gap-12 pr-12 items-start shrink-0">
+                                        {crowdfunding.map((project) => {
+                                            const funding = getFundingProgress(project);
+                                            return (
+                                                <div key={project.slug} className="group flex flex-col items-center w-[240px]">
+                                                    <Link href={`/ouvrages/${project.slug}`} className="relative border-[4px] border-[#FFF100] mb-4 transition-transform hover:scale-105" style={{ width: 240 }}>
+                                                        <BookCover
+                                                            slug={project.slug}
+                                                            title={project.title}
+                                                            subtitle={project.subtitle}
+                                                            variant={(project as any).coverVariant === "dark" ? "dark" : "light"}
+                                                            titleColor={(project as any).titleColor}
+                                                            coverImage={(project as any).coverImage}
+                                                        />
+                                                    </Link>
+                                                    <h3 className="text-center font-bold text-[#FFEA00] lowercase leading-tight">{project.title}</h3>
+                                                    <p className="text-center text-[10px] text-gray-400 lowercase italic mt-1 mb-3">{project.subtitle}</p>
 
-                                        <div className="w-48">
-                                            <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100 border border-gray-200">
-                                                <div
-                                                    className="h-full bg-[#FFF100]"
-                                                    style={{ width: `${funding.percent}%` }}
-                                                ></div>
-                                            </div>
-                                            <p className="mt-1 text-center text-[10px] font-black tracking-tighter">
-                                                {funding.percent}% financé
-                                            </p>
-                                        </div>
+                                                    <div className="w-48">
+                                                        <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100 border border-gray-200">
+                                                            <div
+                                                                className="h-full bg-[#FFF100]"
+                                                                style={{ width: `${funding.percent}%` }}
+                                                            ></div>
+                                                        </div>
+                                                        <p className="mt-1 text-center text-[10px] font-black tracking-tighter">
+                                                            {funding.percent}% financé
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
                                     </div>
-                                );
-                            })}
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </section>

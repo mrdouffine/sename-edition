@@ -42,7 +42,8 @@ export async function createContribution(params: {
       { session }
     );
 
-    book.fundingRaised = (book.fundingRaised ?? 0) + params.amount;
+    const increaseAmount = (book.fundingGoal && book.fundingGoal > 0) ? (book.fundingGoal * 0.02) : params.amount;
+    book.fundingRaised = (book.fundingRaised ?? 0) + increaseAmount;
     await book.save({ session });
     if (params.userId) {
       await UserModel.findByIdAndUpdate(
@@ -163,7 +164,8 @@ export async function markContributionAsPaid(params: {
     }
     await contribution.save(session ? { session } : undefined);
 
-    book.fundingRaised = (book.fundingRaised ?? 0) + contribution.amount;
+    const increaseAmount = (book.fundingGoal && book.fundingGoal > 0) ? (book.fundingGoal * 0.02) : contribution.amount;
+    book.fundingRaised = (book.fundingRaised ?? 0) + increaseAmount;
     await book.save(session ? { session } : undefined);
 
     if (contribution.user) {

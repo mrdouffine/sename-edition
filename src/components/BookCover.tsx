@@ -46,7 +46,7 @@ export default function BookCover({
     // If an uploaded cover image exists, prioritize it, but fall back to imageMap and then SVG
     if (coverImage) {
         return (
-            <div className={`relative flex flex-col justify-between overflow-hidden ${className}`} style={{ width: "100%", height: "100%", position: "relative" }}>
+            <div className={`relative flex flex-col justify-between overflow-hidden ${className}`} style={{ width: "100%", position: "relative", aspectRatio: "1 / 1.414" }}>
                 <img
                     src={coverImage}
                     alt={title || "Couverture de l'ouvrage"}
@@ -60,7 +60,7 @@ export default function BookCover({
 
     if (imageFile) {
         return (
-            <div className={`relative flex flex-col justify-between overflow-hidden ${className}`} style={{ width: "100%", height: "100%", position: "relative" }}>
+            <div className={`relative flex flex-col justify-between overflow-hidden ${className}`} style={{ width: "100%", position: "relative", aspectRatio: "1 / 1.414" }}>
                 <img
                     src={`/article/${imageFile}`}
                     alt={title || "Description"}
@@ -71,7 +71,7 @@ export default function BookCover({
     }
 
     return (
-        <div className={`relative flex flex-col justify-between overflow-hidden ${className}`} style={{ backgroundColor: bgColor, aspectRatio: "3 / 4", width: "100%", position: "relative" }}>
+        <div className={`relative flex flex-col justify-between overflow-hidden ${className}`} style={{ backgroundColor: bgColor, aspectRatio: "1 / 1.414", width: "100%", position: "relative" }}>
             <div style={{ padding: "12% 8%", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%", backgroundColor: bgColor }}>
                 <div style={{ marginTop: "0.5rem" }}>
                     <span className="text-gray-900/60 lowercase" style={{ fontSize: "0.9rem", letterSpacing: "0.15em", fontWeight: 500 }}>{authorName}</span>

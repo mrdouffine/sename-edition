@@ -13,6 +13,15 @@ const config: Config = {
         "background-light": "#f8f8f5",
         "background-dark": "#23220f"
       },
+      keyframes: {
+        marquee: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-33.333333%)" }
+        }
+      },
+      animation: {
+        marquee: "marquee 60s linear infinite"
+      },
       fontFamily: {
         display: ["Manrope", "sans-serif"]
       },
