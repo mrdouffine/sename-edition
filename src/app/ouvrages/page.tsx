@@ -124,40 +124,40 @@ export default async function OuvragesPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-[1000px] mx-auto">
                         {/* Option 1: Acquisition */}
-                        <div className="flex flex-col items-center text-center p-8 border-[3px] border-black rounded-xl bg-white transition-transform hover:-translate-y-1">
-                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF100] mb-6">
-                                <span className="material-symbols-outlined text-3xl text-black">diamond</span>
+                        <div className="flex flex-col items-center text-center p-8 border-[3px] border-black rounded-xl bg-[#FFEA00] transition-transform hover:-translate-y-1">
+                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#181810] mb-6">
+                                <span className="material-symbols-outlined text-3xl text-[#FFEA00]">diamond</span>
                             </div>
-                            <h3 className="text-[1.15rem] font-bold text-black mb-4 uppercase leading-tight">
+                            <h3 className="text-[1.15rem] font-bold text-[#181810] mb-4 uppercase leading-tight">
                                 Achat-<br />Acquisition
                             </h3>
-                            <p className="text-[0.7rem] sm:text-xs text-gray-700 leading-relaxed max-w-[240px]">
+                            <p className="text-[0.7rem] sm:text-xs font-medium text-[#181810] opacity-90 leading-relaxed max-w-[240px]">
                                 L'ouvrage est sorti et disponible. Vous serez livré dans la semaine dans le point de distribution de votre ville.
                             </p>
                         </div>
 
                         {/* Option 2: Pre-commande */}
-                        <div className="flex flex-col items-center text-center p-8 border-[3px] border-black rounded-xl bg-white transition-transform hover:-translate-y-1">
-                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF100] mb-6">
-                                <span className="material-symbols-outlined text-3xl text-black">hourglass_empty</span>
+                        <div className="flex flex-col items-center text-center p-8 border-[3px] border-black rounded-xl bg-[#FFEA00] transition-transform hover:-translate-y-1">
+                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#181810] mb-6">
+                                <span className="material-symbols-outlined text-3xl text-[#FFEA00]">hourglass_empty</span>
                             </div>
-                            <h3 className="text-[1.15rem] font-bold text-black mb-4 uppercase leading-tight">
+                            <h3 className="text-[1.15rem] font-bold text-[#181810] mb-4 uppercase leading-tight">
                                 achat-<br />Pré-commande
                             </h3>
-                            <p className="text-[0.7rem] sm:text-xs text-gray-700 leading-relaxed max-w-[240px]">
+                            <p className="text-[0.7rem] sm:text-xs font-medium text-[#181810] opacity-90 leading-relaxed max-w-[240px]">
                                 L'ouvrage est prêt. Supportez la fabrication de votre exemplaire. Vous serez livré dans le mois dans le point de distribution de votre ville. Une dédicace personnalisée vous attend.
                             </p>
                         </div>
 
                         {/* Option 3: Financement Participatif */}
-                        <div className="flex flex-col items-center text-center p-8 border-[3px] border-black rounded-xl bg-white transition-transform hover:-translate-y-1">
-                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF100] mb-6">
-                                <span className="material-symbols-outlined text-3xl text-black">psychology</span>
+                        <div className="flex flex-col items-center text-center p-8 border-[3px] border-black rounded-xl bg-[#FFEA00] transition-transform hover:-translate-y-1">
+                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#181810] mb-6">
+                                <span className="material-symbols-outlined text-3xl text-[#FFEA00]">psychology</span>
                             </div>
-                            <h3 className="text-[1.15rem] font-bold text-black mb-4 uppercase leading-tight">
+                            <h3 className="text-[1.15rem] font-bold text-[#181810] mb-4 uppercase leading-tight">
                                 achat- financement<br />participatif
                             </h3>
-                            <p className="text-[0.7rem] sm:text-xs text-gray-700 leading-relaxed max-w-[260px]">
+                            <p className="text-[0.7rem] sm:text-xs font-medium text-[#181810] opacity-90 leading-relaxed max-w-[260px]">
                                 Supportez le chantier d'écriture. Vous serez régulièrement avertis de l'avancement et je répondrai personnellement à toutes vos questions sur le contenu. Vous recevrez en exclusivité votre exemplaire avec une dédicace dès la sortie. Vous serez cité dans les remerciements.
                             </p>
                         </div>

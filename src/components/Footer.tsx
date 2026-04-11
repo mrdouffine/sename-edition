@@ -20,7 +20,8 @@ const socials = [
   {
     label: "Medium",
     href: "https://sename.medium.com/",
-    icon: "/icons/medium.jpg"
+    icon: null,
+    text: "M"
   },
   {
     label: "Plus",
@@ -49,7 +50,7 @@ export default function Footer() {
           <div className="flex items-center gap-3 sm:gap-4">
             <Logo />
             <h2 className="text-base font-extrabold uppercase leading-tight tracking-tight text-[#181810] sm:text-lg">
-              laa édition
+              laa éditions
             </h2>
           </div>
           <p className="text-[13px] font-bold md:text-center">contact@lafricainedarchitecture.com</p>
@@ -64,7 +65,7 @@ export default function Footer() {
 
         <div className="mt-7 grid grid-cols-1 gap-5 md:grid-cols-3 md:items-end">
           <div className="hidden md:block" />
-          <div className="flex flex-wrap items-center justify-start gap-4 md:justify-center">
+          <div className="flex flex-nowrap items-center justify-center gap-3 md:gap-4">
             {socials.map((social) => (
               <a
                 key={social.label}
@@ -72,12 +73,12 @@ export default function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label={social.label}
-                className="inline-flex h-6 w-6 items-center justify-center"
+                className="inline-flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border-[1.5px] border-[#181810]"
               >
                 {social.icon ? (
-                  <Image src={social.icon} alt={social.label} width={28} height={28} className="object-contain mix-blend-multiply" />
+                  <Image src={social.icon} alt={social.label} width={24} height={24} className="h-5 w-auto object-contain mix-blend-multiply" />
                 ) : (
-                  <span className="text-lg font-black uppercase">{social.text}</span>
+                  <span className="text-[18px] font-black uppercase leading-none">{social.text}</span>
                 )}
               </a>
             ))}
