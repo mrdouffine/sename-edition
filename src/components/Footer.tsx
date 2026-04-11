@@ -65,7 +65,7 @@ export default function Footer() {
 
         <div className="mt-7 grid grid-cols-1 gap-5 md:grid-cols-3 md:items-end">
           <div className="hidden md:block" />
-          <div className="flex flex-nowrap items-center justify-center gap-3 md:gap-4">
+          <div className="flex flex-nowrap items-center justify-center gap-2 sm:gap-3 md:gap-4">
             {socials.map((social) => (
               <a
                 key={social.label}
@@ -73,12 +73,12 @@ export default function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label={social.label}
-                className="inline-flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border-[1.5px] border-[#181810]"
+                className="inline-flex h-9 w-9 sm:h-11 sm:w-11 flex-shrink-0 items-center justify-center rounded-full border-[1.5px] border-[#181810]"
               >
                 {social.icon ? (
-                  <Image src={social.icon} alt={social.label} width={24} height={24} className="h-5 w-auto object-contain mix-blend-multiply" />
+                  <Image src={social.icon} alt={social.label} width={24} height={24} className="h-4 sm:h-5 w-auto object-contain mix-blend-multiply" />
                 ) : (
-                  <span className="text-[18px] font-black uppercase leading-none">{social.text}</span>
+                  <span className="text-[14px] sm:text-[18px] font-black uppercase leading-none">{social.text}</span>
                 )}
               </a>
             ))}
