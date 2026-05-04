@@ -6,7 +6,7 @@ const BUBBLE_REVIEWS: Record<string, { text: string; name: string; date: string;
     "decoloniser-le-futur": [
         {
             boldPart: "Une lecture indispensable qui m'a fait repenser l'espace et le temps !",
-            text: " Sénamé Koffi Agbodjinou propose un regard fascinant et libérateur sur la modernité. Son approche sur la déconstruction des récits dominants ouvre des perspectives immenses. C'est le genre de livre qui vous reste en tête pendant des mois.",
+            text: " Sename Koffi Agbodjinou propose un regard fascinant et libérateur sur la modernité. Son approche sur la déconstruction des récits dominants ouvre des perspectives immenses. C'est le genre de livre qui vous reste en tête pendant des mois.",
             name: "Aminata Dia",
             date: "14/08/2024",
             stars: 5
@@ -52,7 +52,7 @@ const BUBBLE_REVIEWS: Record<string, { text: string; name: string; date: string;
     "girations": [
         {
             boldPart: "Un très grand recueil qui mêle architecture et rythme.",
-            text: " C'est incroyable de voir comment Sénamé parvient à bâtir des poèmes comme il bâtirait des maisons. Une structure solide avec beaucoup d'espace pour respirer.",
+            text: " C'est incroyable de voir comment Sename parvient à bâtir des poèmes comme il bâtirait des maisons. Une structure solide avec beaucoup d'espace pour respirer.",
             name: "Alexandre G.",
             date: "14/03/2024",
             stars: 5
@@ -179,7 +179,7 @@ const BUBBLE_REVIEWS: Record<string, { text: string; name: string; date: string;
         },
         {
             boldPart: "Des chutes inattendues et des portraits forts.",
-            text: " Sénamé est décidément un excellent conteur. Chaque histoire m'a transporté, de Cotonou jusqu'à Paris.",
+            text: " Sename est décidément un excellent conteur. Chaque histoire m'a transporté, de Cotonou jusqu'à Paris.",
             name: "Léonard M.",
             date: "26/06/2024",
             stars: 5
@@ -223,7 +223,7 @@ const BUBBLE_REVIEWS: Record<string, { text: string; name: string; date: string;
         },
         {
             boldPart: "Tout simplement incontournable !",
-            text: " Du grand Sénamé ! À la fois exigeant et accessible, on en ressort plus éclairé sur soi et sur les autres.",
+            text: " Du grand Sename ! À la fois exigeant et accessible, on en ressort plus éclairé sur soi et sur les autres.",
             name: "Mireille E.",
             date: "16/01/2025",
             stars: 5
@@ -262,7 +262,7 @@ const BUBBLE_REVIEWS: Record<string, { text: string; name: string; date: string;
     "default": [
         {
             boldPart: "Cette œuvre m'a tellement impressionné que je n'arrête pas d'y penser !",
-            text: " La profondeur de la réflexion et l'engagement intellectuel de Sénamé Koffi Agbodjinou sont incroyables. C'est merveilleux de voir cette manière de partager avec les lecteurs. Merci infiniment.",
+            text: " La profondeur de la réflexion et l'engagement intellectuel de Sename Koffi Agbodjinou sont incroyables. C'est merveilleux de voir cette manière de partager avec les lecteurs. Merci infiniment.",
             name: "Lilly O.",
             date: "02/05/2024"
         },

@@ -39,7 +39,14 @@ export default function Home() {
             <p className="anim-hero-sub fade-up max-w-xl text-[clamp(1rem,1.4vw,1.25rem)] leading-relaxed text-[#4b5563]">
               Conçu pour rendre possible le financement, la production et la
               diffusion de chantiers intellectuels de{" "}
-              <span className="font-bold border-b-2 border-primary whitespace-nowrap">Sénamé Koffi Agbodjinou</span>{" "}
+              <a 
+                href="https://sename.lafricaine.org" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="font-bold border-b-2 border-primary whitespace-nowrap hover:opacity-80 transition-opacity"
+              >
+                Sename Koffi Agbodjinou
+              </a>{" "}
               sous toutes formes imprimées ou audiovisuelles.
             </p>
             <p className="anim-hero-sub fade-up max-w-xl text-[clamp(0.9rem,1.1vw,1rem)] leading-relaxed text-[#6b7280]">
@@ -58,7 +65,7 @@ export default function Home() {
           {/* Hero right — image already contains circle + decorations */}
           <div className="flex items-center justify-center">
             <img
-              alt="Portrait de Sénamé Koffi Agbodjinou"
+              alt="Portrait de Sename Koffi Agbodjinou"
               className="hero-image w-full max-w-[520px] h-auto object-contain mix-blend-multiply"
               src="/images/image.png"
             />

@@ -73,10 +73,20 @@ export default function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label={social.label}
-                className="inline-flex h-9 w-9 sm:h-11 sm:w-11 flex-shrink-0 items-center justify-center rounded-full border-[1.5px] border-[#181810]"
+                className="inline-flex h-9 w-9 sm:h-11 sm:w-11 flex-shrink-0 items-center justify-center rounded-full border-[1.5px] border-[#181810] overflow-hidden"
               >
                 {social.icon ? (
-                  <Image src={social.icon} alt={social.label} width={24} height={24} className="h-4 sm:h-5 w-auto object-contain mix-blend-multiply" />
+                  <Image
+                    src={social.icon}
+                    alt={social.label}
+                    width={44}
+                    height={44}
+                    className={`${
+                      social.label === "Plus" 
+                        ? "h-full w-full object-cover rounded-full" 
+                        : "h-4 sm:h-5 w-auto object-contain"
+                    } mix-blend-multiply`}
+                  />
                 ) : (
                   <span className="text-[14px] sm:text-[18px] font-black uppercase leading-none">{social.text}</span>
                 )}

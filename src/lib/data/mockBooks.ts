@@ -10,7 +10,7 @@ export const mockBooks = [
     slug: "decoloniser-le-futur",
     description:
       "«\u00A0Décoloniser le Futur\u00A0» est un essai dense et visionnaire, écrit durant la période de confinement mondial. " +
-      "Sénamé Koffi Agbodjinou y interroge les paradigmes qui façonnent notre rapport au temps, à l'espace et à la modernité. " +
+      "Sename Koffi Agbodjinou y interroge les paradigmes qui façonnent notre rapport au temps, à l'espace et à la modernité. " +
       "À travers deux volets — «\u00A0Restaurer le Réel\u00A0» et «\u00A0Dystopie Concrète\u00A0» — l'auteur déconstruit les récits dominants " +
       "pour proposer une pensée alternative ancrée dans les savoirs africains.\n\n" +
       "Ce livre est une invitation à repenser les futurs possibles depuis l'Afrique, en s'affranchissant des schémas hérités " +
@@ -33,7 +33,7 @@ export const mockBooks = [
     slug: "le-centre-de-flammes",
     description:
       "«\u00A0Le Centre de Flammes\u00A0» est un recueil poétique puissant qui explore les thèmes de l'éveil, de la lumière intérieure " +
-      "et de la transformation spirituelle. Inspiré par les traditions initiatiques africaines, Sénamé Koffi Agbodjinou " +
+      "et de la transformation spirituelle. Inspiré par les traditions initiatiques africaines, Sename Koffi Agbodjinou " +
       "compose un voyage littéraire où chaque poème est une étape vers la connaissance de soi.\n\n" +
       "Le sous-titre «\u00A0Livre d'une sortie au jour\u00A0» fait écho aux textes funéraires égyptiens, " +
       "réinterprétés ici comme un guide pour traverser les obscurités contemporaines et accéder à une nouvelle clarté. " +
@@ -55,7 +55,7 @@ export const mockBooks = [
     slug: "girations",
     description:
       "«\u00A0Girations\u00A0» rassemble des chantiers poétiques en perpétuel mouvement. Ce recueil explore les rotations " +
-      "de la pensée, les orbites de l'imaginaire et les spirales du langage. Sénamé Koffi Agbodjinou y déploie une écriture " +
+      "de la pensée, les orbites de l'imaginaire et les spirales du langage. Sename Koffi Agbodjinou y déploie une écriture " +
       "où le geste architectural rencontre la musicalité du vers.\n\n" +
       "Chaque poème est conçu comme un espace habitable : des fondations solides (le rythme), des murs porteurs " +
       "(les images), une toiture ouverte sur le ciel (le sens). L'auteur invite le lecteur à circuler librement " +
@@ -76,7 +76,7 @@ export const mockBooks = [
     subtitle: "Architecture et Univers",
     slug: "cosmo-architecture",
     description:
-      "Cet essai fondateur pose les bases d'une nouvelle discipline : la cosmo-architecture. Sénamé Koffi Agbodjinou " +
+      "Cet essai fondateur pose les bases d'une nouvelle discipline : la cosmo-architecture. Sename Koffi Agbodjinou " +
       "y articule les principes d'une architecture qui dialogue avec les forces cosmiques, les rythmes naturels " +
       "et les savoirs ancestraux du continent africain.\n\n" +
       "Loin des modèles occidentaux importés, l'auteur propose une vision où le bâtiment n'est pas un simple abri, " +
@@ -104,7 +104,7 @@ export const mockBooks = [
     description:
       "«\u00A0Comprendre l'architecture en Afrique Noire\u00A0» est une étude approfondie des logiques spatiales, " +
       "sociales et symboliques qui sous-tendent les constructions traditionnelles africaines. " +
-      "Sénamé Koffi Agbodjinou décrypte les codes architecturaux du continent avec une rigueur scientifique " +
+      "Sename Koffi Agbodjinou décrypte les codes architecturaux du continent avec une rigueur scientifique " +
       "et une sensibilité d'artiste.\n\n" +
       "L'ouvrage aborde successivement : la conception de l'espace dans les sociétés africaines, " +
       "le rôle du sacré dans l'organisation du bâti, les matériaux et techniques endogènes, " +
@@ -130,7 +130,7 @@ export const mockBooks = [
     description:
       "«\u00A0Esthétiques du Féminin dans les arts nègres\u00A0» explore la représentation de la femme " +
       "dans les traditions artistiques africaines, depuis les sculptures classiques jusqu'aux formes contemporaines. " +
-      "Sénamé Koffi Agbodjinou y révèle comment le féminin constitue un principe structurant fondamental " +
+      "Sename Koffi Agbodjinou y révèle comment le féminin constitue un principe structurant fondamental " +
       "dans l'art et la pensée du continent.\n\n" +
       "Au-delà de l'analyse esthétique, l'auteur montre que la puissance du féminin dans les arts nègres " +
       "n'est pas une simple thématique mais une force organisatrice : elle détermine les formes, " +
@@ -153,7 +153,7 @@ export const mockBooks = [
     subtitle: "Nouvelles",
     slug: "rencontres",
     description:
-      "«\u00A0Rencontres\u00A0» est un recueil de nouvelles où Sénamé Koffi Agbodjinou déploie son talent de conteur. " +
+      "«\u00A0Rencontres\u00A0» est un recueil de nouvelles où Sename Koffi Agbodjinou déploie son talent de conteur. " +
       "Chaque récit est un carrefour : des vies se croisent, des destins s'entremêlent, " +
       "des mondes se découvrent dans la surprise de l'inattendu.\n\n" +
       "De Lomé à Paris, de Ouagadougou à Cotonou, les personnages de ces nouvelles portent " +
@@ -207,7 +207,7 @@ export const mockBooks = [
     title: "États du lieu",
     subtitle: "Essai",
     slug: "etats-du-lieu",
-    description: "« États du lieu » est la toute dernière réflexion de Sénamé Koffi Agbodjinou sur la situation actuelle. Une analyse tranchante et nécessaire.",
+    description: "« États du lieu » est la toute dernière réflexion de Sename Koffi Agbodjinou sur la situation actuelle. Une analyse tranchante et nécessaire.",
     price: 35,
     saleType: "preorder",
     coverImage: "/article/etatdulieu-new.jpg",
